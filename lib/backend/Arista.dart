@@ -17,7 +17,7 @@ class Arista {
             return this.estacion2;
         else if (estacion2.equals(estacion))
             return this.estacion1;
-        throw Exception("Error: Se ha pedido la siguiente estacion de (${estacion}) un nodo que no se encuentra en la arista");
+        throw Exception("Error: Se ha pedido la siguiente estacion de ($estacion) un nodo que no se encuentra en la arista");
     }
 
     int getTiempo (){
