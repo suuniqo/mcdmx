@@ -1,0 +1,9 @@
+Hecho:
+Se ha creado la clase: nodo, arista, linea y mapa
+
+Faltaria hacer:
+- Hacer la clase tren. 
+    Los objetos tipo tren recorren la linea, utilizando async para esperar el tiempo necesario
+    Se pide que el tren vaya a la siguiente estacion, este empieza un timer con la duracion de la arista
+    Cuando se termina el tiempo manda un mensaje a linea para que esta le mande la siguiente arista
+

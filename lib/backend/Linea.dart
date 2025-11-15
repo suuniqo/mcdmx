@@ -1,4 +1,5 @@
 import './Arista.dart';
+import './Tren.dart';
 
 class Linea {
     
@@ -7,6 +8,8 @@ class Linea {
     int frecuencia; //Cada cuantos minutos sale un tren de la primera estacion
     Nodo primeraEstacion;
     int numeroEstaciones;
+    Set<Tren> trenes;
+    
 
     Linea (int numero, List<Arista> recorrido, int frecuencia, Nodo primeraEstacion){
         this.numero = numero;
@@ -34,6 +37,10 @@ class Linea {
 
     int getNumeroEstaciones (){
         return numeroEstaciones;
+    }
+
+    void mantenerTrenesEnMovimient (){
+        
     }
 
 }
