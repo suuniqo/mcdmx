@@ -1,5 +1,5 @@
-import './Arista.dart';
-import './Tren.dart';
+import './arista.dart';
+import './tren.dart';
 
 class Linea {
     

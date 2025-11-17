@@ -1,4 +1,4 @@
-import './Linea.dart';
+import './linea.dart';
 
 class Mapa {
     List<Linea> lineas;

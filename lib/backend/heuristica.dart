@@ -1,5 +1,5 @@
 import 'dart:math';
-import './Nodo.dart';
+import './nodo.dart';
 
 class Heuristica {
     

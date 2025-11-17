@@ -1,4 +1,4 @@
-import './Nodo.dart';
+import './nodo.dart';
 
 class Arista {
 
