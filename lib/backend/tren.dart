@@ -1,39 +1,41 @@
-import 'linea.dart';
 import 'dart:async';
+import './arista.dart';
+import './nodo.dart';
+
 
 class Tren {
     
-    Arista posicionActual;
-    Nodo siguienteEstacion;
+    Arista currentPosition;
+    Nodo nextStation;
     final StreamController<String> controller = StreamController<String>();
 
-    Tren (Arista posicionActual, Nodo siguienteEstacion, int tiempo){
-        this.posicionActual = posicionActual;
-        this.siguienteEstacion = siguienteEstacion;
+    Tren (this.currentPosition, this.nextStation, int tiempo){
+        //TODO que se hace con el tiempo?
     }
     
-    Arista getPosicionActual (){
-        return this.PosicionActual;
+    Arista getcurrentPosition (){
+        return currentPosition;
     }
 
     Nodo getSiguienteEstacion (){
-        return this.siguienteEstacion;
+        return nextStation;
     }
 
     /*
      *  Funcion que actualiza la arista en la que esta el tren
-     *  y cambia la siguienteEstacion, esta debe ser la siguiente de la siguienteEstacion previa
-     *  En caso de que la siguienteEstacion previa no se encuentre en la nueva arista,
-     *  la funcion siguienteEstacion de Arista lanzara un error
+     *  y cambia la nextStation, esta debe ser la siguiente de la nextStation previa
+     *  En caso de que la nextStation previa no se encuentre en la nueva arista,
+     *  la funcion nextStation de Arista lanzara un error
     */
-    void actualizarSiguienteEstacion (Arista posicionNueva){
-        this.posicionActual = posicionNueva;
-        this.siguienteEstacion = this.posicionActual.siguienteEstacion(this.siguienteEstacion);
+    void setNextPosition (Arista newPosition){
+        currentPosition = newPosition;
+        nextStation = currentPosition.nextStation(nextStation);
     }
 
-    void irSiguienteEstacion (Arista posicionNueva){
-       actualizarSiguienteEstacion(posicionNueva);
-       Timer(Duration(minutes: posicionNueva.getTiempo()), () {
+    void goToNextStation (Arista newPosition){
+       setNextPosition(newPosition);
+       //TODO
+       Timer(Duration(minutes: newPosition.gettime()), () {
         controller.add();
         });
     }

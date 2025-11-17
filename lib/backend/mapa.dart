@@ -1,13 +1,11 @@
 import './linea.dart';
 
 class Mapa {
-    List<Linea> lineas;
+    List<Linea> lines;
 
-    Mapa (List<Linea> lineas){
-        this.lineas = lineas;
-    }
+    Mapa (this.lines);
 
-    List<Linea> getLineas (){
-        return lineas;
+    List<Linea> getlines (){
+        return lines;
     }
 }

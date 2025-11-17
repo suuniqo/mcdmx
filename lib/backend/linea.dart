@@ -1,45 +1,41 @@
 import './arista.dart';
 import './tren.dart';
+import './nodo.dart';
 
 class Linea {
     
-    int numero;
+    int number;
     List<Arista> recorrido;
-    int frecuencia; //Cada cuantos minutos sale un tren de la primera estacion
-    Nodo primeraEstacion;
-    int numeroEstaciones;
-    Set<Tren> trenes;
+    int frecuency; //Cada cuantos minutos sale un tren de la first estacion
+    Nodo firstStation;
+    int numberStations;
+    Set<Tren> trains;
     
 
-    Linea (int numero, List<Arista> recorrido, int frecuencia, Nodo primeraEstacion){
-        this.numero = numero;
-        this.recorrido = recorrido;
-        this.frecuencia = frecuencia;
-        this.primeraEstacion = primeraEstacion;
-        this.numeroEstaciones = recorrido.length;
+    Linea (this.number, this.recorrido, this.frecuency, this.firstStation, this.trains)
+        : numberStations = recorrido.length;
+
+    int getnumber (){
+        return number;
     }
 
-    int getNumero (){
-        return this.numero;
+    List<Arista> getPath (){
+        return recorrido;
     }
 
-    List<Arista> getRecorrido (){
-        return this.recorrido;
+    int getfrecuency (){
+        return frecuency;
     }
 
-    int getFrecuencia (){
-        return this.frecuencia;
+    Nodo getfirstStation (){
+        return firstStation;
     }
 
-    Nodo getPrimeraEstacion (){
-        return this.primeraEstacion;
+    int getnumberStations (){
+        return numberStations;
     }
 
-    int getNumeroEstaciones (){
-        return numeroEstaciones;
-    }
-
-    void mantenerTrenesEnMovimient (){
+    void mantainTrainsInMovement (){
         
     }
 

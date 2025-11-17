@@ -5,16 +5,16 @@ class Heuristica {
     
     //La velocidad programada del tren es 36km/h, aunque luego se haya
     //registrado que de media es menos
-    static double velocidadTren = 600; //metros por minuto
+    static double trainVelocity = 600; //metros por minuto
 
     /*
      *  Utilizada la norma al cuadrado 
      */
-    static double norma (Nodo estacion1, Nodo estacion2){
-        (double x, double y) coordenadas1 = estacion1.getCoordenadas();
-        (double x, double y) coordenadas2 = estacion2.getCoordenadas();
-        double diferenciaX = coordenadas1.x - coordenadas2.x;
-        double diferenciaY = coordenadas1.y - coordenadas2.y;
+    static double norma (Nodo station1, Nodo station2){
+        (double x, double y) cordenates1 = station1.getcordenates();
+        (double x, double y) cordenates2 = station2.getcordenates();
+        double diferenciaX = cordenates1.$1 - cordenates2.$1;
+        double diferenciaY = cordenates1.$2 - cordenates2.$2;
         return diferenciaX*diferenciaX + diferenciaY*diferenciaY; 
     }
 
@@ -25,8 +25,9 @@ class Heuristica {
      *  linea y no cambiar la estacion, la euristica sera la misma, pero 
      *  el coste del camino aumentara
      */
-    static double heuristica (Nodo estacion1, Nodo estacion2){
-        double norma = norma(estacion1, estacion2);
-        return sqrt(norma) * velocidadTren;
+    static double heuristic (Nodo station1, Nodo station2){
+        //TODO hacer la funcion de la norma
+        double norma = norm(station1, station2);
+        return sqrt(norma) * trainVelocity;
     }
 }
