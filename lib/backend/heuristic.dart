@@ -1,22 +1,29 @@
 import 'dart:math';
 import './vertex.dart';
 
-class Heuristica {
+class Heuristic {
     
     //La velocidad programada del tren es 36km/h, aunque luego se haya
     //registrado que de media es menos
-    static double trainVelocity = 600; //metros por minuto
+    static const double trainVelocity = 600; //metros por minuto
+
+    // Factor de conversión aproximado: 1 grado ≈ 111 km (111,000 metros)
+    static const double conversionKm = 111000.0;
 
     /*
-     *  Utilizada la norma al cuadrado 
+     *  Utilizada la norma euclidia. Para ello hay que tener en cuenta que estamos en latitud y longitud
+     *  Y usamos una converssion a km aproximando usando que estamos una escala "pequeña"
      */
-    static double norma (Vertex station1, Vertex station2){
-        (double x, double y) cordenates1 = station1.getcordenates();
-        (double x, double y) cordenates2 = station2.getcordenates();
-        double diferenciaX = cordenates1.$1 - cordenates2.$1;
-        double diferenciaY = cordenates1.$2 - cordenates2.$2;
-        return diferenciaX*diferenciaX + diferenciaY*diferenciaY; 
-    }
+    static double _norm (Vertex station1, Vertex station2){
+        (double x, double y) cordenates1 = station1.getcoordenates();
+        (double x, double y) cordenates2 = station2.getcoordenates();
+        double dLat = cordenates1.$1 - cordenates2.$1;
+        double dLong = cordenates1.$2 - cordenates2.$2;
+
+        //Correccion de la longitud en funcion de la latitud
+        dLong *= cos((cordenates1.$1 + cordenates2.$1)/2*(pi/180));
+        return conversionKm * sqrt(dLat*dLat + dLong*dLong);
+    }   
 
     /*
      *  Pendiente a revisar, pues hay que ver si la norma, que es la euclidia
@@ -26,8 +33,8 @@ class Heuristica {
      *  el coste del camino aumentara
      */
     static double heuristic (Vertex station1, Vertex station2){
-        //TODO hacer la funcion de la norma
-        double norma = norm(station1, station2);
-        return sqrt(norma) * trainVelocity;
+        //TODO probar la funcion de la norma y cambiar si necesario para calcualar la heuristica
+        double norma = _norm(station1, station2);
+        return norma / trainVelocity;
     }
 }

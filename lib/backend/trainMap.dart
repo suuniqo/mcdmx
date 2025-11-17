@@ -1,9 +1,9 @@
 import './line.dart';
 
-class Map {
+class TrainMap {
     List<Line> lines;
 
-    Map (this.lines);
+    TrainMap (this.lines);
 
     List<Line> getlines (){
         return lines;
