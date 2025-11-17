@@ -1,12 +1,12 @@
-import './nodo.dart';
+import './vertex.dart';
 
-class Arista {
+class Edge {
 
-    Nodo station1;
-    Nodo station2;
+    Vertex station1;
+    Vertex station2;
     int time;    //time que se tarda en recorrerlo
 
-    Arista (this.station1, this.station2, this.time);
+    Edge (this.station1, this.station2, this.time);
 
     Nodo nextStation(Nodo estacion){
         if (station1.equals(estacion)){

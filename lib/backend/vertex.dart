@@ -1,13 +1,13 @@
-import './linea.dart';
+import './line.dart';
 
 
-class Nodo {
+class Vertex {
 
     String name;
     (double x, double y) cordenates;   //Estructura record, como una tupla pero con lo que quieras dentro
-    Map<Linea, int> lines; //Un conjunto de lineas que tiene asociado el tiempo que se tarda andando en llegar
+    Map<Line, int> lines; //Un conjunto de lineas que tiene asociado el tiempo que se tarda andando en llegar
 
-    Nodo (this.name, this.cordenates, this.lines);
+    Vertex (this.name, this.cordenates, this.lines);
 
     String getname (){
         return name;
@@ -25,7 +25,7 @@ class Nodo {
  *  Utilizo == puesto que en dart compara si dos objetos son iguales
  *  Dos string son iguales si contienen la misma secuencia de code units
 */
-    bool equals(Nodo nodo) {
+    bool equals(Vertex nodo) {
         return name == nodo.name;
     }
 }

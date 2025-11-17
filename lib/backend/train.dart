@@ -1,23 +1,23 @@
 import 'dart:async';
-import './arista.dart';
-import './nodo.dart';
+import './edge.dart';
+import './vertex.dart';
 
 
 class Tren {
     
-    Arista currentPosition;
-    Nodo nextStation;
+    Edge currentPosition;
+    Vertex nextStation;
     final StreamController<String> controller = StreamController<String>();
 
     Tren (this.currentPosition, this.nextStation, int tiempo){
         //TODO que se hace con el tiempo?
     }
     
-    Arista getcurrentPosition (){
+    Edge getcurrentPosition (){
         return currentPosition;
     }
 
-    Nodo getSiguienteEstacion (){
+    Vertex getSiguienteEstacion (){
         return nextStation;
     }
 
@@ -27,12 +27,12 @@ class Tren {
      *  En caso de que la nextStation previa no se encuentre en la nueva arista,
      *  la funcion nextStation de Arista lanzara un error
     */
-    void setNextPosition (Arista newPosition){
+    void setNextPosition (Edge newPosition){
         currentPosition = newPosition;
         nextStation = currentPosition.nextStation(nextStation);
     }
 
-    void goToNextStation (Arista newPosition){
+    void goToNextStation (Edge newPosition){
        setNextPosition(newPosition);
        //TODO
        Timer(Duration(minutes: newPosition.gettime()), () {

@@ -1,25 +1,25 @@
-import './arista.dart';
-import './tren.dart';
-import './nodo.dart';
+import './edge.dart';
+import './train.dart';
+import './vertex.dart';
 
-class Linea {
+class Line {
     
     int number;
-    List<Arista> recorrido;
+    List<Edge> recorrido;
     int frecuency; //Cada cuantos minutos sale un tren de la first estacion
-    Nodo firstStation;
+    Vertex firstStation;
     int numberStations;
     Set<Tren> trains;
     
 
-    Linea (this.number, this.recorrido, this.frecuency, this.firstStation, this.trains)
+    Line (this.number, this.recorrido, this.frecuency, this.firstStation, this.trains)
         : numberStations = recorrido.length;
 
     int getnumber (){
         return number;
     }
 
-    List<Arista> getPath (){
+    List<Edge> getPath (){
         return recorrido;
     }
 
@@ -27,7 +27,7 @@ class Linea {
         return frecuency;
     }
 
-    Nodo getfirstStation (){
+    Vertex getfirstStation (){
         return firstStation;
     }
 

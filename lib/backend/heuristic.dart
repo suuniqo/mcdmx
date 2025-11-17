@@ -1,5 +1,5 @@
 import 'dart:math';
-import './nodo.dart';
+import './vertex.dart';
 
 class Heuristica {
     
@@ -10,7 +10,7 @@ class Heuristica {
     /*
      *  Utilizada la norma al cuadrado 
      */
-    static double norma (Nodo station1, Nodo station2){
+    static double norma (Vertex station1, Vertex station2){
         (double x, double y) cordenates1 = station1.getcordenates();
         (double x, double y) cordenates2 = station2.getcordenates();
         double diferenciaX = cordenates1.$1 - cordenates2.$1;
@@ -25,7 +25,7 @@ class Heuristica {
      *  linea y no cambiar la estacion, la euristica sera la misma, pero 
      *  el coste del camino aumentara
      */
-    static double heuristic (Nodo station1, Nodo station2){
+    static double heuristic (Vertex station1, Vertex station2){
         //TODO hacer la funcion de la norma
         double norma = norm(station1, station2);
         return sqrt(norma) * trainVelocity;
