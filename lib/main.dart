@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mcdmx/pages/news.dart';
+import 'package:mcdmx/pages/settings.dart';
+import 'package:mcdmx/state/scheme.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -10,72 +13,99 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => MyAppState(),
-      child: MaterialApp(
-        title: 'mcdmx',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
-        ),
-        home: MyHomePage(),
+    return MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => SchemeState())],
+      child: Consumer<SchemeState>(
+        builder: (context, schemeState, _) {
+          return MediaQuery(
+            data: MediaQuery.of(
+              context,
+            ).copyWith(textScaler: TextScaler.linear(schemeState.fontSize)),
+            child: MaterialApp(
+              title: 'mcdmx',
+              theme: schemeState.themeData,
+              home: Frame(),
+            ),
+          );
+        },
       ),
     );
   }
 }
 
-class MyAppState extends ChangeNotifier {}
-
-class MyHomePage extends StatefulWidget {
+class Frame extends StatefulWidget {
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<Frame> createState() => _FrameState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _FrameState extends State<Frame> {
   var _selectedIndex = 0;
   final _pageController = PageController();
 
   @override
   Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
+    //var appState = context.watch<MyAppState>();
 
     return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: (i) => setState(() => _selectedIndex = i),
-        children: [
-          Placeholder(),
-          Placeholder(),
-          Placeholder(),
-          Placeholder(),
-          Placeholder(),
-        ],
+      body: Container(
+        color: Theme.of(context).colorScheme.primaryContainer,
+        child: PageView(
+          controller: _pageController,
+          onPageChanged: (i) => setState(() => _selectedIndex = i),
+          children: [
+            Placeholder(),
+            Placeholder(),
+            Placeholder(),
+            NewsPage(),
+            SettingsPage(),
+          ],
+        ),
       ),
       extendBody: true,
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _selectedIndex,
-        onDestinationSelected: (i) {
-          _pageController.animateToPage(
-            i,
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-          );
-        },
-        destinations: [
-          NavigationDestination(icon: Icon(Icons.home_rounded), label: 'Home'),
-          NavigationDestination(
-            icon: Icon(Icons.route_rounded),
-            label: 'Planner',
+      bottomNavigationBar: Material(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
           ),
-          NavigationDestination(icon: Icon(Icons.map_rounded), label: 'Map'),
-          NavigationDestination(
-            icon: Icon(Icons.newspaper_rounded),
-            label: 'News',
+        ),
+        color: Theme.of(context).colorScheme.surfaceContainer,
+        child: NavigationBarTheme(
+          data: NavigationBarThemeData(backgroundColor: Colors.transparent),
+          child: NavigationBar(
+            labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+            selectedIndex: _selectedIndex,
+            onDestinationSelected: (i) {
+              _pageController.animateToPage(
+                i,
+                duration: Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            },
+            destinations: [
+              NavigationDestination(
+                icon: Icon(Icons.home_rounded),
+                label: 'Home',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.route_rounded),
+                label: 'Planner',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.map_rounded),
+                label: 'Map',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.newspaper_rounded),
+                label: 'News',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.settings_rounded),
+                label: 'Settings',
+              ),
+            ],
           ),
-          NavigationDestination(
-            icon: Icon(Icons.settings_rounded),
-            label: 'Settings',
-          ),
-        ],
+        ),
       ),
     );
   }
