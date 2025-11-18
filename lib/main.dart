@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'pages/news.dart';
 void main() {
   runApp(MyApp());
 }
@@ -46,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Placeholder(),
           Placeholder(),
           Placeholder(),
-          Placeholder(),
+          NewsPage(),
           Placeholder(),
         ],
       ),
