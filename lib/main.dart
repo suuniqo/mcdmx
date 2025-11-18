@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mcdmx/pages/home.dart';
 import 'package:mcdmx/pages/news.dart';
 import 'package:mcdmx/pages/settings.dart';
 import 'package:mcdmx/state/scheme.dart';
@@ -53,7 +54,7 @@ class _FrameState extends State<Frame> {
           controller: _pageController,
           onPageChanged: (i) => setState(() => _selectedIndex = i),
           children: [
-            Placeholder(),
+            HomePage(),
             Placeholder(),
             Placeholder(),
             NewsPage(),
@@ -85,23 +86,23 @@ class _FrameState extends State<Frame> {
             destinations: [
               NavigationDestination(
                 icon: Icon(Icons.home_rounded),
-                label: 'Home',
+                label: 'Inicio',
               ),
               NavigationDestination(
                 icon: Icon(Icons.route_rounded),
-                label: 'Planner',
+                label: 'Ruta',
               ),
               NavigationDestination(
                 icon: Icon(Icons.map_rounded),
-                label: 'Map',
+                label: 'Mapa',
               ),
               NavigationDestination(
                 icon: Icon(Icons.newspaper_rounded),
-                label: 'News',
+                label: 'Noticias',
               ),
               NavigationDestination(
                 icon: Icon(Icons.settings_rounded),
-                label: 'Settings',
+                label: 'Ajustes',
               ),
             ],
           ),
