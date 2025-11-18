@@ -29,5 +29,4 @@ class TitledPage extends StatelessWidget {
       ),
     );
   }
-
 }

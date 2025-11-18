@@ -15,15 +15,9 @@ class IconDesc extends StatelessWidget {
 
     return Row(
       children: [
-        Icon(
-          icon,
-          color: theme.colorScheme.primary,
-        ),
+        Icon(icon, color: theme.colorScheme.primary),
         SizedBox(width: SpacingStyle.separatorIconTitle),
-        Text(
-          title,
-          style: contentStyle.titleItem,
-        ),
+        Text(title, style: contentStyle.titleItem),
       ],
     );
   }

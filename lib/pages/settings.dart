@@ -23,8 +23,7 @@ class SettingsPage extends StatelessWidget {
       min: FontSize.min,
       max: FontSize.max,
       onChanged: (value) {
-        if ((value - FontSize.base).abs() <=
-            FontSize.baseThreshold) {
+        if ((value - FontSize.base).abs() <= FontSize.baseThreshold) {
           schemeState.setFontSize(FontSize.base);
         } else {
           schemeState.setFontSize(value);
@@ -33,7 +32,12 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  Widget _resetDataButton(BuildContext context, ThemeData theme, SchemeState schemeState, ContentStyle contentStyle) {
+  Widget _resetDataButton(
+    BuildContext context,
+    ThemeData theme,
+    SchemeState schemeState,
+    ContentStyle contentStyle,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Row(
@@ -41,19 +45,14 @@ class SettingsPage extends StatelessWidget {
           Expanded(
             child: OutlinedButton(
               style: FilledButton.styleFrom(
-                side: BorderSide(
-                  color: theme.colorScheme.primary,
-                  width: 1.8,
-                ),
+                side: BorderSide(color: theme.colorScheme.primary, width: 1.8),
                 iconColor: theme.colorScheme.primary,
                 iconSize: 24,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
                 alignment: Alignment.centerLeft,
-                padding: EdgeInsets.symmetric(
-                  horizontal: 8,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 8),
               ),
               onPressed: () async {
                 final confirmed = await showDialog<bool>(
@@ -61,18 +60,16 @@ class SettingsPage extends StatelessWidget {
                   builder: (context) => AlertDialog(
                     title: Text('¿Estás seguro?'),
                     content: Text(
-                      'Todos los datos de la aplicación se restablecerán a sus valores por defecto. Esta acción es irreversible.'
+                      'Todos los datos de la aplicación se restablecerán a sus valores por defecto. Esta acción es irreversible.',
                     ),
                     alignment: Alignment.center,
                     actions: [
                       TextButton(
-                        onPressed: () =>
-                            Navigator.pop(context, false),
+                        onPressed: () => Navigator.pop(context, false),
                         child: Text('Cancelar'),
                       ),
                       TextButton(
-                        onPressed: () =>
-                            Navigator.pop(context, true),
+                        onPressed: () => Navigator.pop(context, true),
                         child: Text('Borrar'),
                       ),
                     ],
@@ -84,18 +81,14 @@ class SettingsPage extends StatelessWidget {
                 }
               },
               child: Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Icon(
                     Icons.restart_alt_rounded,
                     color: theme.colorScheme.primary,
                   ),
                   SizedBox(width: 16),
-                  Text(
-                    'Borrar Datos',
-                    style: contentStyle.titleItem,
-                  ),
+                  Text('Borrar Datos', style: contentStyle.titleItem),
                 ],
               ),
             ),
@@ -126,56 +119,50 @@ class SettingsPage extends StatelessWidget {
     final schemeState = context.watch<SchemeState>();
 
     return TitledPage(
-        title: 'Ajustes',
-        child: ListView(
-          children: [
-            _settingsSection(
-              children: [
-                IconTitle(title: 'Apariencia', icon: Icons.color_lens),
+      title: 'Ajustes',
+      child: ListView(
+        children: [
+          _settingsSection(
+            children: [
+              IconTitle(title: 'Apariencia', icon: Icons.color_lens),
 
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      IconDesc(
-                        icon: Icons.dark_mode_rounded,
-                        title: 'Modo Oscuro',
-                      ),
-                      Spacer(),
-                      _darkModeSwitch(theme, schemeState),
-                    ],
-                  ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    IconDesc(
+                      icon: Icons.dark_mode_rounded,
+                      title: 'Modo Oscuro',
+                    ),
+                    Spacer(),
+                    _darkModeSwitch(theme, schemeState),
+                  ],
                 ),
+              ),
 
-                Padding(
-                  padding: EdgeInsetsGeometry.only(
-                    left: 16,
-                    right: 2,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      IconDesc(
-                        icon: Icons.format_size_rounded,
-                        title: 'Tamaño'
-                      ),
-                      Spacer(),
-                      _fontSizeSlider(theme, schemeState),
-                    ],
-                  ),
+              Padding(
+                padding: EdgeInsetsGeometry.only(left: 16, right: 2),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    IconDesc(icon: Icons.format_size_rounded, title: 'Tamaño'),
+                    Spacer(),
+                    _fontSizeSlider(theme, schemeState),
+                  ],
                 ),
-              ],
-            ),
-            _settingsSection(
-              children: [
-                IconTitle(title: 'Almacenamiento', icon: Icons.folder_rounded),
-                _resetDataButton(context, theme, schemeState, contentStyle),
-                SizedBox(height: 8),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+          _settingsSection(
+            children: [
+              IconTitle(title: 'Almacenamiento', icon: Icons.folder_rounded),
+              _resetDataButton(context, theme, schemeState, contentStyle),
+              SizedBox(height: 8),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

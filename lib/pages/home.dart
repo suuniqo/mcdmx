@@ -41,7 +41,7 @@ class HomePage extends StatelessWidget {
                       (Icons.favorite_rounded, 'Favoritos', const SizedBox()),
                       (Icons.history_rounded, 'Historial', const SizedBox()),
                     ],
-                  )
+                  ),
                 ),
               ),
             ),
