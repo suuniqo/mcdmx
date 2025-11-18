@@ -3,7 +3,7 @@ import 'package:mcdmx/pages/news.dart';
 import 'package:mcdmx/pages/settings.dart';
 import 'package:mcdmx/state/scheme.dart';
 import 'package:provider/provider.dart';
-
+import 'pages/news.dart';
 void main() {
   runApp(MyApp());
 }
