@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:mcdmx/style/content.dart';
+import 'package:mcdmx/style/spacing.dart';
 
 class Bigcard extends StatelessWidget {
   final String title;
+  final TextStyle? style;
+  final Color? color;
 
-  Bigcard({required this.title});
+  Bigcard({required this.title, this.style, this.color});
 
   @override
   Widget build(BuildContext context) {
-    final contentStyle = ContentStyle.fromTheme(Theme.of(context));
-
     return Card(
       elevation: 0,
+      color: color,
       child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Text(title, style: contentStyle.titlePrimary),
+        padding: const EdgeInsets.all(SpacingStyle.marginCard),
+        child: Text(title, style: style),
       ),
     );
   }

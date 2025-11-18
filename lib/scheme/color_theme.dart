@@ -34,5 +34,5 @@ class ColorTheme {
 
     static ThemeData get base => light;
 
-    static bool get baseIsDark => base.brightness == Brightness.dark;
+    static bool get baseIsDark => base.brightness == Brightness.light;
 }
