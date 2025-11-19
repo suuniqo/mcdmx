@@ -19,8 +19,5 @@ class Edge {
         throw Exception("Error: Se ha pedido la siguiente estacion de ($estacion) un nodo que no se encuentra en la arista");
     }
 
-    int gettime (){
-        return _time;
-    }
-
+    int gettime () => _time;
 }

@@ -5,34 +5,30 @@ import './vertex.dart';
 
 class Tren {
     
-    Edge currentPosition;
-    Vertex nextStation;
+    Edge _currentPosition;
+    Vertex _nextStation;
     final StreamController<String> controller = StreamController<String>();
 
-    Tren (this.currentPosition, this.nextStation, int tiempo){
+    Tren (this._currentPosition, this._nextStation, int tiempo){
         //TODO que se hace con el tiempo?
     }
     
-    Edge getcurrentPosition (){
-        return currentPosition;
-    }
+    Edge getcurrentPosition () => _currentPosition;
 
-    Vertex getSiguienteEstacion (){
-        return nextStation;
-    }
+    Vertex getSiguienteEstacion () => _nextStation;
 
     /*
      *  Funcion que actualiza la arista en la que esta el tren
-     *  y cambia la nextStation, esta debe ser la siguiente de la nextStation previa
-     *  En caso de que la nextStation previa no se encuentre en la nueva arista,
-     *  la funcion nextStation de Arista lanzara un error
+     *  y cambia la _nextStation, esta debe ser la siguiente de la _nextStation previa
+     *  En caso de que la _nextStation previa no se encuentre en la nueva arista,
+     *  la funcion _nextStation de Arista lanzara un error
     */
     void setNextPosition (Edge newPosition){
-        currentPosition = newPosition;
-        nextStation = currentPosition.nextStation(nextStation);
+        _currentPosition = newPosition;
+        _nextStation = _currentPosition.nextstation(_nextStation);
     }
 
-    void goToNextStation (Edge newPosition){
+    void goTonextStation (Edge newPosition){
        setNextPosition(newPosition);
        //TODO
        Timer(Duration(minutes: newPosition.gettime()), () {

@@ -1,11 +1,9 @@
 import './line.dart';
 
 class TrainMap {
-    List<Line> lines;
+    final List<Line> _lines;
 
-    TrainMap (this.lines);
+    TrainMap (this._lines);
 
-    List<Line> getlines (){
-        return lines;
-    }
+    List<Line> getlines () => _lines;
 }

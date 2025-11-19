@@ -11,7 +11,20 @@ class Heuristic {
     static const double conversionKm = 111000.0;
 
     /*
-     *  Utilizada la norma euclidia. Para ello hay que tener en cuenta que estamos en latitud y longitud
+     *  Pendiente a revisar, pues hay que ver si la norma, que es la euclidia
+     *  da buenos resultados
+     *  La euristica es minorante. Se dara el caso de que haya que cambiar 
+     *  linea y no cambiar la estacion, la euristica sera la misma, pero 
+     *  el coste del camino aumentara
+     */
+    static double heuristic (Vertex station1, Vertex station2){
+        //TODO probar la funcion de la norma y cambiar si necesario para calcualar la heuristica
+        double norma = _norm(station1, station2);
+        return norma / trainVelocity;
+    }
+
+    /*
+     *  Función auxiliar que calcula la norma euclidia. Para ello hay que tener en cuenta que estamos en latitud y longitud
      *  Y usamos una converssion a km aproximando usando que estamos una escala "pequeña"
      */
     static double _norm (Vertex station1, Vertex station2){
@@ -24,17 +37,4 @@ class Heuristic {
         dLong *= cos((cordenates1.$1 + cordenates2.$1)/2*(pi/180));
         return conversionKm * sqrt(dLat*dLat + dLong*dLong);
     }   
-
-    /*
-     *  Pendiente a revisar, pues hay que ver si la norma, que es la euclidia
-     *  da buenos resultados
-     *  La euristica es minorante. Se dara el caso de que haya que cambiar 
-     *  linea y no cambiar la estacion, la euristica sera la misma, pero 
-     *  el coste del camino aumentara
-     */
-    static double heuristic (Vertex station1, Vertex station2){
-        //TODO probar la funcion de la norma y cambiar si necesario para calcualar la heuristica
-        double norma = _norm(station1, station2);
-        return norma / trainVelocity;
-    }
 }

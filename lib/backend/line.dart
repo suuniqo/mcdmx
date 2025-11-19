@@ -4,40 +4,34 @@ import './vertex.dart';
 
 class Line {
     
-    int number;
-    List<Edge> recorrido;
-    int frecuency; //Cada cuantos minutos sale un tren de la first estacion
-    Vertex firstStation;
-    int numberStations;
-    Set<Tren> trains;
+    final int _number;
+    final List<Edge> _recorrido;
+    final int _frecuency; //Cada cuantos minutos sale un tren de la first estacion
+    final Vertex _firstStation;
+    final int _numberStations;
+    final Set<Tren> trains;
     
 
-    Line (this.number, this.recorrido, this.frecuency, this.firstStation, this.trains)
-        : numberStations = recorrido.length;
+    Line (this._number, this._recorrido, this._frecuency, this._firstStation, this.trains)
+        : _numberStations = _recorrido.length;
 
-    int getnumber (){
-        return number;
-    }
+    int getnumber() => _number;
+    
 
-    List<Edge> getPath (){
-        return recorrido;
-    }
+    List<Edge> getPath () => _recorrido;
+    
 
-    int getfrecuency (){
-        return frecuency;
-    }
+    int getfrecuency () => _frecuency;
+    
 
-    Vertex getfirstStation (){
-        return firstStation;
-    }
+    Vertex getfirstStation () => _firstStation;
+    
 
-    int getnumberStations (){
-        return numberStations;
-    }
+    int getnumberStations () => _numberStations;
+    
 
     //TODO
     void mantainTrainsInMovement (){
         
     }
-
 }
