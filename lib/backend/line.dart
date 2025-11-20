@@ -34,4 +34,8 @@ class Line {
     void mantainTrainsInMovement (){
         
     }
+
+    bool containsConexion (Edge conexion){
+        return _path.contains(conexion);
+    }
 }
