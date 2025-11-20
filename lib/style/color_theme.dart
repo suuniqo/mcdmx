@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class PaletteLight {
-  static var backgroundDark = HSLColor.fromAHSL(1.0, 19, 0.11, 0.88).toColor();
-  static var background = HSLColor.fromAHSL(1.0, 19, 0.16, 0.94).toColor();
+  static var backgroundDark = HSLColor.fromAHSL(1.0, 19, 0.09, 0.87).toColor();
+  static var background = HSLColor.fromAHSL(1.0, 19, 0.13, 0.93).toColor();
   static var backgroundLight = HSLColor.fromAHSL(1.0, 19, 0.25, 0.99).toColor();
 
   static var text = HSLColor.fromAHSL(1.0, 18, 0.31, 0.04).toColor();
@@ -24,12 +24,7 @@ class PaletteLight {
 class PaletteDark {
   static var backgroundDark = HSLColor.fromAHSL(1.0, 230, 0.36, 0.02).toColor();
   static var background = HSLColor.fromAHSL(1.0, 228, 0.23, 0.09).toColor();
-  static var backgroundLight = HSLColor.fromAHSL(
-    1.0,
-    227,
-    0.17,
-    0.16,
-  ).toColor();
+  static var backgroundLight = HSLColor.fromAHSL(1.0, 227, 0.17, 0.16).toColor();
 
   static var text = HSLColor.fromAHSL(1.0, 226, 0.27, 0.89).toColor();
   static var textMuted = HSLColor.fromAHSL(1.0, 227, 0.12, 0.71).toColor();
