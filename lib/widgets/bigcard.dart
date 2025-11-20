@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mcdmx/style/spacing.dart';
+import 'package:mcdmx/style/format.dart';
 
 class Bigcard extends StatelessWidget {
   final String title;
@@ -11,10 +11,11 @@ class Bigcard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      margin: EdgeInsets.zero,
       elevation: 0,
       color: color,
       child: Padding(
-        padding: const EdgeInsets.all(SpacingStyle.marginCard),
+        padding: const EdgeInsets.all(Format.marginCard),
         child: Text(title, style: style),
       ),
     );

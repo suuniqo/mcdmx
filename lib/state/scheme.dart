@@ -1,31 +1,37 @@
 import 'package:flutter/material.dart';
-
-import 'package:mcdmx/scheme/color_theme.dart';
-import 'package:mcdmx/scheme/font_size.dart';
+import 'package:mcdmx/style/font_mul.dart';
 
 class SchemeState extends ChangeNotifier {
-  bool _darkMode = ColorTheme.baseIsDark;
-  double _fontSize = FontSize.base;
+  ThemeMode _themeMode;
+  double _fontMul = FontMul.base;
 
-  bool get darkMode => _darkMode;
-  double get fontSize => _fontSize;
-  ThemeData get themeData => _darkMode ? ColorTheme.dark : ColorTheme.light;
+  SchemeState(BuildContext context)
+    : _themeMode =
+          (MediaQuery.of(context).platformBrightness == Brightness.dark)
+          ? ThemeMode.dark
+          : ThemeMode.light;
 
-  void setFontSize(double fontSize) {
-    _fontSize = fontSize.clamp(FontSize.min, FontSize.max);
+  ThemeMode get themeMode => _themeMode;
+  double get fontMul => _fontMul;
+  bool get isDarkMode => _themeMode == ThemeMode.dark;
+
+  void setFontMul(double fontMul) {
+    _fontMul = fontMul.clamp(FontMul.min, FontMul.max);
 
     notifyListeners();
   }
 
-  void toggleTheme() {
-    _darkMode = !darkMode;
+  void toggleThemeMode() {
+    _themeMode = _themeMode == ThemeMode.dark
+        ? ThemeMode.light
+        : ThemeMode.dark;
 
     notifyListeners();
   }
 
   void restore() {
-    _fontSize = FontSize.base;
-    _darkMode = ColorTheme.baseIsDark;
+    _fontMul = FontMul.base;
+    _themeMode = ThemeMode.system;
 
     notifyListeners();
   }

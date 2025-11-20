@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mcdmx/style/spacing.dart';
+import 'package:mcdmx/style/format.dart';
 import 'package:mcdmx/widgets/bigcard.dart';
 import 'package:mcdmx/style/content.dart';
 
@@ -14,18 +14,33 @@ class TitledPage extends StatelessWidget {
     final contentStyle = ContentStyle.fromTheme(Theme.of(context));
 
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(SpacingStyle.marginPage),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(
+              top: Format.marginPage,
+              left: Format.marginPage,
+              right: Format.marginPage,
+            ),
+            child: SizedBox(
               width: double.infinity,
               child: Bigcard(title: title, style: contentStyle.titlePrimary),
             ),
-            Expanded(child: child),
-          ],
-        ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(Format.marginPage),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(Format.borderRadius),
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: child,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

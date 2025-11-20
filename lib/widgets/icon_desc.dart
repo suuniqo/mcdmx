@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mcdmx/style/content.dart';
-import 'package:mcdmx/style/spacing.dart';
+import 'package:mcdmx/style/format.dart';
 
 class IconDesc extends StatelessWidget {
   final IconData icon;
@@ -15,8 +15,8 @@ class IconDesc extends StatelessWidget {
 
     return Row(
       children: [
-        Icon(icon, color: theme.colorScheme.primary),
-        SizedBox(width: SpacingStyle.separatorIconTitle),
+        Icon(icon, color: theme.colorScheme.onSurface),
+        SizedBox(width: Format.separatorIconTitle),
         Text(title, style: contentStyle.titleItem),
       ],
     );

@@ -5,28 +5,37 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:mcdmx/state/scheme.dart';
+import 'package:mcdmx/style/format.dart';
 import 'package:mcdmx/style/content.dart';
-import 'package:mcdmx/scheme/font_size.dart';
+import 'package:mcdmx/style/font_mul.dart';
 
 class SettingsPage extends StatelessWidget {
   Switch _darkModeSwitch(ThemeData theme, SchemeState schemeState) {
     return Switch(
-      inactiveTrackColor: theme.colorScheme.surface,
-      value: schemeState.darkMode,
-      onChanged: (_) => schemeState.toggleTheme(),
+      trackOutlineWidth: WidgetStateProperty.resolveWith<double?>((_) {
+        return Format.borderWidth;
+      }),
+      inactiveTrackColor: theme.colorScheme.surfaceContainerHighest,
+      inactiveThumbColor: theme.colorScheme.primary,
+      trackOutlineColor: WidgetStateProperty.resolveWith<Color?>((_) {
+        return theme.colorScheme.primary;
+      }),
+      value: schemeState.isDarkMode,
+      onChanged: (_) => schemeState.toggleThemeMode(),
     );
   }
 
   Slider _fontSizeSlider(ThemeData theme, SchemeState schemeState) {
     return Slider(
-      value: schemeState.fontSize,
-      min: FontSize.min,
-      max: FontSize.max,
+      inactiveColor: theme.colorScheme.surfaceContainerLowest,
+      value: schemeState.fontMul,
+      min: FontMul.min,
+      max: FontMul.max,
       onChanged: (value) {
-        if ((value - FontSize.base).abs() <= FontSize.baseThreshold) {
-          schemeState.setFontSize(FontSize.base);
+        if ((value - FontMul.base).abs() <= FontMul.baseThreshold) {
+          schemeState.setFontMul(FontMul.base);
         } else {
-          schemeState.setFontSize(value);
+          schemeState.setFontMul(value);
         }
       },
     );
@@ -44,33 +53,36 @@ class SettingsPage extends StatelessWidget {
         children: [
           Expanded(
             child: OutlinedButton(
-              style: FilledButton.styleFrom(
-                side: BorderSide(color: theme.colorScheme.primary, width: 1.8),
-                iconColor: theme.colorScheme.primary,
+              style: OutlinedButton.styleFrom(
+                backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                side: BorderSide(
+                  color: theme.colorScheme.surfaceTint,
+                  width: Format.borderWidth,
+                ),
                 iconSize: 24,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(Format.borderRadius),
                 ),
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.symmetric(horizontal: 8),
-              ),
+              ).copyWith(animationDuration: Duration(milliseconds: 40)),
               onPressed: () async {
                 final confirmed = await showDialog<bool>(
                   context: context,
                   builder: (context) => AlertDialog(
-                    title: Text('¿Estás seguro?'),
-                    content: Text(
+                    title: const Text('¿Estás seguro?'),
+                    content: const Text(
                       'Todos los datos de la aplicación se restablecerán a sus valores por defecto. Esta acción es irreversible.',
                     ),
                     alignment: Alignment.center,
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context, false),
-                        child: Text('Cancelar'),
+                        child: const Text('Cancelar'),
                       ),
                       TextButton(
                         onPressed: () => Navigator.pop(context, true),
-                        child: Text('Borrar'),
+                        child: const Text('Borrar'),
                       ),
                     ],
                   ),
@@ -87,26 +99,18 @@ class SettingsPage extends StatelessWidget {
                     Icons.restart_alt_rounded,
                     color: theme.colorScheme.primary,
                   ),
-                  SizedBox(width: 16),
-                  Text('Borrar Datos', style: contentStyle.titleItem),
+                  SizedBox(width: Format.separatorIconTitle),
+                  Text(
+                    'Borrar Datos',
+                    style: contentStyle.titleItem.copyWith(
+                      color: theme.colorScheme.onSurface,
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  SizedBox _settingsSection({required List<Widget> children}) {
-    return SizedBox(
-      width: double.infinity,
-      child: Card(
-        elevation: 0,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: children,
-        ),
       ),
     );
   }
@@ -118,50 +122,76 @@ class SettingsPage extends StatelessWidget {
     final contentStyle = ContentStyle.fromTheme(theme);
     final schemeState = context.watch<SchemeState>();
 
+    final settings = [
+      SettingsSection(
+        children: [
+          IconTitle(title: 'Apariencia', icon: Icons.color_lens),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                IconDesc(icon: Icons.dark_mode_rounded, title: 'Modo Oscuro'),
+                Spacer(),
+                _darkModeSwitch(theme, schemeState),
+              ],
+            ),
+          ),
+
+          Padding(
+            padding: EdgeInsetsGeometry.only(left: 16, right: 2),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                IconDesc(icon: Icons.format_size_rounded, title: 'Tamaño'),
+                Spacer(),
+                _fontSizeSlider(theme, schemeState),
+              ],
+            ),
+          ),
+        ],
+      ),
+      SettingsSection(
+        children: [
+          IconTitle(title: 'Almacenamiento', icon: Icons.folder_rounded),
+          _resetDataButton(context, theme, schemeState, contentStyle),
+          SizedBox(height: 8),
+        ],
+      ),
+    ];
+
     return TitledPage(
       title: 'Ajustes',
       child: ListView(
         children: [
-          _settingsSection(
-            children: [
-              IconTitle(title: 'Apariencia', icon: Icons.color_lens),
-
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    IconDesc(
-                      icon: Icons.dark_mode_rounded,
-                      title: 'Modo Oscuro',
-                    ),
-                    Spacer(),
-                    _darkModeSwitch(theme, schemeState),
-                  ],
-                ),
-              ),
-
-              Padding(
-                padding: EdgeInsetsGeometry.only(left: 16, right: 2),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    IconDesc(icon: Icons.format_size_rounded, title: 'Tamaño'),
-                    Spacer(),
-                    _fontSizeSlider(theme, schemeState),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          _settingsSection(
-            children: [
-              IconTitle(title: 'Almacenamiento', icon: Icons.folder_rounded),
-              _resetDataButton(context, theme, schemeState, contentStyle),
-              SizedBox(height: 8),
-            ],
-          ),
+          for (var i = 0; i < settings.length; i++)
+            Padding(
+              padding: EdgeInsets.only(top: i == 0 ? 0 : Format.marginPage),
+              child: settings[i],
+            ),
         ],
+      ),
+    );
+  }
+}
+
+class SettingsSection extends StatelessWidget {
+  final List<Widget> children;
+
+  SettingsSection({required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: Card(
+        margin: EdgeInsets.zero,
+        elevation: 0,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: children,
+        ),
       ),
     );
   }

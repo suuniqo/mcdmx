@@ -13,7 +13,7 @@ class IconTitle extends StatelessWidget {
     final contentStyle = ContentStyle.fromTheme(theme);
 
     return ListTile(
-      leading: Icon(icon, color: theme.colorScheme.primary),
+      leading: Icon(icon, color: theme.colorScheme.onSurface),
       title: Text(title, style: contentStyle.titleSecondary),
     );
   }

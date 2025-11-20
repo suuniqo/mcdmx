@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:mcdmx/pages/home.dart';
+import 'package:flutter/services.dart';
+
+import 'package:provider/provider.dart';
+
+import 'package:mcdmx/pages/route.dart';
 import 'package:mcdmx/pages/news.dart';
 import 'package:mcdmx/pages/settings.dart';
 import 'package:mcdmx/state/scheme.dart';
-import 'package:provider/provider.dart';
-import 'pages/news.dart';
+import 'package:mcdmx/style/format.dart';
+import 'package:mcdmx/style/color_theme.dart';
+
+
 void main() {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]).then((_) {
+    runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -15,16 +27,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => SchemeState())],
+      providers: [ChangeNotifierProvider(create: (_) => SchemeState(context))],
       child: Consumer<SchemeState>(
         builder: (context, schemeState, _) {
           return MediaQuery(
             data: MediaQuery.of(
               context,
-            ).copyWith(textScaler: TextScaler.linear(schemeState.fontSize)),
+            ).copyWith(textScaler: TextScaler.linear(schemeState.fontMul)),
             child: MaterialApp(
               title: 'mcdmx',
-              theme: schemeState.themeData,
+              theme: ColorTheme.light,
+              darkTheme: ColorTheme.dark,
+              themeMode: schemeState.themeMode,
               home: Frame(),
             ),
           );
@@ -48,33 +62,23 @@ class _FrameState extends State<Frame> {
     //var appState = context.watch<MyAppState>();
 
     return Scaffold(
-      body: Container(
-        color: Theme.of(context).colorScheme.primaryContainer,
-        child: PageView(
-          controller: _pageController,
-          onPageChanged: (i) => setState(() => _selectedIndex = i),
-          children: [
-            HomePage(),
-            Placeholder(),
-            Placeholder(),
-            NewsPage(),
-            SettingsPage(),
-          ],
-        ),
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (i) => setState(() => _selectedIndex = i),
+        children: [RoutePage(), Placeholder(), NewsPage(), SettingsPage()],
       ),
       extendBody: true,
       bottomNavigationBar: Material(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
+            topLeft: Radius.circular(Format.borderRadius),
+            topRight: Radius.circular(Format.borderRadius),
           ),
         ),
         color: Theme.of(context).colorScheme.surfaceContainer,
         child: NavigationBarTheme(
           data: NavigationBarThemeData(backgroundColor: Colors.transparent),
           child: NavigationBar(
-            labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
             selectedIndex: _selectedIndex,
             onDestinationSelected: (i) {
               _pageController.animateToPage(
@@ -84,10 +88,6 @@ class _FrameState extends State<Frame> {
               );
             },
             destinations: [
-              NavigationDestination(
-                icon: Icon(Icons.home_rounded),
-                label: 'Inicio',
-              ),
               NavigationDestination(
                 icon: Icon(Icons.route_rounded),
                 label: 'Ruta',

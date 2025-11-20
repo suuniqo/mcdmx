@@ -1,4 +1,4 @@
-class FontSize {
+class FontMul {
   static const max = 1.2;
   static const min = 0.9;
 
