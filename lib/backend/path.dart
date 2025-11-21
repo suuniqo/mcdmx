@@ -3,36 +3,27 @@ import 'dart:collection';
 import 'edge.dart';
 import 'vertex.dart';
 
-class Path {
-    final Queue<Vertex> _stations;
-    final Queue<Edges> _edges;
-    //A lo mejor hay que hacer que la variable solo cambie cuando se ha encontrado el camino optimo
-    final double _time;
+/*
+ *  Clase para dar al frontend, guarda el vertice inicial, el path (listas de edges) y el tiempo
+ */ 
 
-    Path (){
-        this._station = Queue<Vertex>();
-        this._edges = Queue<Edge>();
+class Path {
+    final Vertex _firstStation;
+    final ListQueue<Edge> _path;
+    double _time;
+
+    Path (this._firstStation) :
+        this._path = ListQueue<Edge>(),
         this._time = 0.0;
-    }
 
     double gettime () => _time;
 
-    Queue<Vertex> getstations () => _stations;
+    Vertex getFirstStation () => _firstStation;
     
-    Queue<Edges> getedges () => _edges;
+    ListQueue<Edge> getpath () => _path;
 
-    void insertStation (Vertex nextStation, Edge nextEdge){
-        this._stations.add(nextStation);
-        this._edges.add(nextEdge);
+    void insertStation (Edge nextEdge){
+        this._path.addFirst(nextEdge);
         this._time += nextEdge.gettime();
-    }
-
-    void changePath (Path newPath, Vertex nextStation, Edge nextEdge){
-        this._stations.clear();
-        this._stations.addAll(newPath.getstations());
-        this._edges.clear();
-        this._edges.addAll(newPath.getedges());
-        this._stations.insertStation(nextStation, nextEdge);
-        this._time = newPath.gettime();
     }
 }

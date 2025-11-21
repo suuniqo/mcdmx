@@ -1,8 +1,3 @@
-import 'dart:ui';
-import 'dart:collection';
-
-import 'package:flutter/gestures.dart';
-
 import './edge.dart';
 import './vertex.dart';
 import './trainMap.dart';
@@ -12,65 +7,88 @@ import 'path.dart';
 
 class Astar {
     final TrainMap _map;
-    //Las priorityQueue admiten duplicados, luego habra que borrar para meter un elemento ya existente
-    final PriorityQueue<(Vertex node, double f) _openList;
-    final Set<Vertex> _closedList;
-    //Map with the path to vertex
-    final Map<Vertex, (Path path, double f) _pathsToStations;
 
-    Astar(TrainMap map){
-        this._map = map;
-        _openList = PriorityQueue<(Vertex node, double f)> ((a,b) => a.f.compareTo(b.f));
-        _closedList = Set<Vertex>();
-        _pathsToStations = {begin: (path: Path(), f: 0.0)};
-    }
+    Astar(this._map);
+        
+    Path calculateRoute(Vertex begin, Vertex end){
+      Vertex stationBeing = begin;
 
-    List<Edge>? calculateRoute(Vertex begin, Vertex end){
-        Vertex stationBeing = begin;
+      /*  Desgraciadamente no existian las priorityQueue
+       *  Lista con las estaciones a las estaciones que no todavia no se puede asegurar que se 
+       *  ha llegado con el mejor tiempo, la primera estacion si
+       */
+      final List<({Vertex station, double f})> openList = List.empty(); 
+      //Set con las estaciones a las que se ha llegado con el camino optimo
+      final Set<Vertex> closedList = Set<Vertex>();
+      /*  Map que es un arbol, cada key es un vertice y el value es la arista para llegar a su padre
+       *  No contiene a la raiz (begin), luego se conseguira el path recorriendo hacia atras el arbol
+       *  y terminando cuando el padre de uno sea begin(no cuando la key sea begin)
+       */
+      final Map<Vertex, ({Edge toFather, double f})> treeMap = {};
+    
+      do{
+          final Set<Edge> conexions = stationBeing.getconexions();
+          //Meto en la openList las nuevas estaciones y mejores caminos
+          for(Edge conexion in conexions){
+              Vertex nextStation = conexion.nextstation(stationBeing);
+              if (!closedList.contains(nextStation)){
+                  _addOpenList(stationBeing, nextStation, conexion, end, treeMap, closedList, openList);
+              }
+          }
+      //Saco de la openList y meto en la closedList
+      //Hay removeLast pero no removeFirst, muy raro
+      closedList.add(openList.removeAt(0).station);
 
-        do{
-            final Set<Edge> conexions = newStation.getconexions();
-            //Meto en la openList las nuevas estaciones y mejores caminos
-            for(Edge conexion in conexions){
-                Vertex nextStation = edge.nextstation(stationBeing);
-                if (!closedList.contains(nextStation)){
-                    _addOpenList(stationBeing, nextStation, edge);
-                }
-            }
+      //No compruebo si la lista esta vacia, no deberia pasar, pero estaria bien ponerlo
+      //Sigo hasta que el primer elemento de la openList sea end(se ha conseguido el camino optimo)
+      }while(!openList.elementAt(0).station.equals(end));
 
-            //Saco de la openList y meto en la closedList
-
-
-            }
-        //No compruebo si la lista esta vacia, no deberia pasar, pero estaria bien ponerlo
-        }while(!openList.first().node.equals(end));
-
+       Path path = Path(begin);
+       //Si he llegado aqui supongo que he encontrado la meta, luego treeMap[] no puede dar null
+       Vertex cursor = end;
+       while(!cursor.equals(begin)){
+          Edge nextEdge = treeMap[cursor]!.toFather;
+          path.insertStation(nextEdge);
+          cursor = nextEdge.nextstation(cursor);
+       }
+       return path;
     }
     
     /*
+     *  Funcion para insertar en la posicion correcta de la openList
+     *  Complejidad alta, ver si se puede reducir la complejidad
+     */
+     static void _insertOpenList(({Vertex station, double f}) station, List<({Vertex station, double f})> openList){
+        int i;
+        for(i = 0 ; i < openList.length && openList[i].f < station.f ; i++);
+        //Ver que se puede insertar en openList.length
+        openList.insert(i, station);
+     }
+
+    /*
      *  Funcion para ver si meterlo o no en la pila
      */
-    static void _addOpenList (Vertex stationBeing, Vertex nextStation, Edge edge){
-        double newf = _calculatef (stationBeing, edge, edge.gettime())
-        if(!_pathsToStations.containsKey(nextStation)){
-            openList.add((node: nextStation, f: newf));
-            Path newPath = changePath(_pathsToStations[stationBeing].path, nextStation, edge); 
-            _pathsToStations[nextStation] = (path: newPath, f: newf); 
+    static void _addOpenList (Vertex stationBeing, Vertex nextStation, Edge edge, Vertex end, Map<Vertex, ({Edge toFather, double f})> treeMap, Set<Vertex> closedList, List<({Vertex station, double f})> openList){
+        double newf = _calculatef (stationBeing, edge, end);
+        if(!treeMap.containsKey(nextStation)){
+            _insertOpenList((station: nextStation, f: newf), openList); 
+            treeMap[nextStation] = (toFather: edge, f: newf);
         }
         else {
-            double oldf = pathsToStations[nextStation].f;
+            //Estoy seguro de que aqui no es null (utilizo !) porque si es null, entraria en el if
+            double oldf = treeMap[nextStation]!.f;
             if(oldf > newf){
-                _openList.remove((node: nextStation, f: oldf));
-                _pathsToStations[nextStation].f = newf; //Creo que puedo hacer esto
-                _pathsToStations[nextStation].path = changePath(_pathsToStations[stationBeing].path, nextStation, edge);
-                _openList.add((node: nextStation, f: newf));
+                openList.remove((station: nextStation, f: oldf));
+                _insertOpenList((station: nextStation, f: newf), openList); 
+                treeMap[nextStation] = (toFather: edge, f: newf);
             }
         }
     }
 
 
-    static double _calculatef(Vertex father, Edge candidate, int fatherg){
-        //TODO
-        return 0;
+    static double _calculatef(Vertex stationBeing, Edge candidate, Vertex end){
+        double g = candidate.gettime();
+        double h = Heuristic.heuristic(stationBeing, end);
+        return g + h;
     }
 }

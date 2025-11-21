@@ -1,4 +1,4 @@
-import 'package:mcdmx/backend/edge.dart';
+import 'edge.dart';
 
 import './line.dart';
 
