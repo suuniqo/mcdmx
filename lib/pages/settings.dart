@@ -1,3 +1,4 @@
+import 'package:mcdmx/style/theme_hue.dart';
 import 'package:mcdmx/widgets/icon_desc.dart';
 import 'package:mcdmx/widgets/icon_title.dart';
 import 'package:mcdmx/widgets/titled_page.dart';
@@ -41,6 +42,32 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
+  Slider _themeHueSlider(ThemeData theme, SchemeState schemeState) {
+    double realFromTransform(double value) {
+        return value >= 0.0 ? value : ThemeHue.max + value;
+    }
+
+    double transformFromReal(double value) {
+        return value <= ThemeHue.base + ThemeHue.max / 2 ? value : value - ThemeHue.max;
+    }
+
+    return Slider(
+      inactiveColor: theme.colorScheme.surfaceContainerLowest,
+      value: transformFromReal(schemeState.themeHue),
+      min: ThemeHue.base - ThemeHue.max / 2 + 0.1,
+      max: ThemeHue.base + ThemeHue.max / 2,
+      onChanged: (value) {
+        var realValue = realFromTransform(value);
+
+        if ((realValue - ThemeHue.base).abs() <= ThemeHue.baseThreshold) {
+          schemeState.setThemeHue(ThemeHue.base);
+        } else {
+          schemeState.setThemeHue(realValue);
+        }
+      },
+    );
+  }
+
   Widget _resetDataButton(
     BuildContext context,
     ThemeData theme,
@@ -65,7 +92,7 @@ class SettingsPage extends StatelessWidget {
                 ),
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.symmetric(horizontal: 8),
-              ).copyWith(animationDuration: Duration(milliseconds: 40)),
+              ).copyWith(animationDuration: Duration(milliseconds: 1)),
               onPressed: () async {
                 final confirmed = await showDialog<bool>(
                   context: context,
@@ -147,6 +174,18 @@ class SettingsPage extends StatelessWidget {
                 IconDesc(icon: Icons.format_size_rounded, title: 'Tamaño'),
                 Spacer(),
                 _fontSizeSlider(theme, schemeState),
+              ],
+            ),
+          ),
+
+          Padding(
+            padding: EdgeInsetsGeometry.only(left: 16, right: 2),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                IconDesc(icon: Icons.gradient_rounded, title: 'Tono'),
+                Spacer(),
+                _themeHueSlider(theme, schemeState),
               ],
             ),
           ),

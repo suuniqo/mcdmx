@@ -19,6 +19,7 @@ class TitledPage extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(
+              // TODO: que pasa con este padding?
               top: Format.marginPage,
               left: Format.marginPage,
               right: Format.marginPage,

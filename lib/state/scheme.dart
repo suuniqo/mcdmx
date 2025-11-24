@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mcdmx/style/font_mul.dart';
+import 'package:mcdmx/style/theme_hue.dart';
 
 class SchemeState extends ChangeNotifier {
   ThemeMode _themeMode;
+  double _themeHue = ThemeHue.base;
   double _fontMul = FontMul.base;
 
   SchemeState(BuildContext context)
@@ -13,10 +15,17 @@ class SchemeState extends ChangeNotifier {
 
   ThemeMode get themeMode => _themeMode;
   double get fontMul => _fontMul;
+  double get themeHue => _themeHue;
   bool get isDarkMode => _themeMode == ThemeMode.dark;
 
   void setFontMul(double fontMul) {
     _fontMul = fontMul.clamp(FontMul.min, FontMul.max);
+
+    notifyListeners();
+  }
+
+  void setThemeHue(double themeHue) {
+    _themeHue = themeHue.clamp(ThemeHue.min, ThemeHue.max);
 
     notifyListeners();
   }

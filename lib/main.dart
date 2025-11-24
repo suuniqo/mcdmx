@@ -30,14 +30,16 @@ class MyApp extends StatelessWidget {
       providers: [ChangeNotifierProvider(create: (_) => SchemeState(context))],
       child: Consumer<SchemeState>(
         builder: (context, schemeState, _) {
+          final colorTheme = ColorTheme(schemeState.themeHue);
+
           return MediaQuery(
             data: MediaQuery.of(
               context,
             ).copyWith(textScaler: TextScaler.linear(schemeState.fontMul)),
             child: MaterialApp(
               title: 'mcdmx',
-              theme: ColorTheme.light,
-              darkTheme: ColorTheme.dark,
+              theme: colorTheme.light,
+              darkTheme: colorTheme.dark,
               themeMode: schemeState.themeMode,
               home: Frame(),
             ),
