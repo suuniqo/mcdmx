@@ -79,9 +79,9 @@ class PaletteDark {
     const chromaHi = 0.020;
 
     return Palette(
-      backgroundDark:  Palette.lch(0.14, chromaLo, hue),
+      backgroundDark:  Palette.lch(0.10, chromaLo, hue),
       background:      Palette.lch(0.23, chromaLo, hue),
-      backgroundLight: Palette.lch(0.18, chromaLo, hue),
+      backgroundLight: Palette.lch(0.19, chromaLo, hue),
 
       text:            Palette.lch(0.88, chromaHi, hue),
       textMuted:       Palette.lch(0.58, chromaHi, hue),
