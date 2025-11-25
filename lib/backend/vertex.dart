@@ -9,8 +9,9 @@ class Vertex {
     final (double x, double y) _coordenates;   //Estructura record, como una tupla pero con lo que quieras dentro
     final Map<Line, int> _lines; //Un conjunto de lineas que tiene asociado el tiempo que se tarda andando en llegar
     final Set<Edge> _conexions;
+    final bool _accessibility_friendly;
 
-    Vertex (this._name, this._coordenates, this._lines, this._conexions);
+    Vertex (this._name, this._coordenates, this._lines, this._conexions, this._accessibility_friendly);
 
     String getname (){
         return _name;
