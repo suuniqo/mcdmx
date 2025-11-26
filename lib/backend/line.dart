@@ -1,41 +1,39 @@
-import './edge.dart';
-import './train.dart';
-import './vertex.dart';
+import './stop.dart';
+
+class Direction {
+  final String _name;
+  final bool _forward;
+  final Line _line;
+
+  Direction(this._name, this._line, this._forward);
+
+  String get name => _name;
+  Line get line => _line;
+  bool get forward => _forward;
+  Iterator<Stop> get stops => _forward ? _line._stops.iterator : _line._stops.reversed.iterator;
+}
+
 
 class Line {
-    
     final int _number;
-    final List<Edge> _path;
-    final int _frecuency; //Cada cuantos minutos sale un tren de la first estacion
-    final Vertex _firstStation;
-    final int _numberStations;
-    final Set<Tren> trains;
-    
+    final List<Stop> _stops;
+    final int _trainFreq; // Cada cuantos minutos sale un tren de la primera estación
 
-    Line (this._number, this._path, this._frecuency, this._firstStation, this.trains)
-        : _numberStations = _path.length;
+    late final Direction _forwardDir;
+    late final Direction _backwardDir;
 
-    int getnumber() => _number;
-    
-
-    List<Edge> getPath () => _path;
-    
-
-    int getfrecuency () => _frecuency;
-    
-
-    Vertex getfirstStation () => _firstStation;
-    
-
-    int getnumberStations () => _numberStations;
-    
-
-    //TODO
-    void mantainTrainsInMovement (){
-        
+    Line (this._number, this._stops, this._trainFreq, String _forwardDirName, String _backwardDirName) {
+      _forwardDir = Direction(_forwardDirName, this, true);
+      _backwardDir = Direction(_backwardDirName, this, false);
     }
 
-    bool containsConexion (Edge conexion){
-        return _path.contains(conexion);
-    }
+    int get number => _number;
+    int get numStops => _stops.length;
+    int get trainFreq => _trainFreq;
+
+    Direction get forwardDir => _forwardDir;
+    Direction get backwardDir => _backwardDir;
+    Iterator<Stop> get stops => _stops.iterator;
+
+    Stop nthStop(int n) => _stops[n];
 }

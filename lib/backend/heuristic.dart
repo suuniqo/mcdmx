@@ -1,5 +1,5 @@
 import 'dart:math';
-import './vertex.dart';
+import './stop.dart';
 
 class Heuristic {
     
@@ -17,7 +17,7 @@ class Heuristic {
      *  linea y no cambiar la estacion, la euristica sera la misma, pero 
      *  el coste del camino aumentara
      */
-    static double heuristic (Vertex station1, Vertex station2){
+    static double heuristic (Stop station1, Stop station2){
         //TODO probar la funcion de la norma y cambiar si necesario para calcualar la heuristica
         double norma = _norm(station1, station2);
         return norma / trainVelocity;
@@ -27,9 +27,10 @@ class Heuristic {
      *  Función auxiliar que calcula la norma euclidia. Para ello hay que tener en cuenta que estamos en latitud y longitud
      *  Y usamos una converssion a km aproximando usando que estamos una escala "pequeña"
      */
-    static double _norm (Vertex station1, Vertex station2){
-        (double x, double y) cordenates1 = station1.getcoordenates();
-        (double x, double y) cordenates2 = station2.getcoordenates();
+    static double _norm (Stop station1, Stop station2){
+        (double x, double y) cordenates1 = station1.coordinates;
+        (double x, double y) cordenates2 = station2.coordinates;
+
         double dLat = cordenates1.$1 - cordenates2.$1;
         double dLong = cordenates1.$2 - cordenates2.$2;
 
