@@ -73,7 +73,7 @@ class NewsPage extends StatelessWidget {
         children: [
           for (var i = 0; i < news.length; i++)
             Padding(
-              padding: EdgeInsets.only(top: i == 0 ? 0 : Format.marginPage),
+              padding: EdgeInsets.only(top: i == 0 ? 0 : Format.marginPrimary),
               child: news[i],
             ),
         ],
@@ -112,7 +112,7 @@ class News extends StatelessWidget {
     );
 
     return Card(
-      elevation: 0,
+      elevation: Format.elevation,
       margin: EdgeInsets.zero,
       child: TextButton(
         onPressed: () {
@@ -188,7 +188,7 @@ class NewsDestination extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
+        elevation: Format.elevation,
         title: Text('Noticias'),
         titleTextStyle: TextStyle(
           fontWeight: FontWeight.bold,
@@ -199,7 +199,7 @@ class NewsDestination extends StatelessWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(Format.marginPage),
+          padding: const EdgeInsets.all(Format.marginPrimary),
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(Format.borderRadius),
@@ -207,7 +207,7 @@ class NewsDestination extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             child: SingleChildScrollView(
               child: Card(
-                elevation: 0,
+                elevation: Format.elevation,
                 margin: EdgeInsets.zero,
                 child: Padding(
                   padding: const EdgeInsets.all(Format.marginCard),

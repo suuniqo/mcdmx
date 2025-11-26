@@ -29,6 +29,8 @@ class ColorTheme {
           surfaceContainerHigh: pltt.backgroundLight,
           surfaceContainerHighest: pltt.backgroundLight,
 
+          surfaceDim: pltt.backgroundDim,
+
           onPrimary: pltt.backgroundLight,
           onSurface: pltt.text,
           onSurfaceVariant: pltt.textMuted,

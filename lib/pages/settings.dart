@@ -206,7 +206,7 @@ class SettingsPage extends StatelessWidget {
         children: [
           for (var i = 0; i < settings.length; i++)
             Padding(
-              padding: EdgeInsets.only(top: i == 0 ? 0 : Format.marginPage),
+              padding: EdgeInsets.only(top: i == 0 ? 0 : Format.marginPrimary),
               child: settings[i],
             ),
         ],
@@ -226,7 +226,7 @@ class SettingsSection extends StatelessWidget {
       width: double.infinity,
       child: Card(
         margin: EdgeInsets.zero,
-        elevation: 0,
+        elevation: Format.elevation,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: children,

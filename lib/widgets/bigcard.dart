@@ -13,7 +13,7 @@ class Bigcard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.zero,
-      elevation: 0,
+      elevation: Format.elevation,
       color: color,
       child: Padding(
         padding: const EdgeInsets.all(Format.marginCard),
