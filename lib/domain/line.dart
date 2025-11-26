@@ -1,5 +1,5 @@
 import 'network.dart';
-import 'stop.dart';
+import 'station.dart';
 
 class Direction {
   final String _name;
@@ -11,7 +11,7 @@ class Direction {
   String get name => _name;
   Line get line => _line;
   bool get forward => _forward;
-  Iterator<Stop> get stops => _forward ? _line._stops.iterator : _line._stops.reversed.iterator;
+  Iterator<Station> get stations => _forward ? _line._stations.iterator : _line._stations.reversed.iterator;
 
   int _adaptIndex(int i) {
     assert(0 <= i && i < _line.length);
@@ -22,23 +22,23 @@ class Direction {
     };
   }
 
-  int? stopIndex(Stop stop) {
-    var idx = _line._stopIndex[stop];
+  int? stopIndex(Station station) {
+    var idx = _line._stationIndex[station];
 
     if (idx == null) return null;
 
     return _adaptIndex(idx);
   }
   
-  Stop nthStop(int n) {
-    return _line._stops[_adaptIndex(n)];
+  Station nthStop(int n) {
+    return _line._stations[_adaptIndex(n)];
   }
 
   int nthTimeOffset(int n) {
     return _line._timeOffsets[_adaptIndex(n)];
   }
 
-  Duration nextArrivalDuration(Stop stop) {
+  Duration nextArrivalDuration(Station station) {
     TimeOfDay opening = _line._network.openingTime;
     TimeOfDay closing = _line._network.closingTime;
 
@@ -47,9 +47,9 @@ class Direction {
     final openingDate = now.copyWith(hour: opening.hour, minute: opening.minute, second: 0);
     final closingDate = now.copyWith(hour: closing.hour, minute: closing.minute, second: 0);
 
-    final idx = _line._stopIndex[stop];
+    final idx = _line._stationIndex[station];
 
-    if (idx == null) throw Exception("Se intento ver cuanto tarda en llegar un tren a la parada $stop que no es de la linea $_line");
+    if (idx == null) throw Exception("Se intento ver cuanto tarda en llegar un tren a la parada $station que no es de la linea $_line");
 
     final offset = Duration(minutes: _line._timeOffsets[idx]);
 
@@ -69,27 +69,26 @@ class Direction {
 
 class Line {
     final int _number;
-    final List<Stop> _stops;
+    final List<Station> _stations;
     final List<int> _timeOffsets; // Lo que tarda un tren en llegar a la estación n-ésima. El primer elemento siempre será cero.
     final Network _network;
     final int _trainFreq;         // Cada cuantos minutos sale un tren de la primera estación
 
-    late final Map<Stop, int> _stopIndex;
+    late final Map<Station, int> _stationIndex;
     late final Direction _forwardDir;
     late final Direction _backwardDir;
 
-    Line(this._network, this._number, this._stops, this._trainFreq, this._timeOffsets, String _forwardDirName, String _backwardDirName) {
-      _stopIndex = _stops.asMap().map((idx, stop) => MapEntry(stop, idx));
-      _forwardDir = Direction(_forwardDirName, this, true);
-      _backwardDir = Direction(_backwardDirName, this, false);
+    Line(this._network, this._number, this._stations, this._trainFreq, this._timeOffsets) {
+      _stationIndex = _stations.asMap().map((idx, stop) => MapEntry(stop, idx));
+      _forwardDir = Direction("${_stations[0].name}-${_stations[_stations.length - 1]}", this, true);
+      _backwardDir = Direction("${_stations[_stations.length - 1].name}-${_stations[0]}", this, false);
     }
 
     int get number => _number;
-    int get length => _stops.length;
+    int get length => _stations.length;
     int get trainFreq => _trainFreq;
 
     Direction get forwardDir => _forwardDir;
     Direction get backwardDir => _backwardDir;
-    Iterator<Stop> get stops => _stops.iterator;
     Network get netwrok => _network;
 }

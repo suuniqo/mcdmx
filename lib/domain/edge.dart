@@ -1,13 +1,13 @@
-import './stop.dart';
+import './station.dart';
 
 class Edge {
-    final Stop _station1;
-    final Stop _station2;
+    final Station _station1;
+    final Station _station2;
     final double _time;    // tiempo que se tarda en recorrerlo
 
     Edge (this._station1, this._station2, this._time);
 
-    Stop adjacent(Stop station){
+    Station adjacent(Station station){
       if (station == _station1) return _station2;
       if (station == _station2) return _station1;
       

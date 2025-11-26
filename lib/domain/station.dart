@@ -1,14 +1,18 @@
-import 'stop.dart';
+import 'line.dart';
 
 class Station {
-  final List<Stop> _stops;
+  final String _name;
+  final List<Line> _lines;
+
   final (double x, double y) _coordinates;
   final bool _accesible;
   // TODO: final List<Landmark> _landmarks;
 
-  Station(this._stops, this._coordinates, this._accesible);
+  Station(this._name, this._lines, this._coordinates, this._accesible);
+
+  String get name => _name;
+  Iterator<Line> get lines => _lines.iterator;
 
   (double x, double y) get coordinates => _coordinates;
-  Iterator<Stop> get stops => _stops.iterator;
   bool get accesible => _accesible;
 }

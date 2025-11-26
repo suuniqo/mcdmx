@@ -50,7 +50,7 @@ class Palette {
 class PaletteLight {
   static Palette fromHue(double hue) {
     const chromaLo = 0.02;
-    const chromaHi = 0.01;
+    const chromaHi = 0.005;
 
     return Palette(
       backgroundDark:  Palette.lch(0.91, chromaHi, hue),
