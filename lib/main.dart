@@ -32,16 +32,22 @@ class MyApp extends StatelessWidget {
         builder: (context, schemeState, _) {
           final colorTheme = ColorTheme(schemeState.themeHue);
 
-          return MediaQuery(
-            data: MediaQuery.of(
-              context,
-            ).copyWith(textScaler: TextScaler.linear(schemeState.fontMul)),
-            child: MaterialApp(
-              title: 'mcdmx',
-              theme: colorTheme.light,
-              darkTheme: colorTheme.dark,
-              themeMode: schemeState.themeMode,
-              home: Frame(),
+          return AnnotatedRegion<SystemUiOverlayStyle>(
+            value: SystemUiOverlayStyle(
+              statusBarBrightness: schemeState.isDarkMode ? Brightness.dark : Brightness.light,
+              statusBarIconBrightness: schemeState.isDarkMode ? Brightness.light : Brightness.dark,
+            ),
+            child: MediaQuery(
+              data: MediaQuery.of(
+                context,
+              ).copyWith(textScaler: TextScaler.linear(schemeState.fontMul)),
+              child: MaterialApp(
+                title: 'mcdmx',
+                theme: colorTheme.light,
+                darkTheme: colorTheme.dark,
+                themeMode: schemeState.themeMode,
+                home: Frame(),
+              ),
             ),
           );
         },

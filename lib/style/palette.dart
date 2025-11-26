@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:okcolor/models/extensions.dart';
 import 'package:okcolor/models/oklch.dart';
 
 class Palette {
   final Color backgroundDark;
   final Color background;
   final Color backgroundLight;
+
+  final Color backgroundDim;
 
   final Color text;
   final Color textMuted;
@@ -23,6 +26,8 @@ class Palette {
     required this.backgroundDark,
     required this.background,
     required this.backgroundLight,
+
+    required this.backgroundDim,
 
     required this.text,
     required this.textMuted,
@@ -53,9 +58,11 @@ class PaletteLight {
     const chromaHi = 0.005;
 
     return Palette(
-      backgroundDark:  Palette.lch(0.91, chromaHi, hue),
-      background:      Palette.lch(0.95, chromaHi, hue),
+      backgroundDark:  Palette.lch(0.90, chromaHi, hue),
+      background:      Palette.lch(0.94, chromaHi, hue),
       backgroundLight: Palette.lch(0.99, chromaHi, hue),
+
+      backgroundDim:   Palette.lch(0.94, chromaHi, hue).darker(0.2),
 
       text:            Palette.lch(0.15, chromaLo, hue),
       textMuted:       Palette.lch(0.40, chromaLo, hue),
@@ -76,7 +83,7 @@ class PaletteLight {
 class PaletteDark {
   static Palette fromHue(double hue) {
     const chromaLo = 0.002;
-    const chromaHi = 0.020;
+    const chromaHi = 0.015;
 
     return Palette(
       backgroundDark:  Palette.lch(0.10, chromaLo, hue),
@@ -85,6 +92,8 @@ class PaletteDark {
 
       text:            Palette.lch(0.88, chromaHi, hue),
       textMuted:       Palette.lch(0.58, chromaHi, hue),
+
+      backgroundDim:   Palette.lch(0.23, chromaLo, hue).lighter(0.15),
 
       border:          Palette.lch(0.23, chromaLo, hue),
 

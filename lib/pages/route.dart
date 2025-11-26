@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mcdmx/style/content.dart';
 import 'package:mcdmx/style/format.dart';
+import 'package:mcdmx/widgets/item_list.dart';
 import 'package:mcdmx/widgets/tab_box.dart';
 import 'package:mcdmx/widgets/titled_page.dart';
 
@@ -11,7 +12,7 @@ class RoutePage extends StatelessWidget {
       child: FloatingActionButton(
         backgroundColor: theme.colorScheme.surfaceContainer,
         highlightElevation: 0,
-        elevation: 0,
+        elevation: Format.elevation,
         onPressed: () {},
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -40,11 +41,11 @@ class RoutePage extends StatelessWidget {
         child: Card(
           margin: EdgeInsets.zero,
           color: theme.colorScheme.surfaceContainerLowest,
-          elevation: 0,
+          elevation: Format.elevation,
           child: TabBox(
             tabsData: [
-              (Icons.favorite_rounded, 'Favoritos', const SizedBox()),
-              (Icons.history_rounded, 'Recientes', const SizedBox()),
+              (Icons.favorite_rounded, 'Favoritos', ItemList(itemName: 'Favoritos', children: [],)),
+              (Icons.history_rounded, 'Recientes', ItemList(itemName: 'Recientes', children: [],)),
             ],
           ),
         ),
@@ -63,7 +64,7 @@ class RoutePage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           _searchButton(theme, contentStyle),
-          SizedBox(height: Format.marginPage),
+          SizedBox(height: Format.marginPrimary),
           _quickAccessTabs(theme),
         ],
       ),

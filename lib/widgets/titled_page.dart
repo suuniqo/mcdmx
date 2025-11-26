@@ -20,9 +20,9 @@ class TitledPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(
               // TODO: que pasa con este padding?
-              top: Format.marginPage,
-              left: Format.marginPage,
-              right: Format.marginPage,
+              top: Format.marginPrimary,
+              left: Format.marginPrimary,
+              right: Format.marginPrimary,
             ),
             child: SizedBox(
               width: double.infinity,
@@ -31,7 +31,7 @@ class TitledPage extends StatelessWidget {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(Format.marginPage),
+              padding: const EdgeInsets.all(Format.marginPrimary),
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(Format.borderRadius),
