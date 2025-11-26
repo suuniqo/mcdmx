@@ -7,8 +7,8 @@ class Station {
   // TODO: final List<Landmark> _landmarks;
 
   Station(this._stops, this._coordinates, this._accesible);
-
   (double x, double y) get coordinates => _coordinates;
   Iterator<Stop> get stops => _stops.iterator;
   bool get accesible => _accesible;
+  
 }

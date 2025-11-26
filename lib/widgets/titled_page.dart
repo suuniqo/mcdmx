@@ -6,7 +6,7 @@ import 'package:mcdmx/style/content.dart';
 class TitledPage extends StatelessWidget {
   final Widget child;
   final String title;
-  final Icon? icon;
+  final Widget? icon;
 
   TitledPage({required this.title, required this.child, this.icon});
 

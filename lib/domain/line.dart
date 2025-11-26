@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import 'network.dart';
 import 'stop.dart';
 
@@ -29,6 +31,8 @@ class Direction {
 
     return _adaptIndex(idx);
   }
+
+  
   
   Stop nthStop(int n) {
     return _line._stops[_adaptIndex(n)];
@@ -92,4 +96,6 @@ class Line {
     Direction get backwardDir => _backwardDir;
     Iterator<Stop> get stops => _stops.iterator;
     Network get netwrok => _network;
+
+    
 }

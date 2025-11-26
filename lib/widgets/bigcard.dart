@@ -5,7 +5,7 @@ class Bigcard extends StatelessWidget {
   final String title;
   final TextStyle? style;
   final Color? color;
-  final Icon? icon;
+  final Widget? icon;
 
   Bigcard({required this.title, this.style, this.color,this.icon});
 
@@ -23,7 +23,7 @@ class Bigcard extends StatelessWidget {
                 children: [
                   Text(title, style: style),
                   SizedBox(width: 12),
-                  Icon(icon!.icon,size: 40),
+                  SizedBox(width: 40,height: 40,child: icon!),
                 ],
               )
             : Text(title, style: style),
