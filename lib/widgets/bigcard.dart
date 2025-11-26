@@ -5,8 +5,9 @@ class Bigcard extends StatelessWidget {
   final String title;
   final TextStyle? style;
   final Color? color;
+  final Icon? icon;
 
-  Bigcard({required this.title, this.style, this.color});
+  Bigcard({required this.title, this.style, this.color,this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,16 @@ class Bigcard extends StatelessWidget {
       color: color,
       child: Padding(
         padding: const EdgeInsets.all(Format.marginCard),
-        child: Text(title, style: style),
+        child: icon != null
+            ? Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(title, style: style),
+                  SizedBox(width: 12),
+                  Icon(icon!.icon,size: 40),
+                ],
+              )
+            : Text(title, style: style),
       ),
     );
   }

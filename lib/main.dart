@@ -1,15 +1,16 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+  import 'package:flutter/material.dart';
+  import 'package:flutter/services.dart';
 
-import 'package:provider/provider.dart';
+  import 'package:provider/provider.dart';
 
-import 'package:mcdmx/pages/route.dart';
-import 'package:mcdmx/pages/news.dart';
-import 'package:mcdmx/pages/settings.dart';
-import 'package:mcdmx/state/scheme.dart';
-import 'package:mcdmx/style/format.dart';
-import 'package:mcdmx/style/color_theme.dart';
-
+  import 'package:mcdmx/pages/route.dart';
+  import 'package:mcdmx/pages/news.dart';
+  import 'package:mcdmx/pages/map.dart';
+  import 'package:mcdmx/pages/settings.dart';
+  import 'package:mcdmx/state/scheme.dart';
+  import 'package:mcdmx/style/format.dart';
+  import 'package:mcdmx/style/color_theme.dart';
+  import 'package:mcdmx/pages/lineasparadas.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -67,7 +68,7 @@ class _FrameState extends State<Frame> {
       body: PageView(
         controller: _pageController,
         onPageChanged: (i) => setState(() => _selectedIndex = i),
-        children: [RoutePage(), Placeholder(), NewsPage(), SettingsPage()],
+        children: [RoutePage(), MapPage(), NewsPage(), SettingsPage()],
       ),
       extendBody: true,
       bottomNavigationBar: Material(

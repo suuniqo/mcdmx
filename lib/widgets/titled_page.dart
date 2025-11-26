@@ -6,8 +6,9 @@ import 'package:mcdmx/style/content.dart';
 class TitledPage extends StatelessWidget {
   final Widget child;
   final String title;
+  final Icon? icon;
 
-  TitledPage({required this.title, required this.child});
+  TitledPage({required this.title, required this.child, this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class TitledPage extends StatelessWidget {
             ),
             child: SizedBox(
               width: double.infinity,
-              child: Bigcard(title: title, style: contentStyle.titlePrimary),
+              child: Bigcard(title: title, style: contentStyle.titlePrimary,icon:icon),
             ),
           ),
           Expanded(
