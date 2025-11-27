@@ -1,46 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mcdmx/pages/map_panel.dart';
-import 'package:mcdmx/style/content.dart';
 import 'package:mcdmx/style/format.dart';
+import 'package:mcdmx/widgets/icon_fab.dart';
 import 'package:mcdmx/widgets/item_list.dart';
 import 'package:mcdmx/widgets/tab_box.dart';
 import 'package:mcdmx/widgets/titled_page.dart';
 
 class RoutePage extends StatelessWidget {
-  Widget _searchButton(BuildContext context) {
-    final theme = Theme.of(context);
-    final contentStyle = ContentStyle.fromTheme(theme);
-
-    return SizedBox(
-      width: double.infinity,
-      child: FloatingActionButton(
-        backgroundColor: theme.colorScheme.surfaceContainer,
-        highlightElevation: 0,
-        elevation: Format.elevation,
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => MapPanel()),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Icon(Icons.search_rounded, color: theme.colorScheme.primary),
-              SizedBox(width: Format.separatorIconTitle),
-              Text(
-                'Buscar',
-                style: contentStyle.titleItem.copyWith(
-                  color: theme.colorScheme.onSurface,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _quickAccessTabs(BuildContext context) {
     final theme = Theme.of(context);
 
@@ -56,12 +22,12 @@ class RoutePage extends StatelessWidget {
               (
                 Icons.favorite_rounded,
                 'Favoritos',
-                ItemList(itemName: 'Favoritos', children: []),
+                Padding(padding: const EdgeInsets.all(Format.marginPrimary), child: ItemList(itemName: 'favoritos', children: [])),
               ),
               (
                 Icons.history_rounded,
                 'Recientes',
-                ItemList(itemName: 'Recientes', children: []),
+                Padding(padding: const EdgeInsets.all(Format.marginPrimary), child: ItemList(itemName: 'recientes', children: [])),
               ),
             ],
           ),
@@ -72,12 +38,25 @@ class RoutePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return TitledPage(
       title: '¿A dónde vas?',
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          _searchButton(context),
+          IconFAB(
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MapPanel()
+              ),
+            ),
+            msg: 'Buscar',
+            icon: Icons.search_rounded,
+            color: theme.colorScheme.surfaceContainer,
+            center: false,
+          ),
           SizedBox(height: Format.marginPrimary),
           _quickAccessTabs(context),
         ],

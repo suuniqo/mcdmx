@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Format {
   static const double marginPrimary = 12.0;
   static const double marginSecondary = 8.0;
@@ -6,4 +8,10 @@ class Format {
   static const double borderRadius = 12.0;
   static const double borderWidth = 2.5;
   static const double elevation = 0.0;
+  static const double elevationMap = 0.0;
+  static const shadow = [BoxShadow(
+      color: Colors.black26,
+      blurRadius: 1,
+      spreadRadius: 0.1,
+  )];
 }

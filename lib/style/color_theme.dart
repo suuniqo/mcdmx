@@ -12,7 +12,7 @@ class ColorTheme {
       useMaterial3: true,
       colorScheme:
           ColorScheme.fromSeed(
-            brightness: Brightness.light,
+            brightness: pltt.brightness,
             seedColor: pltt.primary,
           ).copyWith(
             primary: pltt.primary,

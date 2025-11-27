@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:mcdmx/state/scheme.dart';
+import 'package:provider/provider.dart';
 
 class MapCDMX extends StatelessWidget {
   static const LatLng defaultCoords = LatLng(
@@ -9,8 +12,18 @@ class MapCDMX extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GoogleMap(
-      initialCameraPosition: CameraPosition(target: defaultCoords),
+    final scheme = context.watch<SchemeState>();
+
+    return FlutterMap(
+      options: MapOptions(initialCenter: defaultCoords),
+      children: [
+        TileLayer(
+          urlTemplate: scheme.isDarkMode
+              ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+              : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+          userAgentPackageName: 'com.example.mcdmx',
+        ),
+      ],
     );
   }
 }
