@@ -1,31 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:mcdmx/style/content.dart';
 import 'package:mcdmx/style/format.dart';
+import 'package:mcdmx/widgets/bigcard.dart';
 import 'package:mcdmx/widgets/tab_box.dart';
 import 'package:mcdmx/widgets/titled_page.dart';
 import 'package:mcdmx/domain/line.dart';
-
+import 'package:mcdmx/domain/network.dart';
+import 'package:mcdmx/domain/station.dart';
+import 'package:mcdmx/widgets/bgcard.dart';
 class LineasParadasPage extends StatelessWidget {
-  const LineasParadasPage({super.key});
+  final Network net;
+  const LineasParadasPage({super.key,required this.net,});
 Widget _quickAccessTabs(ThemeData theme) {
   // Datos de ejemplo
-  final lineada = [
-    LineaBoton(icon:Image.asset('assets/images/linea1logo.png'), name: "Observatorio-Balderas"),
-    LineaBoton(icon:Image.asset('assets/images/linea1logo.png',width: 20,height: 20,fit: BoxFit.contain,), name: "Balderas-Observatorio"),
-    LineaBoton(icon:Image.asset('assets/images/linea3logo.png',width: 20,height: 20,fit: BoxFit.contain,), name: "Universidad-Juarez"),
-    LineaBoton(icon:Image.asset('assets/images/linea3logo.png',width: 20,height: 20,fit: BoxFit.contain,), name: "Juarez-Universidad"),
-    LineaBoton(icon:Image.asset('assets/images/linea7logo.png',width: 20,height: 20,fit: BoxFit.contain,), name: "Polanco-Barranca del Muerto"),
-    LineaBoton(icon:Image.asset('assets/images/linea7logo.png',width: 20,height: 20,fit: BoxFit.contain,), name: "Barranca del Muerto-Polanco"),
-    LineaBoton(icon:Image.asset('assets/images/linea9logo.png',width: 20,height: 20,fit: BoxFit.contain,), name: "Tacubaya-Lazaro Cardenas"),
-    LineaBoton(icon:Image.asset('assets/images/linea9logo.png',width: 20,height: 20,fit: BoxFit.contain,), name: "Lazaro Cardenas-Tacubaya"),
-    LineaBoton(icon:Image.asset('assets/images/linea12logo.png',width: 20,height: 20,fit: BoxFit.contain,), name: "Mixcoac-Eje Central"),
-    LineaBoton(icon:Image.asset('assets/images/linea12logo.png',width: 20,height: 20,fit: BoxFit.contain,), name: "Eje Central-Mixcoac"),
-  ];
 
-  final paradinha = [
-    ParadaBoton(icon:[Image.asset('assets/images/logoTacubaya2.png'),Image.asset('assets/images/linea1logo.png')], name: "Observatorio-Balderas",lineas:[1],destino:Placeholder()),
-    LineaBoton(icon:Image.asset('assets/images/linea1logo.png',width: 20,height: 20,fit: BoxFit.contain,), name: "Balderas-Observatorio"),
-  ];
   return Expanded(
       child: SizedBox(
         width: double.infinity,
@@ -37,11 +25,11 @@ Widget _quickAccessTabs(ThemeData theme) {
             tabsData: [
               (Icons.directions_subway_filled_rounded, 'Paradas', Center(child: ListView(
               children: [
-                    for (var i = 0; i < paradinha.length; i++)
+                    for (int i=0;i<net.stations.length;i++)
                     Padding(
                       padding: EdgeInsets.only(top: i == 0 ? 0 : Format.marginPrimary),
-                      child: paradinha[i],
-                      ),
+                      child: ParadaBoton(destino:ParadasPage(parada: net.stations[i], lineas: net.stations[i].lines, lineaPage: false),parada: net.stations[i], lineas: net.stations[i].lines), 
+                    ),
               ],
               ),
               ),),
@@ -49,11 +37,17 @@ Widget _quickAccessTabs(ThemeData theme) {
               'Lineas', 
               Center(child: ListView(
               children: [
-                    for (var i = 0; i < lineada.length; i++)
+                    for (var i = 0; i < net.lines.length; i++)...[
                     Padding(
                       padding: EdgeInsets.only(top: i == 0 ? 0 : Format.marginPrimary),
-                      child: lineada[i],
+                      child: Column(
+                        children: [
+                          LineaBoton(linea:net.lines[i], foward: true),
+                          LineaBoton(linea:net.lines[i], foward: false),
+                        ],
                       ),
+                      ),
+                    ],
               ],
               ),
               ),
@@ -88,13 +82,13 @@ Widget _quickAccessTabs(ThemeData theme) {
 }
 
 class LineaBoton extends StatelessWidget {
-  final Widget icon;
-  final String name;
+  final Line linea;
+  final bool foward;
 
   const LineaBoton({
     super.key,
-    required this.icon,
-    required this.name,
+    required this.linea,
+    required this.foward,
   });
 
   @override
@@ -117,7 +111,7 @@ class LineaBoton extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>Placeholder()
+                  builder: (context) =>Placeholder()
                 ),
             );
           },
@@ -132,9 +126,12 @@ class LineaBoton extends StatelessWidget {
             padding: const EdgeInsets.all(Format.marginCard),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children:[ SizedBox(width: 30,height: 30,child: icon),
+              children:[ SizedBox(width: 30,height: 30,child: Image.asset(linea.logo)),
                     SizedBox(width: 12),
-                    Text(name, style: styleName),
+                    if(foward)
+                      Text(linea.forwardDir.name, style: styleName),
+                    if(!foward)
+                      Text(linea.backwardDir.name, style: styleName),
                     ]
             ),
           ),
@@ -145,18 +142,15 @@ class LineaBoton extends StatelessWidget {
 }
 
 class ParadaBoton extends StatelessWidget {
-  final List<Widget> icon;
-  final String name;
-  final List<int> lineas;
+  final Station parada;
   final Widget destino;
+  final Iterable<Line> lineas;
   const ParadaBoton({
     super.key,
-    required this.icon,
-    required this.name,
-    required this.lineas,
     required this.destino,
+    required this.parada,
+    required this.lineas,
   });
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -192,13 +186,11 @@ class ParadaBoton extends StatelessWidget {
             padding: const EdgeInsets.all(Format.marginCard),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children:[ SizedBox(width: 30,height: 30,child: icon[0]),
+              children:[ SizedBox(width: 30,height: 30,child: Image.asset(parada.logo)),
                     SizedBox(width: 12),
-                    Text(name, style: styleName),
-                    for(var i=0;i<lineas.length;i++)...[
-                      SizedBox(width: 12),
-                      SizedBox(width: 30,height: 30,child: icon[i+1]),
-                    ]
+                    Text(parada.name, style: styleName),
+                    for(var line in lineas)
+                      SizedBox(width: 30,height: 30,child: Image.asset(line.logo))
               ]
             ),
           ),
@@ -209,44 +201,31 @@ class ParadaBoton extends StatelessWidget {
 }
 
 class LineasPage extends StatelessWidget {
-  final Widget icon;
-  final String name;
-  final String description;
   final Line linea;
+  final bool foward;
+
   const LineasPage({
-    required this.icon,
-    required this.name,
-    required this.description,
     required this.linea,
+    required this.foward,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    final styleTitle = TextStyle(
-      fontSize: 22,
-      fontWeight: FontWeight.bold,
-      color: theme.colorScheme.onSurface,
-    );
-
-    final styleSubTitle = TextStyle(
-      fontSize: 15,
-      color: theme.colorScheme.onSurface,
-    );
-
-    final styleBody = TextStyle(
-      fontSize: 14,
-      color: theme.colorScheme.onSurfaceVariant,
-    );
-
+    Iterable<Station> paradas=linea.forwardDir.stations;
+    if(!foward){
+      paradas=linea.backwardDir.stations;
+    }
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         title: Row(
           children: [
-            Text(name),
-            SizedBox(width: 30,height: 30,child: icon)
+            if(foward)
+              Text(linea.forwardDir.name),
+            if(!foward)
+              Text(linea.backwardDir.name),
+            SizedBox(width: 30,height: 30,child: Image.asset(linea.logo)),
           ],
         ),
         titleTextStyle: TextStyle(
@@ -272,12 +251,8 @@ class LineasPage extends StatelessWidget {
                   padding: const EdgeInsets.all(Format.marginCard),
                   child:Column(
                   children:[
-                    for(var i=0;i<linea.length;i++)...[
-                      if(true)
-                        ParadaBoton(icon:[Image.asset(linea.stations[i].logo),Image.asset('assets/images/linea1logo.png')], name: linea.stations[1].name,lineas:[0,1],destino:Placeholder()),
-                      if(true)
-                         ParadaBoton(icon:[Image.asset(linea.stations[i].logo),Image.asset('assets/images/linea1logo.png')], name: linea.stations[1].name,lineas:[0,1],destino:Placeholder()),
-                    ],
+                    for(var stop in paradas)
+                      ParadaBoton(destino:ParadasPage(parada: stop, lineas: stop.lines, lineaPage: true, linea: linea, foward: foward),parada: stop, lineas: stop.lines), 
                   ],
                 ),
               ),
@@ -292,44 +267,38 @@ class LineasPage extends StatelessWidget {
 
 
 class ParadasPage extends StatelessWidget {
-  final Widget icon;
-  final String name;
-  final String description;
-  final Line linea;
+  final Station parada;
+  final Iterable<Line> lineas;
+  final bool lineaPage;
+  final Line? linea;
+  final bool? foward;
   const ParadasPage({
-    required this.icon,
-    required this.name,
-    required this.description,
+    required this.parada,
+    required this.lineas,
+    required this.lineaPage,
     required this.linea,
+    required this.foward,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    final styleTitle = TextStyle(
-      fontSize: 22,
-      fontWeight: FontWeight.bold,
-      color: theme.colorScheme.onSurface,
-    );
-
     final styleSubTitle = TextStyle(
       fontSize: 15,
       color: theme.colorScheme.onSurface,
     );
-
-    final styleBody = TextStyle(
-      fontSize: 14,
-      color: theme.colorScheme.onSurfaceVariant,
-    );
-
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         title: Row(
           children: [
-            Text(name),
-            SizedBox(width: 30,height: 30,child: icon)
+            Text(parada.name,style:styleSubTitle),
+            SizedBox(width: 5),
+            SizedBox(width: 30,height: 30,child: Image.asset(parada.logo)),
+            if(parada.accesible)...[
+            SizedBox(width: 5),
+            SizedBox(width: 30,height: 30,child: Image.asset(parada.logo)),
+            ],
           ],
         ),
         titleTextStyle: TextStyle(
@@ -355,11 +324,28 @@ class ParadasPage extends StatelessWidget {
                   padding: const EdgeInsets.all(Format.marginCard),
                   child:Column(
                   children:[
-                    for(var i=0;i<linea.length;i++)...[
-                      if(true)
-                        ParadaBoton(icon:[Image.asset(linea.stations[i].logo),Image.asset('assets/images/linea1logo.png')], name: linea.stations[1].name,lineas:[0,1],destino:Placeholder()),
-                      if(true)
-                         ParadaBoton(icon:[Image.asset(linea.stations[i].logo),Image.asset('assets/images/linea1logo.png')], name: linea.stations[1].name,lineas:[0,1],destino:Placeholder()),
+                    if(lineaPage)...[
+                    Bigcard(title:"Tiempo Real"),
+                    for(var line in lineas)...[
+                      SizedBox(height: 5),
+                      Bgcard(parada: parada,linea:line,foward:true,style:styleSubTitle),
+                      SizedBox(height: 5),
+                      Bgcard(parada: parada,linea:line,foward:false,style:styleSubTitle),
+                    ]
+                    ],
+                    if(!lineaPage&& linea != null && foward != null)...[
+                      Bigcard(title:"Tiempo Real"),
+                      SizedBox(height: 5),
+                      Bgcard(parada: parada,linea:linea,foward:foward,style:styleSubTitle),
+                      Bigcard(title:"Otros Andenes de ${parada.name}"),
+                      SizedBox(height: 5),
+                      Bgcard(parada: parada,linea:linea,foward:!foward,style:styleSubTitle),
+                      for(var line in lineas.where((l)=> l != linea))...[
+                        SizedBox(height: 5),
+                        Bgcard(parada: parada,linea:line,foward:true,style:styleSubTitle),
+                        SizedBox(height: 5),
+                        Bgcard(parada: parada,linea:line,foward:false,style:styleSubTitle),
+                      ]
                     ],
                   ],
                 ),
