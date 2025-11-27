@@ -3,6 +3,7 @@ import 'package:mcdmx/style/content.dart';
 import 'package:mcdmx/style/format.dart';
 import 'package:mcdmx/widgets/tab_box.dart';
 import 'package:mcdmx/widgets/titled_page.dart';
+import 'package:mcdmx/domain/line.dart';
 
 class LineasParadasPage extends StatelessWidget {
   const LineasParadasPage({super.key});
@@ -20,6 +21,11 @@ Widget _quickAccessTabs(ThemeData theme) {
     LineaBoton(icon:Image.asset('assets/images/linea12logo.png',width: 20,height: 20,fit: BoxFit.contain,), name: "Mixcoac-Eje Central"),
     LineaBoton(icon:Image.asset('assets/images/linea12logo.png',width: 20,height: 20,fit: BoxFit.contain,), name: "Eje Central-Mixcoac"),
   ];
+
+  final paradinha = [
+    ParadaBoton(icon:[Image.asset('assets/images/logoTacubaya2.png'),Image.asset('assets/images/linea1logo.png')], name: "Observatorio-Balderas",lineas:[1],destino:Placeholder()),
+    LineaBoton(icon:Image.asset('assets/images/linea1logo.png',width: 20,height: 20,fit: BoxFit.contain,), name: "Balderas-Observatorio"),
+  ];
   return Expanded(
       child: SizedBox(
         width: double.infinity,
@@ -29,14 +35,23 @@ Widget _quickAccessTabs(ThemeData theme) {
           elevation: 0,
           child: TabBox(
             tabsData: [
-              (Icons.directions_subway_filled_rounded, 'Paradas', const SizedBox()),
+              (Icons.directions_subway_filled_rounded, 'Paradas', Center(child: ListView(
+              children: [
+                    for (var i = 0; i < paradinha.length; i++)
+                    Padding(
+                      padding: EdgeInsets.only(top: i == 0 ? 0 : Format.marginPrimary),
+                      child: paradinha[i],
+                      ),
+              ],
+              ),
+              ),),
               (Icons.timeline, 
               'Lineas', 
               Center(child: ListView(
               children: [
                     for (var i = 0; i < lineada.length; i++)
                     Padding(
-                      padding: EdgeInsets.only(top: i == 0 ? 0 : Format.marginPage),
+                      padding: EdgeInsets.only(top: i == 0 ? 0 : Format.marginPrimary),
                       child: lineada[i],
                       ),
               ],
@@ -63,7 +78,7 @@ Widget _quickAccessTabs(ThemeData theme) {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          SizedBox(height: Format.marginPage),
+          SizedBox(height: Format.marginPrimary),
           _quickAccessTabs(theme),
         ],
       ), 
@@ -129,17 +144,83 @@ class LineaBoton extends StatelessWidget {
   }
 }
 
+class ParadaBoton extends StatelessWidget {
+  final List<Widget> icon;
+  final String name;
+  final List<int> lineas;
+  final Widget destino;
+  const ParadaBoton({
+    super.key,
+    required this.icon,
+    required this.name,
+    required this.lineas,
+    required this.destino,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    final styleName = TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.bold,
+      color: theme.colorScheme.onSurface,
+    );
+
+    return Card(
+      elevation: 0,
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(2.0),
+        child: TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>destino
+                ),
+            );
+          },
+          style: TextButton.styleFrom(
+            padding: EdgeInsets.zero,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(Format.borderRadius),
+            ),
+            backgroundColor: Colors.amber,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(Format.marginCard),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children:[ SizedBox(width: 30,height: 30,child: icon[0]),
+                    SizedBox(width: 12),
+                    Text(name, style: styleName),
+                    for(var i=0;i<lineas.length;i++)...[
+                      SizedBox(width: 12),
+                      SizedBox(width: 30,height: 30,child: icon[i+1]),
+                    ]
+              ]
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
 class LineasPage extends StatelessWidget {
-  final Widget image;
-  final String title;
+  final Widget icon;
+  final String name;
   final String description;
-  final String file;
+  final Line linea;
 
   const LineasPage({
-    required this.image,
-    required this.title,
+    required this.icon,
+    required this.name,
     required this.description,
-    required this.file,
+    required this.linea,
   });
 
   @override
@@ -165,7 +246,12 @@ class LineasPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text('Noticias'),
+        title: Row(
+          children: [
+            Text(name),
+            SizedBox(width: 30,height: 30,child: icon)
+          ],
+        ),
         titleTextStyle: TextStyle(
           fontWeight: FontWeight.bold,
           color: theme.colorScheme.onSurface,
@@ -175,7 +261,7 @@ class LineasPage extends StatelessWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(Format.marginPage),
+          padding: const EdgeInsets.all(Format.marginPrimary),
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(Format.borderRadius),
@@ -187,21 +273,10 @@ class LineasPage extends StatelessWidget {
                 margin: EdgeInsets.zero,
                 child: Padding(
                   padding: const EdgeInsets.all(Format.marginCard),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Text(title, style: styleTitle),
-                      ),
-                      image,
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Text(description, style: styleSubTitle),
-                      ),
-                      Text(file, style: styleBody),
-                    ],
-                  ),
+                  child:Column(
+                  children:[for(var i=0;i<linea.length;i++)
+                    ParadaBoton(icon:[Image.asset(linea.stations[i].logo),Image.asset('assets/images/linea1logo.png')], name: linea.stations[1].name,lineas:[0,1],destino:Placeholder()),
+                  ],
                 ),
               ),
             ),

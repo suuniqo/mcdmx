@@ -61,12 +61,12 @@ class MapPage extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-           padding: const EdgeInsets.all(Format.marginPage),
+           padding: const EdgeInsets.all(Format.marginPrimary),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               _searchButton(theme, contentStyle, context),
-              SizedBox(height: Format.marginPage),
+              SizedBox(height: Format.marginPrimary),
             ],
           ),
         ),
