@@ -1,5 +1,5 @@
 import 'dart:math';
-import './stop.dart';
+import 'station.dart';
 
 class Heuristic {
   //La velocidad programada del tren es 36km/h, aunque luego se haya
@@ -16,7 +16,7 @@ class Heuristic {
      *  linea y no cambiar la estacion, la euristica sera la misma, pero 
      *  el coste del camino aumentara
      */
-  static double heuristic(Stop station1, Stop station2) {
+  static double heuristic(Station station1, Station station2) {
     //TODO probar la funcion de la norma y cambiar si necesario para calcualar la heuristica
     double norma = _norm(station1, station2);
     return norma / trainVelocity;
@@ -26,7 +26,7 @@ class Heuristic {
      *  Función auxiliar que calcula la norma euclidia. Para ello hay que tener en cuenta que estamos en latitud y longitud
      *  Y usamos una converssion a km aproximando usando que estamos una escala "pequeña"
      */
-  static double _norm(Stop station1, Stop station2) {
+  static double _norm(Station station1, Station station2) {
     (double x, double y) cordenates1 = station1.coordinates;
     (double x, double y) cordenates2 = station2.coordinates;
 

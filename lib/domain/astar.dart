@@ -1,35 +1,35 @@
-import './edge.dart';
-import './stop.dart';
-import './network.dart';
+import 'edge.dart';
+import 'station.dart';
+import 'network.dart';
 import 'heuristic.dart';
-import 'path.dart';
 
 class Astar {
-  final TrainMap _map;
+  final Network _map;
 
   Astar(this._map);
 
-  Path calculateRoute(Stop begin, Stop end) {
-    Stop stationBeing = begin;
+  List<Station> calculateRoute(Station begin, Station end) {
+    Station stationBeing = begin;
 
     /*  Desgraciadamente no existian las priorityQueue
        *  Lista con las estaciones a las estaciones que no todavia no se puede asegurar que se 
        *  ha llegado con el mejor tiempo, la primera estacion si
        */
-    final List<({Stop station, double f})> openList = List.empty();
+    final List<({Station station, double f})> openList = List.empty();
     //Set con las estaciones a las que se ha llegado con el camino optimo
-    final Set<Stop> closedList = Set<Stop>();
+    final Set<Station> closedList = Set<Station>();
     /*  Map que es un arbol, cada key es un vertice y el value es la arista para llegar a su padre
        *  No contiene a la raiz (begin), luego se conseguira el path recorriendo hacia atras el arbol
        *  y terminando cuando el padre de uno sea begin(no cuando la key sea begin)
        */
-    final Map<Stop, ({Edge toFather, double f})> treeMap = {};
+    final Map<Station, ({Edge toFather, double f})> treeMap = {};
 
     do {
-      final Set<Edge> conexions = stationBeing.getconexions();
+      //Toda estacion tiene conexiones, luego utilizo el !
+      final Set<Edge> conexions = _map.connections[stationBeing]!;
       //Meto en la openList las nuevas estaciones y mejores caminos
       for (Edge conexion in conexions) {
-        Stop nextStation = conexion.nextstation(stationBeing);
+        Station nextStation = conexion.adjacent(stationBeing);
         if (!closedList.contains(nextStation)) {
           _addOpenList(
             stationBeing,
@@ -46,17 +46,20 @@ class Astar {
       //Hay removeLast pero no removeFirst, muy raro
       closedList.add(openList.removeAt(0).station);
 
-      //No compruebo si la lista esta vacia, no deberia pasar, pero estaria bien ponerlo
-      //Sigo hasta que el primer elemento de la openList sea end(se ha conseguido el camino optimo)
-    } while (!openList.elementAt(0).station.equals(end));
+      /*  No compruebo si la lista esta vacia, no deberia pasar, pero estaria bien ponerlo
+      *   Sigo hasta que el primer elemento de la openList sea end(se ha conseguido el camino optimo)
+      *   Dos estaciones son iguales si comparten el nombre
+      */
+    } while (!(openList.elementAt(0).station.name == end.name));
 
-    Path path = Path(begin);
+    List<Station> path = List.empty();
+    path.insert(0, begin);
     //Si he llegado aqui supongo que he encontrado la meta, luego treeMap[] no puede dar null
-    Stop cursor = end;
-    while (!cursor.equals(begin)) {
+    Station cursor = end;
+    while (!(cursor.name == begin.name)) {
+      path.insert(1, cursor);
       Edge nextEdge = treeMap[cursor]!.toFather;
-      path.insertStation(nextEdge);
-      cursor = nextEdge.nextstation(cursor);
+      cursor = nextEdge.adjacent(cursor);
     }
     return path;
   }
@@ -66,8 +69,8 @@ class Astar {
      *  Complejidad alta, ver si se puede reducir la complejidad
      */
   static void _insertOpenList(
-    ({Stop station, double f}) station,
-    List<({Stop station, double f})> openList,
+    ({Station station, double f}) station,
+    List<({Station station, double f})> openList,
   ) {
     int i;
     for (i = 0; i < openList.length && openList[i].f < station.f; i++) ;
@@ -79,13 +82,13 @@ class Astar {
      *  Funcion para ver si meterlo o no en la pila
      */
   static void _addOpenList(
-    Stop stationBeing,
-    Stop nextStation,
+    Station stationBeing,
+    Station nextStation,
     Edge edge,
-    Stop end,
-    Map<Stop, ({Edge toFather, double f})> treeMap,
-    Set<Stop> closedList,
-    List<({Stop station, double f})> openList,
+    Station end,
+    Map<Station, ({Edge toFather, double f})> treeMap,
+    Set<Station> closedList,
+    List<({Station station, double f})> openList,
   ) {
     double newf = _calculatef(stationBeing, edge, end);
     if (!treeMap.containsKey(nextStation)) {
@@ -102,8 +105,8 @@ class Astar {
     }
   }
 
-  static double _calculatef(Stop stationBeing, Edge candidate, Stop end) {
-    double g = candidate.gettime();
+  static double _calculatef(Station stationBeing, Edge candidate, Station end) {
+    double g = candidate.time;
     double h = Heuristic.heuristic(stationBeing, end);
     return g + h;
   }
