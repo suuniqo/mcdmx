@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'network.dart';
 import 'station.dart';
 
@@ -43,13 +42,13 @@ class Direction {
   }
 
   Duration nextArrivalDuration(Station station) {
-    TimeOfDay opening = _line._network.openingTime;
-    TimeOfDay closing = _line._network.closingTime;
+    //TimeOfDay opening = _line._network.openingTime;
+    //TimeOfDay closing = _line._network.closingTime;
 
     final DateTime now = DateTime.now();
 
-    final openingDate = now.copyWith(hour: opening.hour, minute: opening.minute, second: 0);
-    final closingDate = now.copyWith(hour: closing.hour, minute: closing.minute, second: 0);
+    //final openingDate = now.copyWith(hour: opening.hour, minute: opening.minute, second: 0);
+    //final closingDate = now.copyWith(hour: closing.hour, minute: closing.minute, second: 0);
 
     final idx = _line._stationIndex[station];
 
@@ -57,17 +56,18 @@ class Direction {
 
     final offset = Duration(minutes: _line._timeOffsets[idx]);
 
-    if (now.isBefore(openingDate)) {
-      return openingDate.add(offset).difference(now);
-    }
+    //if (now.isBefore(openingDate)) {
+      //return openingDate.add(offset).difference(now);
+    //}
 
-    if (now.isAfter(closingDate)) {
-      return openingDate.add(offset).add(Duration(days: 1)).difference(now);
-    }
+    //if (now.isAfter(closingDate)) {
+      //return openingDate.add(offset).add(Duration(days: 1)).difference(now);
+    //}
 
-    final minutesSinceLastTrain = now.difference(openingDate.add(offset)).inMinutes;
+    //final minutesSinceLastTrain = now.difference(openingDate.add(offset)).inMinutes;
 
-    return Duration(minutes: _line._trainFreq - minutesSinceLastTrain % _line._trainFreq);
+    //return Duration(minutes: _line._trainFreq - minutesSinceLastTrain % _line._trainFreq);
+    return Duration(minutes:1);
   }
 }
 
