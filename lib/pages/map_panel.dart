@@ -136,7 +136,10 @@ class _MapPanelState extends State<MapPanel> {
           return SlidingUpPanel(
             defaultPanelState: _isOpen ? PanelState.OPEN : PanelState.CLOSED,
             onPanelOpened: () => setState(() => _isOpen = true),
-            onPanelClosed: () => setState(() => _isOpen = false),
+            onPanelClosed: () {
+              setState(() => _isOpen = false);
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
             parallaxEnabled: true,
             parallaxOffset: 0.5,
             controller: _panelController,
@@ -167,7 +170,6 @@ class _MapPanelState extends State<MapPanel> {
                             onPressed: () {
                               _panelController.open();
                               _focusDestination.requestFocus();
-
                             },
                             msg: 'Buscar estación',
                             icon: Icons.directions_subway_rounded,
