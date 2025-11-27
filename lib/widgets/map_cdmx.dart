@@ -13,15 +13,26 @@ class MapCDMX extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = context.watch<SchemeState>();
+    final theme = Theme.of(context);
 
-    return FlutterMap(
-      options: MapOptions(initialCenter: defaultCoords),
+    return Stack(
       children: [
-        TileLayer(
-          urlTemplate: scheme.isDarkMode
-              ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-              : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-          userAgentPackageName: 'com.example.mcdmx',
+        FlutterMap(
+          options: MapOptions(initialCenter: defaultCoords),
+          children: [
+            TileLayer(
+              urlTemplate: scheme.isDarkMode
+                  ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+                  : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+              userAgentPackageName: 'com.example.mcdmx',
+            ),
+          ],
+        ),
+        IgnorePointer(
+          ignoring: true,
+          child: Container(
+            color: theme.colorScheme.primary.withValues(alpha: 0.03)
+          ),
         ),
       ],
     );
