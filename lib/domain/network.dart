@@ -22,7 +22,13 @@ class Network {
   final TimeOfDay _openingTime;
   final TimeOfDay _closingTime;
 
-  Network(this._lines, this._stations, this._connections, this._openingTime, this._closingTime);
+  Network(
+    this._lines,
+    this._stations,
+    this._connections,
+    this._openingTime,
+    this._closingTime,
+  );
 
   List<Line> get lines => _lines;
   List<Station> get stations => _stations;
@@ -33,7 +39,11 @@ class Network {
   TimeOfDay get closingTime => _closingTime;
 
   // TODO: Implementar
-  factory Network.fromFile(File file, TimeOfDay openingHour, TimeOfDay closingHour) {
+  factory Network.fromFile(
+    File file,
+    TimeOfDay openingHour,
+    TimeOfDay closingHour,
+  ) {
     final List<Line> lines = [];
     final List<Station> stations = [];
     final List<Edge> edges = [];

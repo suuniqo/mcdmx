@@ -26,23 +26,24 @@ class ItemList extends StatelessWidget {
               borderRadius: BorderRadius.circular(Format.borderRadius),
             ),
             clipBehavior: Clip.antiAlias,
-            child: children.isNotEmpty ? ListView(children: children,) :
-              SizedBox(
-                width: double.infinity,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Spacer(flex: 1,),
-                    Text(
-                      'No tienes $itemName',
-                      style: contentStyle.titleSecondary
-                        .copyWith(color: theme.colorScheme.surfaceDim),
+            child: children.isNotEmpty
+                ? ListView(children: children)
+                : SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Spacer(flex: 1),
+                        Text(
+                          'No tienes $itemName',
+                          style: contentStyle.titleSecondary.copyWith(
+                            color: theme.colorScheme.surfaceDim,
+                          ),
+                        ),
+                        Spacer(flex: 20),
+                      ],
                     ),
-                    Spacer(flex: 20,),
-                  ],
-                ),
-              ),
-
+                  ),
           ),
         ),
       ),

@@ -44,11 +44,13 @@ class SettingsPage extends StatelessWidget {
 
   Slider _themeHueSlider(ThemeData theme, SchemeState schemeState) {
     double realFromTransform(double value) {
-        return value >= 0.0 ? value : ThemeHue.max + value;
+      return value >= 0.0 ? value : ThemeHue.max + value;
     }
 
     double transformFromReal(double value) {
-        return value <= ThemeHue.base + ThemeHue.max / 2 ? value : value - ThemeHue.max;
+      return value <= ThemeHue.base + ThemeHue.max / 2
+          ? value
+          : value - ThemeHue.max;
     }
 
     return Slider(

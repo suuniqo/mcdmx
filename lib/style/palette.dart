@@ -58,24 +58,24 @@ class PaletteLight {
     const chromaHi = 0.005;
 
     return Palette(
-      backgroundDark:  Palette.lch(0.90, chromaHi, hue),
-      background:      Palette.lch(0.94, chromaHi, hue),
+      backgroundDark: Palette.lch(0.90, chromaHi, hue),
+      background: Palette.lch(0.94, chromaHi, hue),
       backgroundLight: Palette.lch(0.99, chromaHi, hue),
 
-      backgroundDim:   Palette.lch(0.94, chromaHi, hue).darker(0.2),
+      backgroundDim: Palette.lch(0.94, chromaHi, hue).darker(0.2),
 
-      text:            Palette.lch(0.15, chromaLo, hue),
-      textMuted:       Palette.lch(0.40, chromaLo, hue),
+      text: Palette.lch(0.15, chromaLo, hue),
+      textMuted: Palette.lch(0.40, chromaLo, hue),
 
-      border:          Palette.lch(0.92, chromaHi, hue),
+      border: Palette.lch(0.92, chromaHi, hue),
 
-      primary:         Palette.lch(0.75, 0.17, hue),
-      secondary:       Palette.lch(0.80, 0.14, hue),
+      primary: Palette.lch(0.75, 0.17, hue),
+      secondary: Palette.lch(0.80, 0.14, hue),
 
-      danger:          Palette.lch(0.50, chromaHi,  30),
-      warning:         Palette.lch(0.50, chromaHi, 100),
-      success:         Palette.lch(0.50, chromaHi, 160),
-      info:            Palette.lch(0.50, chromaHi, 260),
+      danger: Palette.lch(0.50, chromaHi, 30),
+      warning: Palette.lch(0.50, chromaHi, 100),
+      success: Palette.lch(0.50, chromaHi, 160),
+      info: Palette.lch(0.50, chromaHi, 260),
     );
   }
 }
@@ -86,24 +86,24 @@ class PaletteDark {
     const chromaHi = 0.015;
 
     return Palette(
-      backgroundDark:  Palette.lch(0.10, chromaLo, hue),
-      background:      Palette.lch(0.23, chromaLo, hue),
+      backgroundDark: Palette.lch(0.10, chromaLo, hue),
+      background: Palette.lch(0.23, chromaLo, hue),
       backgroundLight: Palette.lch(0.19, chromaLo, hue),
 
-      text:            Palette.lch(0.88, chromaHi, hue),
-      textMuted:       Palette.lch(0.58, chromaHi, hue),
+      text: Palette.lch(0.88, chromaHi, hue),
+      textMuted: Palette.lch(0.58, chromaHi, hue),
 
-      backgroundDim:   Palette.lch(0.23, chromaLo, hue).lighter(0.15),
+      backgroundDim: Palette.lch(0.23, chromaLo, hue).lighter(0.15),
 
-      border:          Palette.lch(0.23, chromaLo, hue),
+      border: Palette.lch(0.23, chromaLo, hue),
 
-      primary:         Palette.lch(0.80, 0.14, hue),
-      secondary:       Palette.lch(0.75, 0.15, hue),
+      primary: Palette.lch(0.80, 0.14, hue),
+      secondary: Palette.lch(0.75, 0.15, hue),
 
-      danger:          Palette.lch(0.70, chromaLo,  30),
-      warning:         Palette.lch(0.70, chromaLo, 100),
-      success:         Palette.lch(0.70, chromaLo, 160),
-      info:            Palette.lch(0.70, chromaLo, 260),
+      danger: Palette.lch(0.70, chromaLo, 30),
+      warning: Palette.lch(0.70, chromaLo, 100),
+      success: Palette.lch(0.70, chromaLo, 160),
+      info: Palette.lch(0.70, chromaLo, 260),
     );
   }
 }

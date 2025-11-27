@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:mcdmx/style/palette.dart';
 
-
 class ColorTheme {
   final double hue;
 
@@ -12,31 +11,31 @@ class ColorTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme:
-        ColorScheme.fromSeed(
-          brightness: Brightness.light,
-          seedColor: pltt.primary,
-        ).copyWith(
-          primary: pltt.primary,
-          surface: pltt.backgroundDark,
+          ColorScheme.fromSeed(
+            brightness: Brightness.light,
+            seedColor: pltt.primary,
+          ).copyWith(
+            primary: pltt.primary,
+            surface: pltt.backgroundDark,
 
-          primaryContainer: pltt.backgroundLight,
-          secondaryContainer: pltt.secondary,
+            primaryContainer: pltt.backgroundLight,
+            secondaryContainer: pltt.secondary,
 
-          surfaceTint: pltt.border,
-          surfaceContainerLowest: pltt.background,
-          surfaceContainerLow: pltt.backgroundLight,
-          surfaceContainer: pltt.backgroundLight,
-          surfaceContainerHigh: pltt.backgroundLight,
-          surfaceContainerHighest: pltt.backgroundLight,
+            surfaceTint: pltt.border,
+            surfaceContainerLowest: pltt.background,
+            surfaceContainerLow: pltt.backgroundLight,
+            surfaceContainer: pltt.backgroundLight,
+            surfaceContainerHigh: pltt.backgroundLight,
+            surfaceContainerHighest: pltt.backgroundLight,
 
-          surfaceDim: pltt.backgroundDim,
+            surfaceDim: pltt.backgroundDim,
 
-          onPrimary: pltt.backgroundLight,
-          onSurface: pltt.text,
-          onSurfaceVariant: pltt.textMuted,
+            onPrimary: pltt.backgroundLight,
+            onSurface: pltt.text,
+            onSurfaceVariant: pltt.textMuted,
 
-          outline: pltt.primary,
-        ),
+            outline: pltt.primary,
+          ),
     );
   }
 

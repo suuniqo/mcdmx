@@ -10,13 +10,12 @@ import 'package:mcdmx/state/scheme.dart';
 import 'package:mcdmx/style/format.dart';
 import 'package:mcdmx/style/color_theme.dart';
 
-
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-  ]).then((_) {
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((
+    _,
+  ) {
     runApp(const MyApp());
   });
 }
@@ -34,8 +33,12 @@ class MyApp extends StatelessWidget {
 
           return AnnotatedRegion<SystemUiOverlayStyle>(
             value: SystemUiOverlayStyle(
-              statusBarBrightness: schemeState.isDarkMode ? Brightness.dark : Brightness.light,
-              statusBarIconBrightness: schemeState.isDarkMode ? Brightness.light : Brightness.dark,
+              statusBarBrightness: schemeState.isDarkMode
+                  ? Brightness.dark
+                  : Brightness.light,
+              statusBarIconBrightness: schemeState.isDarkMode
+                  ? Brightness.light
+                  : Brightness.dark,
             ),
             child: MediaQuery(
               data: MediaQuery.of(
