@@ -1,0 +1,40 @@
+Observatorio - Tacubaya - 4
+Tacubaya - Juanacatlan - 3
+Juanacatlan - Chapultepec - 3
+Chapultepec - Sevilla - 2
+Sevilla - Insurgentes - 2
+Insurgentes - Cuauhtemoc - 2
+Cuauhtemoc - Balderas - 3
+
+Tacubaya - Patriotismo - 3
+Patriotismo - Chilpancingo - 3
+Chilpancingo - Centro Medico - 3
+Centro Medico - Lazaro Cardenas - 3
+
+Polanco - Auditorio - 3
+Auditorio - Constituyentes - 3
+Constituyentes - Tacubaya - 3
+Tacubaya - San Pedro de los Pinos - 3 
+San Pedro de los Pinos - San Antonio - 3
+San Antonio - Mixcoac - 3
+Mixcoac - Barranca del Muerto - 3
+
+Mixcoac - Insurgentes Sur - 3
+Insurgentes Sur - Hospital 20 de Noviembre - 3
+Hospital 20 de Noviembre - Zapata - 3
+Zapata - Parque de los Venados - 3
+Parque de los Venados - Eje Central - 3
+
+Universidad - Copilco - 4
+Copilco - M. A. De Quevedo - 3
+M. A. De Quevedo - Viveros - 3
+Viveros - Coyoacan - 3
+Coyoacan - Zapata - 3
+Zapata - Division del Norte - 3
+Division del Norte - Eugenia - 2
+Eugenia - Etiopia - 2
+Etiopia - Centro Medico - 3
+Centro Medico - Hospital General - 2
+Hospital General - Niños Heroes - 2
+Niños Heroes - Balderas - 2
+Balderas - Juarez - 2

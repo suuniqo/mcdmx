@@ -151,7 +151,7 @@
           "accesibilidad": false,
           "coordenadas": [19.406181931603374, -99.17896873743251]
       },
-      "chipalcingo": {
+      "chilpancingo": {
           "nombre": "Chilpancingo", 
           "accesibilidad": false,
           "coordenadas": [19.405884707892604, -99.16861002388703]
@@ -234,7 +234,7 @@
       "recorrido": [
         { "estacion": "tacubaya", "transbordos": [1, 7] },
         { "estacion": "patriotismo", "transbordos": [] },
-        { "estacion": "chipalcingo", "transbordos": [] },
+        { "estacion": "chilpancingo", "transbordos": [] },
         { "estacion": "centro", "transbordos": [3] },
         { "estacion": "lazaro", "transbordos": [] }
       ]
@@ -250,5 +250,228 @@
         { "estacion": "eje", "transbordos": [] }
       ]
     }
+  ],
+
+  "conexiones": [
+      {
+          "estacion-1": "observatorio",
+          "estacion-2": "tacubaya",
+          "tiempo": 4,
+          "id-linea": "1"
+      },
+      {
+          "estacion-1": "tacubaya",
+          "estacion-2": "juanactlan",
+          "tiempo": 3,
+          "id-linea": "1"
+      },
+      {
+          "estacion-1": "juanactlan",
+          "estacion-2": "chapultepec",
+          "tiempo": 3,
+          "id-linea": "1"
+      },
+      {
+          "estacion-1": "chapultepec",
+          "estacion-2": "sevilla",
+          "tiempo": 2,
+          "id-linea": "1"
+      },
+      {
+          "estacion-1": "sevilla",
+          "estacion-2": "insurgentes",
+          "tiempo": 2,
+          "id-linea": "1"
+      },
+      {
+          "estacion-1": "insurgentes",
+          "estacion-2": "cuauhtemoc",
+          "tiempo": 2,
+          "id-linea": "1"
+      },
+      {
+          "estacion-1": "cuauhtemoc",
+          "estacion-2": "balderas",
+          "tiempo": 3,
+          "id-linea": "1"
+      },
+
+      {
+          "estacion-1": "tacubaya",
+          "estacion-2": "patriotismo",
+          "tiempo": 3,
+          "id-linea": "9"
+      },
+      {
+          "estacion-1": "patriotismo",
+          "estacion-2": "chilpancingo",
+          "tiempo": 3,
+          "id-linea": "9"
+      },
+      {
+          "estacion-1": "chilpancingo",
+          "estacion-2": "centro",
+          "tiempo": 3,
+          "id-linea": "9"
+      },
+      {
+          "estacion-1": "centro",
+          "estacion-2": "lazaro",
+          "tiempo": 3,
+          "id-linea": "9"
+      },
+
+      {
+          "estacion-1": "polanco",
+          "estacion-2": "auditorio",
+          "tiempo": 3,
+          "id-linea": "7"
+      },
+      {
+          "estacion-1": "auditorio",
+          "estacion-2": "constituyentes",
+          "tiempo": 3,
+          "id-linea": "7"
+      },
+      {
+          "estacion-1": "constituyentes",
+          "estacion-2": "tacubaya",
+          "tiempo": 3,
+          "id-linea": "7"
+      },
+      {
+          "estacion-1": "tacubaya",
+          "estacion-2": "pedro",
+          "tiempo": 3,
+          "id-linea": "7"
+      },
+      {
+          "estacion-1": "pedro",
+          "estacion-2": "antonio",
+          "tiempo": 3,
+          "id-linea": "7"
+      },
+      {
+          "estacion-1": "antonio",
+          "estacion-2": "mixcoac",
+          "tiempo": 3,
+          "id-linea": "7"
+      },
+      {
+          "estacion-1": "mixcoac",
+          "estacion-2": "barranca",
+          "tiempo": 3,
+          "id-linea": "7"
+      },
+
+      {
+          "estacion-1": "mixcoac",
+          "estacion-2": "insurgentessur",
+          "tiempo": 3,
+          "id-linea": "12"
+      },
+      {
+          "estacion-1": "insurgentessur",
+          "estacion-2": "hospitalnoviembre",
+          "tiempo": 3,
+          "id-linea": "12"
+      },
+      {
+          "estacion-1": "hospitalnoviembre",
+          "estacion-2": "zapata",
+          "tiempo": 3,
+          "id-linea": "12"
+      },
+      {
+          "estacion-1": "zapata",
+          "estacion-2": "parque",
+          "tiempo": 3,
+          "id-linea": "12"
+      },
+      {
+          "estacion-1": "parque",
+          "estacion-2": "eje",
+          "tiempo": 3,
+          "id-linea": "12"
+      },
+
+      {
+          "estacion-1": "universidad",
+          "estacion-2": "copilco",
+          "tiempo": 4,
+          "id-linea": "3"
+      },
+      {
+          "estacion-1": "copilco",
+          "estacion-2": "quevedo",
+          "tiempo": 3,
+          "id-linea": "3"
+      },
+      {
+          "estacion-1": "quevedo",
+          "estacion-2": "viveros",
+          "tiempo": 3,
+          "id-linea": "3"
+      },
+      {
+          "estacion-1": "viveros",
+          "estacion-2": "coyoacan",
+          "tiempo": 3,
+          "id-linea": "3"
+      },
+      {
+          "estacion-1": "coyoacan",
+          "estacion-2": "zapata",
+          "tiempo": 3,
+          "id-linea": "3"
+      },
+      {
+          "estacion-1": "zapata",
+          "estacion-2": "division",
+          "tiempo": 3,
+          "id-linea": "3"
+      },
+      {
+          "estacion-1": "division",
+          "estacion-2": "eugenia",
+          "tiempo": 2,
+          "id-linea": "3"
+      },
+      {
+          "estacion-1": "eugenia",
+          "estacion-2": "etiopia",
+          "tiempo": 2,
+          "id-linea": "3"
+      },
+      {
+          "estacion-1": "etiopia",
+          "estacion-2": "centro",
+          "tiempo": 3,
+          "id-linea": "3"
+      },
+      {
+          "estacion-1": "centro",
+          "estacion-2": "hospitalgeneral",
+          "tiempo": 2,
+          "id-linea": "3"
+      },
+      {
+          "estacion-1": "hospitalgeneral",
+          "estacion-2": "niños",
+          "tiempo": 2,
+          "id-linea": "3"
+      },
+      {
+          "estacion-1": "niños",
+          "estacion-2": "balderas",
+          "tiempo": 2,
+          "id-linea": "3"
+      },
+      {
+          "estacion-1": "balderas",
+          "estacion-2": "juarez",
+          "tiempo": 2,
+          "id-linea": "3"
+      }
   ]
 }
