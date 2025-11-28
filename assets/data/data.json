@@ -42,37 +42,31 @@
         },
         "universidad": {
           "nombre": "Universidad", 
-          "transbordos": [], 
           "accesibilidad": false,
           "coordenadas": [19.324587238632912, -99.1738432625675]
         },
         "copilco": {
           "nombre": "Copilco", 
-          "transbordos": [], 
           "accesibilidad": false,
           "coordenadas": [19.33623621821186, -99.17704700674635]
         },
         "quevedo": {
           "nombre": "M. A. De Quevedo", 
-          "transbordos": [], 
           "accesibilidad": false,
           "coordenadas": [19.34638664021931, -99.18082342433053]
         },
         "viveros": {
           "nombre": "Viveros", 
-          "transbordos": [], 
           "accesibilidad": false,
           "coordenadas": [19.35408449013977, -99.17540163558212]
         },
         "coyoacan": {
           "nombre": "Coyoacan", 
-          "transbordos": [], 
           "accesibilidad": false,
           "coordenadas": [19.361349877917576, -99.17084390674633]
         },
         "zapata": {
           "nombre": "Zapata", 
-          "transbordos": [12], 
           "accesibilidad": true,
           "coordenadas": [19.361349877917576, -99.17084390674633]
         },
