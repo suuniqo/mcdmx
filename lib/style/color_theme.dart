@@ -12,41 +12,42 @@ class ColorTheme {
       useMaterial3: true,
       colorScheme:
           ColorScheme.fromSeed(
-            brightness: pltt.brightness,
-            seedColor: pltt.primary,
+            brightness:                 pltt.brightness,
+            seedColor:                  pltt.primary,
           ).copyWith(
-            primary: pltt.primary,
-            surface: pltt.backgroundDark,
+            primary:                    pltt.primary,
+            surface:                    pltt.backgroundDark,
 
-            primaryContainer: pltt.backgroundLight,
-            secondaryContainer: pltt.secondary,
+            primaryContainer:           pltt.backgroundLight,
+            secondaryContainer:         pltt.secondary,
 
-            surfaceTint: pltt.border,
-            surfaceContainerLowest: pltt.background,
-            surfaceContainerLow: pltt.backgroundLight,
-            surfaceContainer: pltt.backgroundLight,
-            surfaceContainerHigh: pltt.backgroundLight,
-            surfaceContainerHighest: pltt.backgroundLight,
+            surfaceTint:                pltt.border,
 
-            surfaceDim: pltt.backgroundDim,
+            surfaceContainerLowest:     pltt.background,
+            surfaceContainerLow:        pltt.backgroundLight,
+            surfaceContainer:           pltt.backgroundLight,
+            surfaceContainerHigh:       pltt.backgroundLight,
+            surfaceContainerHighest:    pltt.backgroundLight,
 
-            onPrimary: pltt.backgroundLight,
-            onSurface: pltt.text,
-            onSurfaceVariant: pltt.textMuted,
+            surfaceDim:                 pltt.backgroundDim,
 
-            outline: pltt.primary,
+            onPrimary:                  pltt.backgroundLight,
+            onSurface:                  pltt.text,
+            onSurfaceVariant:           pltt.textMuted,
+
+            outline:                    pltt.primary,
           ),
     );
   }
 
   ThemeData get light {
-    final Palette pltt = PaletteLight.fromHue(hue);
+    final pltt = Palette.light(hue);
 
     return _themefromPalette(pltt);
   }
 
   ThemeData get dark {
-    final Palette pltt = PaletteDark.fromHue(hue);
+    final pltt = Palette.dark(hue);
 
     return _themefromPalette(pltt);
   }
