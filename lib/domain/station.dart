@@ -6,7 +6,6 @@ class Station {
 
   final (double x, double y) _coordinates;
   final bool _accesible;
-  // TODO: final List<Landmark> _landmarks;
 
   Station(this._name, this._lines, this._coordinates, this._accesible);
 

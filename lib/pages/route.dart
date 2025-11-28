@@ -22,12 +22,18 @@ class RoutePage extends StatelessWidget {
               (
                 Icons.favorite_rounded,
                 'Favoritos',
-                Padding(padding: const EdgeInsets.all(Format.marginPrimary), child: ItemList(itemName: 'favoritos', children: [])),
+                Padding(
+                  padding: const EdgeInsets.all(Format.marginPrimary),
+                  child: ItemList(itemName: 'favoritos', children: []),
+                ),
               ),
               (
                 Icons.history_rounded,
                 'Recientes',
-                Padding(padding: const EdgeInsets.all(Format.marginPrimary), child: ItemList(itemName: 'recientes', children: [])),
+                Padding(
+                  padding: const EdgeInsets.all(Format.marginPrimary),
+                  child: ItemList(itemName: 'recientes', children: []),
+                ),
               ),
             ],
           ),
@@ -48,9 +54,7 @@ class RoutePage extends StatelessWidget {
           IconFAB(
             onPressed: () => Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => MapPanel()
-              ),
+              MaterialPageRoute(builder: (context) => MapPanel()),
             ),
             msg: 'Buscar',
             icon: Icons.search_rounded,

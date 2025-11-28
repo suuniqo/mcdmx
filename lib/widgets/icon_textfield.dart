@@ -33,37 +33,37 @@ class _IconTextfieldState extends State<IconTextfield> {
       controller: controller,
       focusNode: widget.focusNode,
       keyboardAppearance: scheme.isDarkMode
-        ? Brightness.dark
-        : Brightness.light,
+          ? Brightness.dark
+          : Brightness.light,
       decoration: InputDecoration(
         filled: true,
         fillColor: theme.colorScheme.surfaceContainerLowest,
         hintText: widget.msg,
-        prefixIcon: Icon(widget.icon, color: theme.colorScheme.primary,),
+        prefixIcon: Icon(widget.icon, color: theme.colorScheme.primary),
         suffixIcon: controller.text.isEmpty
-          ? SizedBox()
-          : IconButton(
-            icon: Icon(Icons.close_rounded),
-            onPressed: () => controller.clear(),
-        ),
+            ? SizedBox()
+            : IconButton(
+                icon: Icon(Icons.close_rounded),
+                onPressed: () => controller.clear(),
+              ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Format.borderRadius),
           borderSide: BorderSide(
             color: theme.colorScheme.surfaceContainerLowest,
-          )
+          ),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Format.borderRadius),
           borderSide: BorderSide(
             color: theme.colorScheme.surfaceContainerLowest,
-          )
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Format.borderRadius),
           borderSide: BorderSide(
             color: theme.colorScheme.surfaceContainerLowest,
-          )
-        )
+          ),
+        ),
       ),
       textInputAction: TextInputAction.done,
     );

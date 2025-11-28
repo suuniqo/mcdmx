@@ -9,9 +9,7 @@ class Format {
   static const double borderWidth = 2.5;
   static const double elevation = 0.0;
   static const double elevationMap = 0.0;
-  static const shadow = [BoxShadow(
-      color: Colors.black26,
-      blurRadius: 1,
-      spreadRadius: 0.1,
-  )];
+  static const shadow = [
+    BoxShadow(color: Colors.black26, blurRadius: 1, spreadRadius: 0.1),
+  ];
 }

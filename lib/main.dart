@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mcdmx/pages/map.dart';
+import 'package:mcdmx/state/network.dart';
 
 import 'package:provider/provider.dart';
 
@@ -27,7 +28,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => SchemeState(context))],
+      providers: [
+        ChangeNotifierProvider(create: (_) => SchemeState(context)),
+        ChangeNotifierProvider(create: (_) => NetworkState()),
+      ],
       child: Consumer<SchemeState>(
         builder: (context, schemeState, _) {
           final colorTheme = ColorTheme(schemeState.themeHue);

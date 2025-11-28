@@ -1,3 +1,4 @@
+import 'package:mcdmx/state/network.dart';
 import 'package:mcdmx/style/theme_hue.dart';
 import 'package:mcdmx/widgets/icon_desc.dart';
 import 'package:mcdmx/widgets/icon_textfield.dart';
@@ -68,6 +69,21 @@ class SettingsPage extends StatelessWidget {
           schemeState.setThemeHue(realValue);
         }
       },
+    );
+  }
+
+  Switch _accesibleModeSwitch(ThemeData theme, NetworkState networkState) {
+    return Switch(
+      trackOutlineWidth: WidgetStateProperty.resolveWith<double?>((_) {
+        return Format.borderWidth;
+      }),
+      inactiveTrackColor: theme.colorScheme.surfaceContainerHighest,
+      inactiveThumbColor: theme.colorScheme.primary,
+      trackOutlineColor: WidgetStateProperty.resolveWith<Color?>((_) {
+        return theme.colorScheme.primary;
+      }),
+      value: networkState.isAccesibleMode,
+      onChanged: (_) => networkState.toggleAccesibleMode(),
     );
   }
 
@@ -150,7 +166,9 @@ class SettingsPage extends StatelessWidget {
     final theme = Theme.of(context);
 
     final contentStyle = ContentStyle.fromTheme(theme);
+
     final schemeState = context.watch<SchemeState>();
+    final networkState = context.watch<NetworkState>();
 
     final settings = [
       SettingsSection(
@@ -190,6 +208,61 @@ class SettingsPage extends StatelessWidget {
                 Spacer(),
                 _themeHueSlider(theme, schemeState),
               ],
+            ),
+          ),
+        ],
+      ),
+      SettingsSection(
+        children: [
+          IconTitle(
+            title: 'Accesibilidad',
+            icon: Icons.accessibility_new_rounded,
+          ),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Column(
+                  children: [
+                    IconDesc(
+                      icon: networkState.isAccesibleMode
+                          ? Icons.accessible_rounded
+                          : Icons.not_accessible_rounded,
+                      title: 'Modo Accesible',
+                    ),
+                  ],
+                ),
+                Spacer(),
+                _accesibleModeSwitch(theme, networkState),
+              ],
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsetsGeometry.only(
+              left: 16,
+              right: 16,
+              top: 4,
+              bottom: 16,
+            ),
+            child: Card(
+              elevation: Format.elevation,
+              margin: EdgeInsets.zero,
+              color: theme.colorScheme.surfaceContainerLowest,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    'Activado prioriza rutas más accesibles, '
+                    'desactivado prioriza rutas más rápidas.',
+                    style: contentStyle.body,
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+              ),
             ),
           ),
         ],

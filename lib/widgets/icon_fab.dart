@@ -10,7 +10,14 @@ class IconFAB extends StatelessWidget {
   final Color color;
   final double elevation;
 
-  IconFAB({required this.onPressed, required this.msg, required this.icon, required this.color, required this.center, this.elevation = 0});
+  IconFAB({
+    required this.onPressed,
+    required this.msg,
+    required this.icon,
+    required this.color,
+    required this.center,
+    this.elevation = 0,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,33 +35,33 @@ class IconFAB extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: !center
-            ? Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Icon(icon, color: theme.colorScheme.primary),
-                  SizedBox(width: Format.separatorIconTitle),
-                  Text(
-                    msg,
-                    style: contentStyle.titleItem.copyWith(
-                      color: theme.colorScheme.onSurface,
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(icon, color: theme.colorScheme.primary),
+                    SizedBox(width: Format.separatorIconTitle),
+                    Text(
+                      msg,
+                      style: contentStyle.titleItem.copyWith(
+                        color: theme.colorScheme.onSurface,
+                      ),
                     ),
-                  ),
-                ],
-              )
-           : Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                  Icon(icon, color: theme.colorScheme.primary),
-                  SizedBox(width: Format.separatorIconTitle),
-                  Text(
-                    msg,
-                    style: contentStyle.titleItem.copyWith(
-                      color: theme.colorScheme.onSurface,
+                  ],
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(icon, color: theme.colorScheme.primary),
+                    SizedBox(width: Format.separatorIconTitle),
+                    Text(
+                      msg,
+                      style: contentStyle.titleItem.copyWith(
+                        color: theme.colorScheme.onSurface,
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 1.6 * Format.separatorIconTitle),
-              ],
-            )
+                    SizedBox(width: 1.6 * Format.separatorIconTitle),
+                  ],
+                ),
         ),
       ),
     );

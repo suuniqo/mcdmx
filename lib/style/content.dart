@@ -7,6 +7,7 @@ class ContentStyle {
   final TextStyle titleSecondaryEmph;
   final TextStyle titleItem;
   final TextStyle descItem;
+  final TextStyle body;
 
   ContentStyle.fromTheme(final ThemeData theme)
     : titlePrimary = theme.textTheme.displayMedium!.copyWith(
@@ -27,5 +28,6 @@ class ContentStyle {
       ),
       descItem = theme.textTheme.titleMedium!.copyWith(
         fontWeight: FontWeight.w400,
-      );
+      ),
+      body = TextStyle(fontSize: 14, color: theme.colorScheme.onSurfaceVariant);
 }

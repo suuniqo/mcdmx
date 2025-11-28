@@ -1,20 +1,21 @@
-import './station.dart';
+import './stop.dart';
 
 class Edge {
-  final Station _station1;
-  final Station _station2;
-  final double _time; // tiempo que se tarda en recorrerlo
+  final Stop _stopFirst;
+  final Stop _stopSecond;
+  final double _cost; // tiempo que se tarda en recorrerlo
 
-  Edge(this._station1, this._station2, this._time);
+  Edge(this._stopFirst, this._stopSecond, this._cost);
 
-  Station adjacent(Station station) {
-    if (station == _station1) return _station2;
-    if (station == _station2) return _station1;
+  Stop? opposite(Stop station) {
+    if (station == _stopFirst) return _stopSecond;
+    if (station == _stopSecond) return _stopFirst;
 
-    throw Exception(
-      "Error: Se ha pedido la estación adyacente a ($station) en una arista a la que no pertenece",
-    );
+    return null;
   }
 
-  double get time => _time;
+  double get cost => _cost;
+
+  Stop get first => _stopFirst;
+  Stop get second => _stopSecond;
 }

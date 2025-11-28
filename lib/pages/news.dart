@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mcdmx/style/content.dart';
 import 'package:mcdmx/style/format.dart';
 import 'package:mcdmx/widgets/titled_page.dart';
 
@@ -181,11 +182,6 @@ class NewsDestination extends StatelessWidget {
       color: theme.colorScheme.onSurface,
     );
 
-    final styleBody = TextStyle(
-      fontSize: 14,
-      color: theme.colorScheme.onSurfaceVariant,
-    );
-
     return Scaffold(
       appBar: AppBar(
         elevation: Format.elevation,
@@ -223,7 +219,7 @@ class NewsDestination extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Text(description, style: styleSubTitle),
                       ),
-                      Text(file, style: styleBody),
+                      Text(file, style: ContentStyle.fromTheme(theme).body),
                     ],
                   ),
                 ),

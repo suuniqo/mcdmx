@@ -1,5 +1,5 @@
 class FontMul {
-  static const max = 1.2;
+  static const max = 1.18;
   static const min = 0.9;
 
   static const base = 1.0;

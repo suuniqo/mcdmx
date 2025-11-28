@@ -1,6 +1,8 @@
 import 'network.dart';
 import 'station.dart';
 
+import 'package:flutter/material.dart';
+
 class Direction {
   final String _name;
   final bool _forward;
@@ -11,8 +13,9 @@ class Direction {
   String get name => _name;
   Line get line => _line;
   bool get forward => _forward;
-  Iterator<Station> get stations =>
-      _forward ? _line._stations.iterator : _line._stations.reversed.iterator;
+
+  Iterable<Station> get stations =>
+      _forward ? _line._stations : _line._stations.reversed;
 
   int _adaptIndex(int i) {
     assert(0 <= i && i < _line.length);
@@ -23,7 +26,7 @@ class Direction {
     };
   }
 
-  int? stopIndex(Station station) {
+  int? stationIndex(Station station) {
     var idx = _line._stationIndex[station];
 
     if (idx == null) return null;
@@ -36,44 +39,59 @@ class Direction {
   }
 
   int nthTimeOffset(int n) {
-    return _line._timeOffsets[_adaptIndex(n)];
+    return _forward
+        ? _line._timeOffsets[n]
+        : _line._timeOffsets[_adaptIndex(0)] -
+              _line._timeOffsets[_adaptIndex(n)];
   }
 
-  Duration nextArrivalDuration(Station station) {
-    TimeOfDay opening = _line._network.openingTime;
+  Duration nextArrivalDuration(Station station, DateTime time) {
+    TimeOfDay opening = _line._network.openingTime(time);
     TimeOfDay closing = _line._network.closingTime;
 
-    final DateTime now = DateTime.now();
-
-    final openingDate = now.copyWith(
+    final openingDate = time.copyWith(
       hour: opening.hour,
       minute: opening.minute,
       second: 0,
     );
-    final closingDate = now.copyWith(
+
+    final closingDate = time.copyWith(
       hour: closing.hour,
       minute: closing.minute,
       second: 0,
     );
 
-    final idx = _line._stationIndex[station];
+    final ambiguousIdx = _line._stationIndex[station];
 
-    if (idx == null)
+    if (ambiguousIdx == null) {
       throw Exception(
         "Se intento ver cuanto tarda en llegar un tren a la parada $station que no es de la linea $_line",
       );
-
-    final offset = Duration(minutes: _line._timeOffsets[idx]);
-
-    if (now.isBefore(openingDate)) {
-      return openingDate.add(offset).difference(now);
     }
 
-    if (now.isAfter(closingDate)) {
-      return openingDate.add(offset).add(Duration(days: 1)).difference(now);
+    final idx = _adaptIndex(ambiguousIdx);
+
+    final offset = Duration(minutes: nthTimeOffset(idx));
+
+    if (time.isBefore(openingDate)) {
+      // hora de apertura + lo que tarda el primer tren - hora actual
+      return openingDate.add(offset).difference(time);
     }
 
-    final minutesSinceLastTrain = now
+    if (time.isAfter(closingDate)) {
+      // hora de apertura del día siguiente + lo que tarda el primer tren - hora actual
+      final nextDay = time.add(Duration(days: 1));
+      final nextOpening = _line._network.openingTime(nextDay);
+
+      final nextOpeningDate = nextDay.copyWith(
+        hour: nextOpening.hour,
+        minute: nextOpening.minute,
+      );
+
+      return nextOpeningDate.add(offset).difference(time);
+    }
+
+    final minutesSinceLastTrain = time
         .difference(openingDate.add(offset))
         .inMinutes;
 
@@ -86,13 +104,15 @@ class Direction {
 class Line {
   final int _number;
   final List<Station> _stations;
-  final List<int>
-  _timeOffsets; // Lo que tarda un tren en llegar a la estación n-ésima. El primer elemento siempre será cero.
   final Network _network;
   final int
   _trainFreq; // Cada cuantos minutos sale un tren de la primera estación
 
   late final Map<Station, int> _stationIndex;
+
+  final List<int>
+  _timeOffsets; // Lo que tarda un tren en llegar a la estación n-ésima. El primer elemento siempre será cero.
+
   late final Direction _forwardDir;
   late final Direction _backwardDir;
 
@@ -104,11 +124,13 @@ class Line {
     this._timeOffsets,
   ) {
     _stationIndex = _stations.asMap().map((idx, stop) => MapEntry(stop, idx));
+
     _forwardDir = Direction(
       "${_stations[0].name}-${_stations[_stations.length - 1]}",
       this,
       true,
     );
+
     _backwardDir = Direction(
       "${_stations[_stations.length - 1].name}-${_stations[0]}",
       this,
