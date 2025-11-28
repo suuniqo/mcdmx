@@ -50,7 +50,7 @@ class AStar {
     return stop.station.accesible ? 0 : 1;
   }
 
-  List<Station> rebuildPath(Map<Stop, Stop?> prev, Stop last) {
+  List<Station> _rebuildPath(Map<Stop, Stop?> prev, Stop last) {
     final path = [last.station];
 
     var curr = prev[last];
@@ -110,7 +110,7 @@ class AStar {
       }
 
       if (curr.station == stationDst) {
-        return rebuildPath(prev, curr);
+        return _rebuildPath(prev, curr);
       }
 
       for (final edge in _network.connections[curr]!) {
