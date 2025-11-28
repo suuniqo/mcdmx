@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+import 'dart:convert';
+
 import './line.dart';
 import './station.dart';
 import './stop.dart';
@@ -60,6 +62,12 @@ class Network {
   }
 
   factory Network.fromFile(File file) {
+      try{
+          final String json = await file.readAsString();
+
+          final Map<String, dynamic> data = jsonDecode(json);
+
+      }
     final List<Line> lines = [];
     final List<Station> stations = [];
 
