@@ -63,7 +63,7 @@ class PaletteLight {
 
     return Palette(
       brightness: Brightness.light,
-  
+
       backgroundDark: Palette.lch(0.90, chromaHi, hue),
       background: Palette.lch(0.94, chromaHi, hue),
       backgroundLight: Palette.lch(0.99, chromaHi, hue),

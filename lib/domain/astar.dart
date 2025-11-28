@@ -1,110 +1,146 @@
-import './edge.dart';
-import './stop.dart';
-import './network.dart';
+import 'package:collection/collection.dart';
+import 'package:mcdmx/domain/stop.dart';
+
+import 'station.dart';
+import 'network.dart';
 import 'heuristic.dart';
-import 'path.dart';
 
-class Astar {
-  final TrainMap _map;
+class AStar {
+  final Network _network;
 
-  Astar(this._map);
+  AStar(this._network);
 
-  Path calculateRoute(Stop begin, Stop end) {
-    Stop stationBeing = begin;
+  PriorityQueue<({int acc, double f, double g, Stop stop})>
+  _makeOpenSet() {
+    return PriorityQueue((self, other) {
+      var (acc: accA, f: fScoreA, g: gScoreA, stop: _) = self;
+      var (acc: accB, f: fScoreB, g: gScoreB, stop: _) = other;
 
-    /*  Desgraciadamente no existian las priorityQueue
-       *  Lista con las estaciones a las estaciones que no todavia no se puede asegurar que se 
-       *  ha llegado con el mejor tiempo, la primera estacion si
-       */
-    final List<({Stop station, double f})> openList = List.empty();
-    //Set con las estaciones a las que se ha llegado con el camino optimo
-    final Set<Stop> closedList = Set<Stop>();
-    /*  Map que es un arbol, cada key es un vertice y el value es la arista para llegar a su padre
-       *  No contiene a la raiz (begin), luego se conseguira el path recorriendo hacia atras el arbol
-       *  y terminando cuando el padre de uno sea begin(no cuando la key sea begin)
-       */
-    final Map<Stop, ({Edge toFather, double f})> treeMap = {};
+      var cmpFirst = accA.compareTo(accB);
+
+      if (cmpFirst != 0) {
+        return cmpFirst;
+      }
+
+      var cmpSecond = fScoreA.compareTo(fScoreB);
+
+      if (cmpSecond != 0) {
+        return cmpSecond;
+      }
+
+      return gScoreA.compareTo(gScoreB);
+    });
+  }
+
+  ({int acc, double f, double g, Stop stop})
+  _makeOpenSetEntry(Stop stop, Station stationDst, double gStop) {
+      return (
+        acc: _accScore(stop),
+        f: gStop + Heuristic.hScore(stop, stationDst),
+        g: gStop,
+        stop: stop,
+      );
+  }
+
+  int _accScore(Stop stop) {
+    if (!_network.isAccesibleMode) {
+      return 0;
+    }
+
+    return stop.station.accesible ? 0 : 1;
+  }
+
+  List<Station> rebuildPath(Map<Stop, Stop?> prev, Stop last) {
+    final path = [last.station];
+
+    var curr = prev[last];
+
+    while (curr != null) {
+      // Podría ser un transbordo
+      if (path.last != curr.station) {
+        path.add(curr.station);
+      }
+
+      curr = prev[curr];
+    }
+
+    return path.reversed.toList();
+  }
+
+  List<Station>? calculateRoute(Station stationSrc, Station stationDst) {
+    // Momento en el que se calcula la ruta
+    final now = DateTime.now();
+
+    // Encontré una Priority Queue
+    final PriorityQueue<({
+      int acc,
+      double f,
+      double g,
+      Stop stop
+    })> openSet = _makeOpenSet();
+
+    // Se almaneza g(Stop) por cada Stop visitado
+    final Map<Stop, double> gScore = {};
+
+    // En vez de usar el closedList, es más eficiente usar un mapa de antecesores
+    final Map<Stop, Stop?> prev = {};
+
+    // Como cada estación tiene múltiples paradas, se inicializa A* con orígenes múltiples
+    for (final stop in _network.stationStops[stationSrc]!) {
+      prev[stop] = null;
+
+      // En la primera parada del trayecto el tiempo será
+      // el tiempo de espera al siguiente metro
+      gScore[stop] = stop
+        .direction
+        .nextArrivalDuration(stop.station, now)
+        .inMinutes
+        .toDouble();
+
+      final entry = _makeOpenSetEntry(stop, stationDst, 0.0);
+
+      openSet.add(entry);
+    }
 
     do {
-      final Set<Edge> conexions = stationBeing.getconexions();
-      //Meto en la openList las nuevas estaciones y mejores caminos
-      for (Edge conexion in conexions) {
-        Stop nextStation = conexion.nextstation(stationBeing);
-        if (!closedList.contains(nextStation)) {
-          _addOpenList(
-            stationBeing,
-            nextStation,
-            conexion,
-            end,
-            treeMap,
-            closedList,
-            openList,
-          );
+      final (acc: _, f: _, g: gCurr, stop: curr) = openSet.removeFirst();
+
+      if (gCurr > gScore[curr]!) {
+        continue;
+      }
+
+      if (curr.station == stationDst) {
+        return rebuildPath(prev, curr);
+      }
+
+      for (final edge in _network.connections[curr]!) {
+        final next = edge.opposite(curr)!;
+
+        var gNext = gCurr + edge.cost;
+
+        // Si es un transbordo hay que sumar
+        // al coste lo que tarda el próximo tren
+        if (curr.station == next.station) {
+          gNext += curr
+            .direction
+            .nextArrivalDuration(curr.station, now.add(Duration(minutes: gNext.round())))
+            .inMinutes
+            .toDouble();
+        }
+
+        if (!gScore.containsKey(next) || gNext < gScore[next]!) {
+          prev[next] = curr;
+          gScore[next] = gNext;
+
+          final entry = _makeOpenSetEntry(next, stationDst, gNext);
+
+          openSet.add(entry);
         }
       }
-      //Saco de la openList y meto en la closedList
-      //Hay removeLast pero no removeFirst, muy raro
-      closedList.add(openList.removeAt(0).station);
+    } while (openSet.isNotEmpty);
 
-      //No compruebo si la lista esta vacia, no deberia pasar, pero estaria bien ponerlo
-      //Sigo hasta que el primer elemento de la openList sea end(se ha conseguido el camino optimo)
-    } while (!openList.elementAt(0).station.equals(end));
-
-    Path path = Path(begin);
-    //Si he llegado aqui supongo que he encontrado la meta, luego treeMap[] no puede dar null
-    Stop cursor = end;
-    while (!cursor.equals(begin)) {
-      Edge nextEdge = treeMap[cursor]!.toFather;
-      path.insertStation(nextEdge);
-      cursor = nextEdge.nextstation(cursor);
-    }
-    return path;
-  }
-
-  /*
-     *  Funcion para insertar en la posicion correcta de la openList
-     *  Complejidad alta, ver si se puede reducir la complejidad
-     */
-  static void _insertOpenList(
-    ({Stop station, double f}) station,
-    List<({Stop station, double f})> openList,
-  ) {
-    int i;
-    for (i = 0; i < openList.length && openList[i].f < station.f; i++) ;
-    //Ver que se puede insertar en openList.length
-    openList.insert(i, station);
-  }
-
-  /*
-     *  Funcion para ver si meterlo o no en la pila
-     */
-  static void _addOpenList(
-    Stop stationBeing,
-    Stop nextStation,
-    Edge edge,
-    Stop end,
-    Map<Stop, ({Edge toFather, double f})> treeMap,
-    Set<Stop> closedList,
-    List<({Stop station, double f})> openList,
-  ) {
-    double newf = _calculatef(stationBeing, edge, end);
-    if (!treeMap.containsKey(nextStation)) {
-      _insertOpenList((station: nextStation, f: newf), openList);
-      treeMap[nextStation] = (toFather: edge, f: newf);
-    } else {
-      //Estoy seguro de que aqui no es null (utilizo !) porque si es null, entraria en el if
-      double oldf = treeMap[nextStation]!.f;
-      if (oldf > newf) {
-        openList.remove((station: nextStation, f: oldf));
-        _insertOpenList((station: nextStation, f: newf), openList);
-        treeMap[nextStation] = (toFather: edge, f: newf);
-      }
-    }
-  }
-
-  static double _calculatef(Stop stationBeing, Edge candidate, Stop end) {
-    double g = candidate.gettime();
-    double h = Heuristic.heuristic(stationBeing, end);
-    return g + h;
+    // Significa que la estación destino está 'desconectada' del origen
+    // que no debería ser posible salvo errores en la definición
+    return null;
   }
 }

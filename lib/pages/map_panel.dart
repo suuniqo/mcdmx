@@ -67,17 +67,20 @@ class _MapPanelState extends State<MapPanel> {
           alignment: Alignment.centerLeft,
           child: IconButton(
             onPressed: () => Navigator.pop(context),
-            icon: Icon(Icons.arrow_back_rounded, color: theme.colorScheme.onSurface,)
+            icon: Icon(
+              Icons.arrow_back_rounded,
+              color: theme.colorScheme.onSurface,
+            ),
           ),
         ),
         Align(
           alignment: Alignment.bottomCenter,
           child: Column(
             children: [
-              SizedBox(height: 8,),
+              SizedBox(height: 8),
               Text('Planifica tu viaje', style: contentStyle.titleTertiary),
             ],
-          )
+          ),
         ),
       ],
     );
@@ -89,9 +92,12 @@ class _MapPanelState extends State<MapPanel> {
 
     return Column(
       children: [
-        SizedBox(height: 8,),
+        SizedBox(height: 8),
         Text('Indica tu destino', style: contentStyle.titleTertiary),
-        Text('Busca su nombre o selecciónalo en el mapa', style: contentStyle.descItem),
+        Text(
+          'Busca su nombre o selecciónalo en el mapa',
+          style: contentStyle.descItem,
+        ),
       ],
     );
   }
@@ -156,16 +162,18 @@ class _MapPanelState extends State<MapPanel> {
                 ),
                 child: Column(
                   children: [
-                    SizedBox(height: Format.marginPrimary,),
+                    SizedBox(height: Format.marginPrimary),
                     _buildDragHandle(context),
-                    SizedBox(height: Format.marginPrimary,),
+                    SizedBox(height: Format.marginPrimary),
                     _buildClosedTitle(context),
-                    SizedBox(height: Format.marginPrimary,),
-                    Divider(color: theme.colorScheme.surfaceTint, thickness: 2,),
-                    Expanded(child:
-                      Center(
+                    SizedBox(height: Format.marginPrimary),
+                    Divider(color: theme.colorScheme.surfaceTint, thickness: 2),
+                    Expanded(
+                      child: Center(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: Format.marginPrimary),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: Format.marginPrimary,
+                          ),
                           child: IconFAB(
                             onPressed: () {
                               _panelController.open();
@@ -176,9 +184,9 @@ class _MapPanelState extends State<MapPanel> {
                             color: theme.colorScheme.surfaceContainerLowest,
                             center: true,
                           ),
-                        )
-                      )
-                    )
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -195,21 +203,21 @@ class _MapPanelState extends State<MapPanel> {
                   child: Column(
                     children: [
                       _buildDragHandle(context),
-                      SizedBox(height: Format.marginPrimary,),
+                      SizedBox(height: Format.marginPrimary),
                       _buildOpenTile(context),
-                      SizedBox(height: Format.marginPrimary,),
+                      SizedBox(height: Format.marginPrimary),
                       IconTextfield(
                         icon: Icons.trip_origin_rounded,
                         msg: 'Estación de origen',
                         focusNode: _focusOrigin,
                       ),
-                      SizedBox(height: Format.marginSecondary,),
+                      SizedBox(height: Format.marginSecondary),
                       IconTextfield(
                         icon: Icons.location_on_rounded,
                         msg: 'Estación de destino',
                         focusNode: _focusDestination,
                       ),
-                      SizedBox(height: Format.marginPrimary,),
+                      SizedBox(height: Format.marginPrimary),
                     ],
                   ),
                 ),
@@ -218,7 +226,7 @@ class _MapPanelState extends State<MapPanel> {
             body: Stack(children: [MapCDMX(), _buildBackArrow(context)]),
             borderRadius: BorderRadius.circular(Format.borderRadius),
           );
-        }
+        },
       ),
     );
   }
