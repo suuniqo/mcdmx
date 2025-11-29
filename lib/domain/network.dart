@@ -76,6 +76,9 @@ class Network {
     return _openingTimeReg;
   }
 
+  // Si es posible, retorna la arista
+  // de la parada src que te lleva a una
+  // parada de la línea line
   Edge? pathToLine(Stop src, Line line) {
     for (final edge in _connections[src]!) {
       if (edge.opposite(src)!.line == line) {
@@ -96,6 +99,7 @@ class Network {
     return 1;
   }
 
+  // Interruptor para el modo accesible
   void toggleAccesibleMode() {
     _isAccesibleMode = !_isAccesibleMode;
   }

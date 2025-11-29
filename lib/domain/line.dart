@@ -26,6 +26,8 @@ class Direction {
     };
   }
 
+  // Índice relativo de la estación
+  // respecto a esta dirección
   int? stationIndex(Station station) {
     var idx = _line._stationIndex[station];
 
@@ -34,10 +36,15 @@ class Direction {
     return _adaptIndex(idx);
   }
 
+  // Devuelve la n-ésima estación
+  // respecto a esta dirección
   Station nthStop(int n) {
     return _line._stations[_adaptIndex(n)];
   }
 
+  // Devuelve lo que tarda un metro
+  // en llegar a la estación n-ésima
+  // desde que sale de la primera
   int nthTimeOffset(int n) {
     return _forward
         ? _line._timeOffsets[n]
@@ -45,6 +52,10 @@ class Direction {
               _line._timeOffsets[_adaptIndex(n)];
   }
 
+  // Calcula, si te situas en la parada
+  // de la estación curr de esta dirección,
+  // si se llegará a target si se permanece
+  // en este sentido sin hacer transbordos
   bool isFollowingStation(Station curr, Station target) {
     final currIdx = stationIndex(target);
     final targetIdx = stationIndex(target);
@@ -56,6 +67,8 @@ class Direction {
     return currIdx < targetIdx;
   }
 
+  // Retorna lo que tarda en llegar el siguiente tren
+  // a la estación station a la hora time
   Duration nextArrivalDuration(Station station, DateTime time) {
     TimeOfDay opening = _line._network.openingTime(time);
     TimeOfDay closing = _line._network.closingTime;
@@ -146,6 +159,8 @@ class Line {
       false,
     );
 
+    // Se añade la línea a las
+    // líneas que pasan por station
     for (final station in _stations) {
       station.addLine(this);
     }

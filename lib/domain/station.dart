@@ -14,5 +14,8 @@ class Station {
   (double x, double y) get coordinates => _coordinates;
   bool get accesible => _accesible;
   
+  // Las líneas que pasan por Station se añaden
+  // a posteriori cuando se crea una línea que 
+  // pasa por ella
   void addLine(Line line) => _lines.add(line);
 }

@@ -12,6 +12,17 @@ class AStar {
   AStar(this._network)
     : _heuristic = Heuristic(_network);
 
+  // Algoritmo para comparar dos entradas en el openSet
+  // Se comparan los siguientes valores, con prioridad de mayor a menor:
+  //
+  // 1. Si el modo accesible está activado y es un transbordo
+  //    según sea accesible o no
+  //
+  // 2. Según la función f
+  //
+  // 3. Según la función h, que es muy efectiva en caso
+  //    de empates en la función f
+  //
   PriorityQueue<({double h, double g, Stop stop})>
   _makeOpenSet() {
     return PriorityQueue((self, other) {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:mcdmx/domain/line.dart';
+
 import 'package:mcdmx/domain/station.dart';
 
 import 'package:mcdmx/state/network.dart';

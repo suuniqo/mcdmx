@@ -13,7 +13,11 @@ class Heuristic {
   // Factor de conversión aproximado: 1 grado ≈ 111 km (111,000 metros)
   static const double _conversionKm = 111000.0;
 
-  // Straight Line Time: iendo en línea recta a la velocidad máxima de tren
+  /*
+   * Esta es la heurística euclidea o SLT (Straight Line Time)
+   * Se calcula el tiempo que se tarda en llegar al destino si se fuese en linea recta
+   * en un tren a velocidad máxima. Por tanto debe de ser minorante
+   */
   static double slt(Stop curr, Station dst) {
     return _norm(curr.station, dst) / Network.trainVelocity;
   }
@@ -22,8 +26,8 @@ class Heuristic {
    * Esta heurística suma a la euclidea (SLT), una penalización por transbordos.
    * Sumar esto no hace que deje de ser minorante ya que la distancia del transbordo
    * aunque sea en la misma dirección que el destino, es insignificante respecto a la
-   * distancia restante, además de que en otros casos podrá ser en sentido contrario,
-   * por lo que es difícil que tengan una suma constructiva.
+   * distancia restante. Además la dirección del trnasbordo siempre varía,
+   * por lo que es difícil que sumen constructivamente hacia el destino.
    * 
    * Sean:
    * - T_min = min(tiempo transbordo a las líneas que pasan por el destino)

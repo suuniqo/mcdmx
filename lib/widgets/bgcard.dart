@@ -3,6 +3,7 @@ import 'package:mcdmx/style/format.dart';
 
 import 'package:mcdmx/domain/line.dart';
 import 'package:mcdmx/domain/station.dart';
+import 'package:mcdmx/style/logos.dart';
 
 class Bgcard extends StatelessWidget {
   final Station station;
@@ -47,7 +48,7 @@ class Bgcard extends StatelessWidget {
                 SizedBox(
                   width: 40,
                   height: 40,
-                  child: Image.asset(station.logo),
+                  child: Image.asset(Logos.fromStation(station)),
                 ),
               ],
             ),

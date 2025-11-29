@@ -48,43 +48,43 @@ class Palette {
   });
 
   factory Palette.light(double hue) {
-    const chromaLo = 0.02;
-    const chromaHi = 0.005;
+    const chromaLo = 0.005;
+    const chromaHi = 0.02;
 
     return Palette(
       brightness:       Brightness.light,
 
-      backgroundDark:   Palette.lch(0.90, chromaHi, hue),
-      background:       Palette.lch(0.94, chromaHi, hue),
-      backgroundLight:  Palette.lch(0.99, chromaHi, hue),
+      backgroundDark:   Palette.lch(0.90, chromaLo, hue),
+      background:       Palette.lch(0.94, chromaLo, hue),
+      backgroundLight:  Palette.lch(0.99, chromaLo, hue),
 
-      backgroundDim:    Palette.lch(0.94, chromaHi, hue).darker(0.2),
+      backgroundDim:    Palette.lch(0.94, chromaLo, hue).darker(0.2),
 
-      text:             Palette.lch(0.15, chromaLo, hue),
-      textMuted:        Palette.lch(0.40, chromaLo, hue),
+      text:             Palette.lch(0.15, chromaHi, hue),
+      textMuted:        Palette.lch(0.40, chromaHi, hue),
 
-      border:           Palette.lch(0.92, chromaHi, hue),
+      border:           Palette.lch(0.92, chromaLo, hue),
 
       primary:          Palette.lch(0.75, 0.17, hue),
       secondary:        Palette.lch(0.80, 0.14, hue),
 
-      danger:           Palette.lch(0.50, chromaHi, 30),
-      warning:          Palette.lch(0.50, chromaHi, 100),
-      success:          Palette.lch(0.50, chromaHi, 160),
-      info:             Palette.lch(0.50, chromaHi, 260),
+      danger:           Palette.lch(0.50, chromaLo, 30),
+      warning:          Palette.lch(0.50, chromaLo, 100),
+      success:          Palette.lch(0.50, chromaLo, 160),
+      info:             Palette.lch(0.50, chromaLo, 260),
     );
   }
 
   factory Palette.dark(double hue) {
-    const chromaLo = 0.001;
+    const chromaLo = 0.002;
     const chromaHi = 0.015;
 
     return Palette(
       brightness:       Brightness.dark,
 
       backgroundDark:   Palette.lch(0.10, chromaLo, hue),
-      background:       Palette.lch(0.25, chromaLo, hue),
-      backgroundLight:  Palette.lch(0.20, chromaLo, hue),
+      background:       Palette.lch(0.26, chromaLo, hue),
+      backgroundLight:  Palette.lch(0.21, chromaLo, hue),
 
       text:             Palette.lch(0.88, chromaHi, hue),
       textMuted:        Palette.lch(0.58, chromaHi, hue),
