@@ -104,13 +104,11 @@ class Line {
   final int _number;
   final List<Station> _stations;
   final Network _network;
-  final int
-  _trainFreq; // Cada cuantos minutos sale un tren de la primera estación
+  final int _trainFreq; // Cada cuantos minutos sale un tren de la primera estación
 
   late final Map<Station, int> _stationIndex;
 
-  final List<int>
-  _timeOffsets; // Lo que tarda un tren en llegar a la estación n-ésima. El primer elemento siempre será cero.
+  final List<int> _timeOffsets; // Lo que tarda un tren en llegar a la estación n-ésima. El primer elemento siempre será cero.
 
   late final Direction _forwardDir;
   late final Direction _backwardDir;
@@ -135,6 +133,10 @@ class Line {
       this,
       false,
     );
+
+    for (final station in _stations) {
+      station.addLine(this);
+    }
   }
 
   int get number => _number;
@@ -144,22 +146,6 @@ class Line {
   Direction get forwardDir => _forwardDir;
   Direction get backwardDir => _backwardDir;
   Network get netwrok => _network;
-  Iterable<Station> get stations => _stations;
 
-  String get logo {
-    switch (_number){
-      case 1:
-       return 'assets/images/linea1logo.png';
-      case 3:
-        return 'assets/images/linea3logo.png';
-      case 7:
-        return 'assets/images/linea7logo.png';
-      case 9:
-        return 'assets/images/linea9logo.png';
-      case 12:
-        return 'assets/images/linea12logo.png';
-      default:
-        return 'assets/images/linea1.png';
-    }
-  }
+  Iterable<Station> get stations => _stations;
 }

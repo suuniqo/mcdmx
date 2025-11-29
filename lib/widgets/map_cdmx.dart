@@ -31,7 +31,7 @@ class MapCDMX extends StatelessWidget {
         IgnorePointer(
           ignoring: true,
           child: Container(
-            color: theme.colorScheme.primary.withValues(alpha: 0.03),
+            color: theme.colorScheme.primary.withValues(alpha: 0.035),
           ),
         ),
       ],

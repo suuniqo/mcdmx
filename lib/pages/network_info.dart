@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
+import 'package:mcdmx/domain/line.dart';
+import 'package:mcdmx/domain/station.dart';
+
 import 'package:mcdmx/state/network.dart';
-import 'package:mcdmx/style/format.dart';
+
+import 'package:mcdmx/widgets/bgcard.dart';
 import 'package:mcdmx/widgets/bigcard.dart';
 import 'package:mcdmx/widgets/tab_box.dart';
 import 'package:mcdmx/widgets/titled_page.dart';
-import 'package:mcdmx/domain/line.dart';
-import 'package:mcdmx/domain/station.dart';
-import 'package:mcdmx/widgets/bgcard.dart';
+
+import 'package:mcdmx/style/format.dart';
+import 'package:mcdmx/style/logos.dart';
+
 
 class NetworkInfoPage extends StatelessWidget {
   const NetworkInfoPage({super.key});
@@ -38,14 +43,14 @@ class NetworkInfoPage extends StatelessWidget {
                           padding: EdgeInsets.only(
                             top: i == 0 ? 0 : Format.marginPrimary,
                           ),
-                          child: ParadaBoton(
-                            destino: StationsPage(
+                          child: StationButton(
+                            dst: StationsPage(
                               station: station,
                               lineas: station.lines,
                               lineaPage: false,
                             ),
-                            parada: station,
-                            lineas: station.lines,
+                            station: station,
+                            lines: station.lines,
                           ),
                         ),
                     ],
@@ -65,8 +70,8 @@ class NetworkInfoPage extends StatelessWidget {
                           ),
                           child: Column(
                             children: [
-                              LineaBoton(linea: line, foward: true),
-                              LineaBoton(linea: line, foward: false),
+                              LineButton(line: line, foward: true),
+                              LineButton(line: line, foward: false),
                             ],
                           ),
                         ),
@@ -107,11 +112,11 @@ class NetworkInfoPage extends StatelessWidget {
   }
 }
 
-class LineaBoton extends StatelessWidget {
-  final Line linea;
+class LineButton extends StatelessWidget {
+  final Line line;
   final bool foward;
 
-  const LineaBoton({super.key, required this.linea, required this.foward});
+  const LineButton({super.key, required this.line, required this.foward});
 
   @override
   Widget build(BuildContext context) {
@@ -147,10 +152,10 @@ class LineaBoton extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(width: 30, height: 30, child: Image.asset(linea.logo)),
+                SizedBox(width: 30, height: 30, child: Image.asset(Logos.fromLine(line))),
                 SizedBox(width: 12),
-                if (foward) Text(linea.forwardDir.name, style: styleName),
-                if (!foward) Text(linea.backwardDir.name, style: styleName),
+                if (foward) Text(line.forwardDir.name, style: styleName),
+                if (!foward) Text(line.backwardDir.name, style: styleName),
               ],
             ),
           ),
@@ -160,15 +165,15 @@ class LineaBoton extends StatelessWidget {
   }
 }
 
-class ParadaBoton extends StatelessWidget {
-  final Station parada;
-  final Widget destino;
-  final Iterable<Line> lineas;
-  const ParadaBoton({
+class StationButton extends StatelessWidget {
+  final Station station;
+  final Widget dst;
+  final Iterable<Line> lines;
+  const StationButton({
     super.key,
-    required this.destino,
-    required this.parada,
-    required this.lineas,
+    required this.dst,
+    required this.station,
+    required this.lines,
   });
   @override
   Widget build(BuildContext context) {
@@ -189,7 +194,7 @@ class ParadaBoton extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => destino),
+              MaterialPageRoute(builder: (context) => dst),
             );
           },
           style: TextButton.styleFrom(
@@ -207,15 +212,15 @@ class ParadaBoton extends StatelessWidget {
                 SizedBox(
                   width: 30,
                   height: 30,
-                  child: Image.asset(parada.logo),
+                  child: Image.asset(Logos.fromStation(station)),
                 ),
                 SizedBox(width: 12),
-                Text(parada.name, style: styleName),
-                for (var line in lineas)
+                Text(station.name, style: styleName),
+                for (var line in lines)
                   SizedBox(
                     width: 30,
                     height: 30,
-                    child: Image.asset(line.logo),
+                    child: Image.asset(Logos.fromLine(line)),
                   ),
               ],
             ),
@@ -227,26 +232,26 @@ class ParadaBoton extends StatelessWidget {
 }
 
 class LinesPage extends StatelessWidget {
-  final Line linea;
+  final Line line;
   final bool foward;
 
-  const LinesPage({required this.linea, required this.foward});
+  const LinesPage({required this.line, required this.foward});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    Iterable<Station> paradas = linea.forwardDir.stations;
+    Iterable<Station> paradas = line.forwardDir.stations;
     if (!foward) {
-      paradas = linea.backwardDir.stations;
+      paradas = line.backwardDir.stations;
     }
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         title: Row(
           children: [
-            if (foward) Text(linea.forwardDir.name),
-            if (!foward) Text(linea.backwardDir.name),
-            SizedBox(width: 30, height: 30, child: Image.asset(linea.logo)),
+            if (foward) Text(line.forwardDir.name),
+            if (!foward) Text(line.backwardDir.name),
+            SizedBox(width: 30, height: 30, child: Image.asset(Logos.fromLine(line))),
           ],
         ),
         titleTextStyle: TextStyle(
@@ -273,16 +278,16 @@ class LinesPage extends StatelessWidget {
                   child: Column(
                     children: [
                       for (var stop in paradas)
-                        ParadaBoton(
-                          destino: StationsPage(
+                        StationButton(
+                          dst: StationsPage(
                             station: stop,
                             lineas: stop.lines,
                             lineaPage: true,
-                            linea: linea,
+                            linea: line,
                             foward: foward,
                           ),
-                          parada: stop,
-                          lineas: stop.lines,
+                          station: stop,
+                          lines: stop.lines,
                         ),
                     ],
                   ),
@@ -325,7 +330,7 @@ class StationsPage extends StatelessWidget {
           children: [
             Text(station.name, style: styleSubTitle),
             SizedBox(width: 5),
-            SizedBox(width: 30, height: 30, child: Image.asset(station.logo)),
+            SizedBox(width: 30, height: 30, child: Image.asset(Logos.fromStation(station))),
             if (station.accesible) ...[
               SizedBox(width: 5),
               SizedBox(width: 30, height: 30, child: Icon(Icons.accessible_rounded)),
