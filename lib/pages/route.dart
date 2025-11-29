@@ -52,8 +52,7 @@ class RoutePage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           IconFAB(
-            onPressed: () => Navigator.push(
-              context,
+            onPressed: () => Navigator.of(context, rootNavigator: true).push(
               MaterialPageRoute(builder: (context) => MapPanel()),
             ),
             msg: 'Buscar',

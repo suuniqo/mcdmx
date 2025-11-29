@@ -1,117 +1,15 @@
 import 'package:flutter/material.dart';
 
-import 'package:provider/provider.dart';
-
 import 'package:mcdmx/domain/line.dart';
 
 import 'package:mcdmx/domain/station.dart';
 
-import 'package:mcdmx/state/network.dart';
-
 import 'package:mcdmx/widgets/bgcard.dart';
 import 'package:mcdmx/widgets/bigcard.dart';
-import 'package:mcdmx/widgets/tab_box.dart';
-import 'package:mcdmx/widgets/titled_page.dart';
 
 import 'package:mcdmx/style/format.dart';
 import 'package:mcdmx/style/logos.dart';
 
-
-class NetworkInfoPage extends StatelessWidget {
-  const NetworkInfoPage({super.key});
-
-  Widget _quickAccessTabs(BuildContext context, ThemeData theme) {
-    // Datos de ejemplo
-    final network = context.watch<NetworkState>();
-
-    return Expanded(
-      child: SizedBox(
-        width: double.infinity,
-        child: Card(
-          margin: EdgeInsets.zero,
-          color: theme.colorScheme.surfaceContainerLowest,
-          elevation: 0,
-          child: TabBox(
-            tabsData: [
-              (
-                Icons.directions_subway_filled_rounded,
-                'Paradas',
-                Center(
-                  child: ListView(
-                    children: [
-                      for (var (i, station) in network.stations.indexed)
-                        Padding(
-                          padding: EdgeInsets.only(
-                            top: i == 0 ? 0 : Format.marginPrimary,
-                          ),
-                          child: StationButton(
-                            dst: StationsPage(
-                              station: station,
-                              lineas: station.lines,
-                              lineaPage: false,
-                            ),
-                            station: station,
-                            lines: station.lines,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-              (
-                Icons.timeline,
-                'Lineas',
-                Center(
-                  child: ListView(
-                    children: [
-                      for (var (i, line) in network.lines.indexed)
-                        Padding(
-                          padding: EdgeInsets.only(
-                            top: i == 0 ? 0 : Format.marginPrimary,
-                          ),
-                          child: Column(
-                            children: [
-                              LineButton(line: line, foward: true),
-                              LineButton(line: line, foward: false),
-                            ],
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
-      body: TitledPage(
-        title: 'Metro',
-        icon: Image.asset(
-          'assets/images/logocdmx.png',
-          width: 32,
-          height: 32,
-          fit: BoxFit.contain,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            SizedBox(height: Format.marginPrimary),
-            _quickAccessTabs(context, theme),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class LineButton extends StatelessWidget {
   final Line line;

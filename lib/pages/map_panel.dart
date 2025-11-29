@@ -19,6 +19,7 @@ class _MapPanelState extends State<MapPanel> {
   final _focusDestination = FocusNode();
 
   bool _isOpen = false;
+  bool _focusRequested = false;
 
   @override
   void initState() {
@@ -143,10 +144,16 @@ class _MapPanelState extends State<MapPanel> {
             defaultPanelState: _isOpen ? PanelState.OPEN : PanelState.CLOSED,
             onPanelOpened: () {
               setState(() => _isOpen = true);
-              _focusDestination.requestFocus();
+              if (!_focusRequested) {
+                _focusDestination.requestFocus();
+                setState(() => _focusRequested = true);
+              }
             },
             onPanelClosed: () {
-              setState(() => _isOpen = false);
+              setState(() {
+                  _isOpen = false;
+                  _focusRequested = false;
+              });
               FocusManager.instance.primaryFocus?.unfocus();
             },
             parallaxEnabled: true,
@@ -212,12 +219,14 @@ class _MapPanelState extends State<MapPanel> {
                       IconTextfield(
                         icon: Icons.trip_origin_rounded,
                         msg: 'Estación de origen',
+                        primary: false,
                         focusNode: _focusOrigin,
                       ),
                       SizedBox(height: Format.marginSecondary),
                       IconTextfield(
                         icon: Icons.location_on_rounded,
                         msg: 'Estación de destino',
+                        primary: false,
                         focusNode: _focusDestination,
                       ),
                       SizedBox(height: Format.marginPrimary),

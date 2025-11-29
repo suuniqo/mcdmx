@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -64,7 +65,42 @@ class Frame extends StatefulWidget {
 
 class _FrameState extends State<Frame> {
   var _selectedIndex = 0;
+
+  final _navigatorKeys = [
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+  ];
+
+  void _selectTab(int index) {
+    if (index == _selectedIndex) {
+      _navigatorKeys[index].currentState!.popUntil((r) => r.isFirst);
+    } else {
+      _pageController.animateToPage(
+        index,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  Widget _buildTabNavigator(int index, Widget rootPage) {
+    return Navigator(
+      key: _navigatorKeys[index],
+      onGenerateRoute: (RouteSettings routeSettings) {
+        return MaterialPageRoute(builder: (_) => rootPage);
+      },
+    );
+  }
+
   final _pageController = PageController();
+
+  @override
+    void dispose() {
+      _pageController.dispose();
+      super.dispose();
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +110,12 @@ class _FrameState extends State<Frame> {
       body: PageView(
         controller: _pageController,
         onPageChanged: (i) => setState(() => _selectedIndex = i),
-        children: [RoutePage(), MapPage(), NewsPage(), SettingsPage()],
+        children: [
+          RoutePage(),
+          MapPage(),
+          NewsPage(),
+          SettingsPage()
+        ].mapIndexed((i, page) => _buildTabNavigator(i, page)).toList(),
       ),
       extendBody: true,
       bottomNavigationBar: Container(
@@ -97,13 +138,7 @@ class _FrameState extends State<Frame> {
             data: NavigationBarThemeData(backgroundColor: Colors.transparent),
             child: NavigationBar(
               selectedIndex: _selectedIndex,
-              onDestinationSelected: (i) {
-                _pageController.animateToPage(
-                  i,
-                  duration: Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                );
-              },
+              onDestinationSelected: _selectTab,
               destinations: [
                 NavigationDestination(
                   icon: Icon(Icons.route_rounded),

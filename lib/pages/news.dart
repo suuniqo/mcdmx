@@ -117,8 +117,7 @@ class News extends StatelessWidget {
       margin: EdgeInsets.zero,
       child: TextButton(
         onPressed: () {
-          Navigator.push(
-            context,
+          Navigator.of(context, rootNavigator: true).push(
             MaterialPageRoute(
               builder: (context) => NewsDestination(
                 image: image,

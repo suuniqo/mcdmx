@@ -6,9 +6,11 @@ import 'package:provider/provider.dart';
 class IconTextfield extends StatefulWidget {
   final IconData icon;
   final String msg;
+  final bool primary;
   final FocusNode? focusNode;
+  final VoidCallback? onPressed;
 
-  IconTextfield({required this.icon, required this.msg, this.focusNode});
+  IconTextfield({required this.icon, required this.msg, required this.primary, this.focusNode, this.onPressed});
 
   @override
   State<IconTextfield> createState() => _IconTextfieldState();
@@ -37,9 +39,15 @@ class _IconTextfieldState extends State<IconTextfield> {
           : Brightness.light,
       decoration: InputDecoration(
         filled: true,
-        fillColor: theme.colorScheme.surfaceContainerLowest,
+        fillColor: widget.primary
+          ? theme.colorScheme.surfaceContainerLow
+          : theme.colorScheme.surfaceContainerLowest,
         hintText: widget.msg,
-        prefixIcon: Icon(widget.icon, color: theme.colorScheme.primary),
+        prefixIcon: IconButton(
+          icon: Icon(widget.icon, color: theme.colorScheme.primary,),
+          onPressed: widget.onPressed,
+
+        ),
         suffixIcon: controller.text.isEmpty
             ? SizedBox()
             : IconButton(
@@ -49,19 +57,25 @@ class _IconTextfieldState extends State<IconTextfield> {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Format.borderRadius),
           borderSide: BorderSide(
-            color: theme.colorScheme.surfaceContainerLowest,
+            color: widget.primary
+              ? theme.colorScheme.surfaceContainerLow
+              : theme.colorScheme.surfaceContainerLowest,
           ),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Format.borderRadius),
           borderSide: BorderSide(
-            color: theme.colorScheme.surfaceContainerLowest,
+            color: widget.primary
+              ? theme.colorScheme.surfaceContainerLow
+              : theme.colorScheme.surfaceContainerLowest,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Format.borderRadius),
           borderSide: BorderSide(
-            color: theme.colorScheme.surfaceContainerLowest,
+            color: widget.primary
+              ? theme.colorScheme.surfaceContainerLow
+              : theme.colorScheme.surfaceContainerLowest,
           ),
         ),
       ),
