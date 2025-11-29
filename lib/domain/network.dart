@@ -1,8 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 
-import 'dart:convert';
 
 import './line.dart';
 import './station.dart';
@@ -101,17 +102,222 @@ class Network {
   }
 
   factory Network.fromFile(File file) {
-      // try{
-      //     final String json = await file.readAsString();
-      //
-      //     final Map<String, dynamic> data = jsonDecode(json);
-      //
-      // }
-    final List<Line> lines = [];
-    final List<Station> stations = [];
+    //Lectura síncrona del archivo (los factory no pueden ser async)
+    final String jsonString = file.readAsStringSync();
+    final Map<String, dynamic> data = jsonDecode(jsonString);
 
-    // TODO: Rellenar listas
+    //Parseamos estaciones
+    final Map<String, Station> stationsByID = {};
+    (data['estaciones'] as Map<String, dynamic>).forEach((key, json) {
+        final coordsList = List<dynamic>.from(json['coordenadas']);
 
-    return Network(lines, stations);
+        stationsByID[key] = Station( 
+            json['nombre'],
+            LatLng(coordsList[0], coordsList[1]),
+            json['accesibilidad'] ?? false
+        );
+    });
+
+    //Parseamos ahora las lineas
+    final Map<String, Line> linesMap = {};
+    
+    // Guardamos la lista de IDs de estaciones para calcular tiempos luego
+    final Map<String, List<String>> lineRoutesById = {};
+    
+    for (var lineJson in (data['lineas'] as List)) {
+      String idStr = lineJson['id'].toString();
+      int idNum = lineJson['id'];
+      
+      var freqs = lineJson['frecuencias'];
+      var trainFreq = (freqs['pico'] as int, freqs['valle'] as int);
+
+      List<String> routeStationIds = (lineJson['recorrido'] as List)
+          .map((e) => e['estacion'] as String)
+          .toList();
+      
+      lineRoutesById[idStr] = routeStationIds;
+
+      List<Station> stationObjects = routeStationIds
+          .map((id) => stationsByID[id]!)
+          .toList();
+
+      // Creamos la Línea.
+      // NOTA: _timeOffsets se inicializa vacío internamente en tu constructor
+      linesMap[idStr] = Line(
+        idNum,
+        stationObjects,
+        trainFreq,
+      );
+    }
+
+    //Con lo que tenemos ya podemos inicializar una Network
+    final network = Network(linesMap.values.toList(), stationsByID.values.toList());
+    
+    //Aunque tengamos network ya inicializado, falta asignar a las estaciones sus lineas y a las lineas las estaciones y offsets
+    //Calculamos el offset
+    final Map<String, int> travelTimes = {};
+    for (var conn in (data['conexiones'] as List)) {
+        String s1 = conn['estacion-1'];
+        String s2 = conn['estacion-2'];
+        String lId = conn['id-linea'].toString();
+        int t = (conn['tiempo'] as num).toInt();
+      
+        // Guardamos en ambas direcciones para facilitar la búsqueda
+        travelTimes["${s1}_${s2}_$lId"] = t;
+        travelTimes["${s2}_${s1}_$lId"] = t; 
+    }
+
+    // Rellenar datos pendientes en cada Línea
+    linesMap.forEach((lineIdStr, line) {
+      line.network = network;
+
+      List<String> routeIds = lineRoutesById[lineIdStr]!;
+      int accumulatedTime = 0;
+
+      // El primer offset siempre es 0
+      line.addTimeOffset(0);
+
+      for (int i = 0; i < routeIds.length - 1; i++) {
+        String current = routeIds[i];
+        String next = routeIds[i+1];
+        
+        int? segmentTime = travelTimes["${current}_${next}_$lineIdStr"];
+        
+        // Si falta el dato en el JSON, ponemos 3 min por defecto para no romper
+        accumulatedTime += (segmentTime ?? 3);
+        
+        // Usamos tu método para añadir a la lista final
+        line.addTimeOffset(accumulatedTime);
+      }
+    });
+
+    //Contruimos el grafo
+
+
+    // Helper local para añadir conexiones al mapa de forma segura
+    void addConnection(Stop source, Edge edge) {
+      if (!network._connections.containsKey(source)) {
+        network._connections[source] = {};
+      }
+      network._connections[source]!.add(edge);
+    }
+
+    // Helper local para añadir stops al mapa de estaciones
+    void registerStop(Station station, Stop stop) {
+      if (!network._stationStops.containsKey(station)) {
+        network._stationStops[station] = {};
+      }
+      network._stationStops[station]!.add(stop);
+    }
+
+    //Iteramos las líneas para crear nodos y aristas de viaje
+    linesMap.forEach((lineIdStr, line) {
+      
+      List<String> routeIds = lineRoutesById[lineIdStr]!;
+      
+      // Variables para guardar el Stop anterior y poder conectar
+      Stop? prevStopFwd;
+      Stop? prevStopBwd;
+
+      for (int i = 0; i < routeIds.length; i++) {
+        String currentId = routeIds[i];
+        Station currentStation = stationsByID[currentId]!;
+
+        // Creamos los Stops (Nodos)
+        // Como Stop pide (Direction, Station), creamos dos por cada estación:
+        // Uno para la dirección de ida y otro para la de vuelta.
+        
+        Stop stopFwd = Stop(line.forwardDir, currentStation);
+        Stop stopBwd = Stop(line.backwardDir, currentStation);
+
+        registerStop(currentStation, stopFwd);
+        registerStop(currentStation, stopBwd);
+
+        //Creamos Aristas de Viaje (Edges)
+        if (i > 0) {
+          // Recuperamos el ID de la estación anterior para buscar el coste
+          String prevId = routeIds[i - 1];
+          
+          // Coste: Buscamos en el mapa travelTimes "Prev_Curr_LineID"
+          int costInt = travelTimes["${prevId}_${currentId}_$lineIdStr"] ?? 3;
+          double cost = costInt.toDouble();
+
+          // Conexión 1: Forward (Del anterior hacia el actual)
+          // prevStopFwd  ---> stopFwd
+          if (prevStopFwd != null) {
+            Edge edgeFwd = Edge(prevStopFwd, stopFwd, cost);
+            addConnection(prevStopFwd, edgeFwd);
+          }
+
+          // Conexión 2: Backward (Del actual hacia el anterior)
+          // stopBwd ---> prevStopBwd
+          // Nota: En backward, el tren va de Current a Previous.
+          if (prevStopBwd != null) {
+            Edge edgeBwd = Edge(stopBwd, prevStopBwd, cost);
+            addConnection(stopBwd, edgeBwd);
+          }
+        }
+
+        // Actualizamos los "anteriores" para la siguiente vuelta del bucle
+        prevStopFwd = stopFwd;
+        prevStopBwd = stopBwd;
+      }
+    });
+
+    // Busca la clave (ID) de una estación en el mapa stationsByID
+    String keyOf(Map<String, Station> map, Station station) {
+        return map.keys.firstWhere((k) => map[k] == station, orElse: () => "");
+    }
+    //Crear aristas de transbordo
+    
+    final transbordosList = data['transbordos'] as List;
+
+    network._stationStops.forEach((station, stopsSet) {
+      // Si hay más de una línea pasando por aquí (más de 2 stops contando idas y vueltas)
+      if (stopsSet.length > 2) { 
+        List<Stop> stopsList = stopsSet.toList();
+
+        // Conectamos todos contra todos
+        for (int i = 0; i < stopsList.length; i++) {
+          for (int j = i + 1; j < stopsList.length; j++) {
+            Stop s1 = stopsList[i];
+            Stop s2 = stopsList[j];
+
+            // Solo creamos transbordo si son de LÍNEAS DISTINTAS
+            // si quieremos permitir cambio de andén, podrías quitar este if?.
+            if (s1.line != s2.line) {
+              
+              double cost = 4; 
+
+              // Buscar penalización específica en JSON
+              var penaltyInfo = transbordosList.firstWhere(
+                (t) {
+                  bool sameStation = t['estacion'] == station.name || t['estacion'] == keyOf(stationsByID, station);
+                  if (!sameStation) return false;
+
+                  List<dynamic> linesJson = t['lineas'];
+                  return linesJson.contains(s1.line.number.toString()) && 
+                         linesJson.contains(s2.line.number.toString());
+                },
+                orElse: () => null
+              );
+
+              if (penaltyInfo != null) {
+                cost = (penaltyInfo['tiempo'] as num).toDouble();
+              }
+
+              // c. Crear aristas de transbordo bidireccionales
+              Edge trans1 = Edge(s1, s2, cost);
+              Edge trans2 = Edge(s2, s1, cost);
+
+              addConnection(s1, trans1);
+              addConnection(s2, trans2);
+            }
+          }
+        }
+      }
+    });
+
+    return network;
   }
 }

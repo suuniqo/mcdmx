@@ -1,8 +1,10 @@
 import 'line.dart';
 
+import 'package:latlong2/latlong.dart';
+
 class Station {
   final String _name;
-  final (double x, double y) _coordinates;
+  final LatLng _coordinates;
   final bool _accesible;
 
   final Set<Line> _lines = {};
@@ -11,8 +13,9 @@ class Station {
 
   String get name => _name;
   Set<Line> get lines => Set.unmodifiable(_lines);
-  (double x, double y) get coordinates => _coordinates;
+  LatLng get coordinates => _coordinates;
   bool get accesible => _accesible;
   
   void addLine(Line line) => _lines.add(line);
+
 }

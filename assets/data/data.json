@@ -179,7 +179,11 @@
 
   "lineas": [
       {
-        "id": "1",
+        "id": 1,
+        "frecuencias":{
+            "pico": 3,
+            "valle": 6
+        },
         "recorrido": [
             {"estacion": "observatorio", "transbordos": []},
             {"estacion": "tacubaya", "transbordos": [7, 9]},
@@ -192,7 +196,11 @@
         ]
       },
       {
-          "id": "3",
+          "id": 3,
+          "frecuencias":{
+              "pico": 3,
+              "valle": 6
+          },
           "recorrido": [
               {"estacion": "universidad", "transbordos": []},
               {"estacion": "copilco", "transbordos": []},
@@ -211,7 +219,11 @@
           ]
       },
       {
-      "id": "7",
+      "id": 7,
+          "frecuencias":{
+              "pico": 4,
+              "valle": 7
+          },
       "recorrido": [
         { "estacion": "barranca", "transbordos": [] },
         { "estacion": "mixcoac", "transbordos": [12] },
@@ -224,7 +236,11 @@
       ]
     },
     {
-      "id": "9",
+      "id": 9,
+      "frecuencias":{
+          "pico": 4,
+          "valle": 7
+      },
       "recorrido": [
         { "estacion": "tacubaya", "transbordos": [1, 7] },
         { "estacion": "patriotismo", "transbordos": [] },
@@ -234,7 +250,11 @@
       ]
     },
     {
-      "id": "12",
+      "id": 12,
+      "frecuencias":{
+          "pico": 4,
+          "valle": 7
+      },
       "recorrido": [
         { "estacion": "mixcoac", "transbordos": [7] },
         { "estacion": "insurgentessur", "transbordos": [] },

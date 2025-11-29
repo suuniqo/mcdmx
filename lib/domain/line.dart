@@ -4,6 +4,15 @@ import 'network.dart';
 import 'station.dart';
 
 class Direction {
+  //begin first peak
+  static const TimeOfDay begfpeak = TimeOfDay(hour: 6, minute: 0);
+  //end first peak
+  static const TimeOfDay endfpeak = TimeOfDay(hour: 9, minute: 0);
+  //begin second peak
+  static const TimeOfDay begspeak = TimeOfDay(hour: 18, minute: 0);
+  //end second peak
+  static const TimeOfDay endspeak = TimeOfDay(hour: 20, minute: 0);
+  
   final String _name;
   final bool _forward;
   final Line _line;
@@ -57,8 +66,8 @@ class Direction {
   }
 
   Duration nextArrivalDuration(Station station, DateTime time) {
-    TimeOfDay opening = _line._network.openingTime(time);
-    TimeOfDay closing = _line._network.closingTime;
+    TimeOfDay opening = _line.network.openingTime(time);
+    TimeOfDay closing = _line.network.closingTime;
 
     final openingDate = time.copyWith(
       hour: opening.hour,
@@ -92,7 +101,7 @@ class Direction {
     if (time.isAfter(closingDate)) {
       // hora de apertura del día siguiente + lo que tarda el primer tren - hora actual
       final nextDay = time.add(Duration(days: 1));
-      final nextOpening = _line._network.openingTime(nextDay);
+      final nextOpening = _line.network.openingTime(nextDay);
 
       final nextOpeningDate = nextDay.copyWith(
         hour: nextOpening.hour,
@@ -105,9 +114,35 @@ class Direction {
     final minutesSinceLastTrain = time
         .difference(openingDate.add(offset))
         .inMinutes;
+    
+    final begfpeakDate = time.copyWith(
+      hour: begfpeak.hour,
+      minute: begfpeak.minute,
+      second: 0,
+    );
+    final endfpeakDate = time.copyWith(
+      hour: endfpeak.hour,
+      minute: endfpeak.minute,
+      second: 0,
+    );
+    final begspeakDate = time.copyWith(
+      hour: begspeak.hour,
+      minute: begspeak.minute,
+      second: 0,
+    );
+    final endspeakDate = time.copyWith(
+      hour: endspeak.hour,
+      minute: endspeak.minute,
+      second: 0,
+    );
 
+    if((time.isAfter(begfpeakDate) && time.isBefore(endfpeakDate)) || (time.isAfter(begspeakDate) && time.isBefore(endspeakDate))){
+        return Duration(
+        minutes: _line._trainFreq.$1 - minutesSinceLastTrain % _line._trainFreq.$1,
+        );
+    }
     return Duration(
-      minutes: _line._trainFreq - minutesSinceLastTrain % _line._trainFreq,
+      minutes: _line._trainFreq.$2 - minutesSinceLastTrain % _line._trainFreq.$2,
     );
   }
 }
@@ -115,8 +150,14 @@ class Direction {
 class Line {
   final int _number;
   final List<Station> _stations;
-  final Network _network;
-  final int _trainFreq; // Cada cuantos minutos sale un tren de la primera estación
+  
+  /* La he hecho publica en vez de hacer getter y setters que no cumpruban nada ya que es lo que hace Dart automicamante con las variable publicas de las clases
+  Dart por que harias eso? */
+  late final Network network;
+
+  /* Cada cuantos minutos sale un tren de la primera estación.
+  El primer numero es durante las horas pico y el segundo durante las horas valle o no pico */
+  final (int, int) _trainFreq; 
 
   late final Map<Station, int> _stationIndex;
 
@@ -126,12 +167,10 @@ class Line {
   late final Direction _backwardDir;
 
   Line(
-    this._network,
     this._number,
     this._stations,
     this._trainFreq,
-    this._timeOffsets,
-  ) {
+  ) : _timeOffsets = [] {
     _stationIndex = _stations.asMap().map((idx, stop) => MapEntry(stop, idx));
 
     _forwardDir = Direction(
@@ -153,11 +192,15 @@ class Line {
 
   int get number => _number;
   int get length => _stations.length;
-  int get trainFreq => _trainFreq;
+  (int, int) get trainFreq => _trainFreq;
 
   Direction get forwardDir => _forwardDir;
   Direction get backwardDir => _backwardDir;
-  Network get netwrok => _network;
 
   Iterable<Station> get stations => _stations;
+  
+
+  void addTimeOffset(int timeOffset){
+      _timeOffsets.add(timeOffset);
+  }
 }
