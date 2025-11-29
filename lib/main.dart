@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mcdmx/pages/map.dart';
-import 'package:mcdmx/state/network.dart';
 
 import 'package:provider/provider.dart';
 
+import 'package:mcdmx/pages/map.dart';
 import 'package:mcdmx/pages/route.dart';
 import 'package:mcdmx/pages/news.dart';
 import 'package:mcdmx/pages/settings.dart';
-import 'package:mcdmx/state/scheme.dart';
+
 import 'package:mcdmx/style/format.dart';
 import 'package:mcdmx/style/color_theme.dart';
+
+import 'package:mcdmx/state/scheme.dart';
+import 'package:mcdmx/state/network.dart';
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

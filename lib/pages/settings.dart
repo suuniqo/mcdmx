@@ -91,6 +91,7 @@ class SettingsPage extends StatelessWidget {
     BuildContext context,
     ThemeData theme,
     SchemeState schemeState,
+    NetworkState networkState,
     ContentStyle contentStyle,
   ) {
     return Padding(
@@ -136,6 +137,7 @@ class SettingsPage extends StatelessWidget {
 
                 if (confirmed == true) {
                   schemeState.restore();
+                  networkState.restore();
                 }
               },
               child: Row(
@@ -270,7 +272,7 @@ class SettingsPage extends StatelessWidget {
       SettingsSection(
         children: [
           IconTitle(title: 'Almacenamiento', icon: Icons.folder_rounded),
-          _resetDataButton(context, theme, schemeState, contentStyle),
+          _resetDataButton(context, theme, schemeState, networkState, contentStyle),
           SizedBox(height: 8),
         ],
       ),

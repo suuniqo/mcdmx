@@ -1,7 +1,6 @@
+import 'package:flutter/material.dart';
 import 'network.dart';
 import 'station.dart';
-
-import 'package:flutter/material.dart';
 
 class Direction {
   final String _name;
@@ -145,4 +144,22 @@ class Line {
   Direction get forwardDir => _forwardDir;
   Direction get backwardDir => _backwardDir;
   Network get netwrok => _network;
+  Iterable<Station> get stations => _stations;
+
+  String get logo {
+    switch (_number){
+      case 1:
+       return 'assets/images/linea1logo.png';
+      case 3:
+        return 'assets/images/linea3logo.png';
+      case 7:
+        return 'assets/images/linea7logo.png';
+      case 9:
+        return 'assets/images/linea9logo.png';
+      case 12:
+        return 'assets/images/linea12logo.png';
+      default:
+        return 'assets/images/linea1.png';
+    }
+  }
 }

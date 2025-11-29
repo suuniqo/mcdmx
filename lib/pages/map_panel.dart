@@ -141,7 +141,10 @@ class _MapPanelState extends State<MapPanel> {
         builder: (context, constraints) {
           return SlidingUpPanel(
             defaultPanelState: _isOpen ? PanelState.OPEN : PanelState.CLOSED,
-            onPanelOpened: () => setState(() => _isOpen = true),
+            onPanelOpened: () {
+              setState(() => _isOpen = true);
+              _focusDestination.requestFocus();
+            },
             onPanelClosed: () {
               setState(() => _isOpen = false);
               FocusManager.instance.primaryFocus?.unfocus();

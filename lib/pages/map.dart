@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mcdmx/style/format.dart';
+
+import 'package:mcdmx/pages/network_info.dart';
+
 import 'package:mcdmx/widgets/icon_fab.dart';
 import 'package:mcdmx/widgets/map_cdmx.dart';
+
+import 'package:mcdmx/style/format.dart';
 
 class MapPage extends StatelessWidget {
   @override
@@ -15,7 +19,12 @@ class MapPage extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(Format.marginPrimary),
             child: IconFAB(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => NetworkInfoPage()),
+                );
+              },
               msg: 'Busca líneas o paradas',
               icon: Icons.search_rounded,
               color: theme.colorScheme.surfaceContainer,

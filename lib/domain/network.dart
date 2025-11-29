@@ -14,12 +14,14 @@ class Network {
   static const TimeOfDay _openingTimeReg = TimeOfDay(hour: 5, minute: 0);
   static const TimeOfDay _openingTimeSat = TimeOfDay(hour: 6, minute: 0);
   static const TimeOfDay _openingTimeSun = TimeOfDay(hour: 7, minute: 0);
-  static const TimeOfDay _closingTime = TimeOfDay(hour: 0, minute: 0);
+  static const TimeOfDay _closingTime    = TimeOfDay(hour: 0, minute: 0);
+
+  static const bool accesibleModeDefault = false;
 
   late Map<Station, Set<Stop>> _stationStops;
   late Map<Stop, Set<Edge>> _connections;
 
-  bool _isAccesibleMode = false;
+  bool _isAccesibleMode = accesibleModeDefault;
 
   Network(this._lines, this._stations) {
     // TODO: Rellenar
@@ -33,8 +35,9 @@ class Network {
     _connections = {};
   }
 
-  List<Line> get lines => _lines;
-  List<Station> get stations => _stations;
+  Iterable<Line> get lines => _lines;
+  Iterable<Station> get stations => _stations;
+
   bool get isAccesibleMode => _isAccesibleMode;
 
   Map<Stop, Set<Edge>> get connections => _connections;
