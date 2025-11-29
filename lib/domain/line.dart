@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'network.dart';
 import 'station.dart';
 
@@ -42,6 +43,17 @@ class Direction {
         ? _line._timeOffsets[n]
         : _line._timeOffsets[_adaptIndex(0)] -
               _line._timeOffsets[_adaptIndex(n)];
+  }
+
+  bool isFollowingStation(Station curr, Station target) {
+    final currIdx = stationIndex(target);
+    final targetIdx = stationIndex(target);
+
+    if (currIdx == null || targetIdx == null) {
+      return false;
+    }
+
+    return currIdx < targetIdx;
   }
 
   Duration nextArrivalDuration(Station station, DateTime time) {

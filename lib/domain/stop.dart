@@ -11,4 +11,12 @@ class Stop {
   Direction get direction => _direction;
   Station get station => _station;
   int get lineIndex => _direction.stationIndex(station)!;
+
+  bool isFollowingStation(Station station) {
+    return _direction.isFollowingStation(_station, station);
+  }
+
+  Duration nextArrivalDuration(DateTime time) {
+    return _direction.nextArrivalDuration(_station, time);
+  }
 }

@@ -10,7 +10,7 @@ class Station {
   Station(this._name, this._coordinates, this._accesible);
 
   String get name => _name;
-  Iterable<Line> get lines => _lines;
+  Set<Line> get lines => Set.unmodifiable(_lines);
   (double x, double y) get coordinates => _coordinates;
   bool get accesible => _accesible;
   

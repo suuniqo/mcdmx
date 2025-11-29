@@ -7,46 +7,48 @@ import 'heuristic.dart';
 
 class AStar {
   final Network _network;
+  final Heuristic _heuristic;
 
-  AStar(this._network);
+  AStar(this._network)
+    : _heuristic = Heuristic(_network);
 
-  PriorityQueue<({int acc, double f, double g, Stop stop})>
+  PriorityQueue<({double h, double g, Stop stop})>
   _makeOpenSet() {
     return PriorityQueue((self, other) {
-      var (acc: accA, f: fScoreA, g: gScoreA, stop: _) = self;
-      var (acc: accB, f: fScoreB, g: gScoreB, stop: _) = other;
+      final (h: hScoreA, g: gScoreA, stop: stopA) = self;
+      final (h: hScoreB, g: gScoreB, stop: stopB) = other;
 
-      var cmpFirst = accA.compareTo(accB);
+      if (_network.isAccesibleMode) {
+        final cmpPrev = _accScore(stopA).compareTo(_accScore(stopB));
 
-      if (cmpFirst != 0) {
-        return cmpFirst;
+        if (cmpPrev != 0) {
+          return cmpPrev;
+        }
       }
 
-      var cmpSecond = fScoreA.compareTo(fScoreB);
+      final fScoreA = gScoreA + hScoreA;
+      final fScoreB = gScoreB + hScoreB;
+      
+      final cmpF = fScoreA.compareTo(fScoreB);
 
-      if (cmpSecond != 0) {
-        return cmpSecond;
+      if (cmpF != 0) {
+        return cmpF;
       }
 
-      return gScoreA.compareTo(gScoreB);
+      return hScoreA.compareTo(hScoreB);
     });
   }
 
-  ({int acc, double f, double g, Stop stop})
+  ({double h, double g, Stop stop})
   _makeOpenSetEntry(Stop stop, Station stationDst, double gStop) {
       return (
-        acc: _accScore(stop),
-        f: gStop + Heuristic.hScore(stop, stationDst),
+        h: _heuristic.transferAware(stop, gStop, stationDst),
         g: gStop,
         stop: stop,
       );
   }
 
   int _accScore(Stop stop) {
-    if (!_network.isAccesibleMode) {
-      return 0;
-    }
-
     return stop.station.accesible ? 0 : 1;
   }
 
@@ -73,8 +75,7 @@ class AStar {
 
     // Encontré una Priority Queue
     final PriorityQueue<({
-      int acc,
-      double f,
+      double h,
       double g,
       Stop stop
     })> openSet = _makeOpenSet();
@@ -92,8 +93,7 @@ class AStar {
       // En la primera parada del trayecto el tiempo será
       // el tiempo de espera al siguiente metro
       gScore[stop] = stop
-        .direction
-        .nextArrivalDuration(stop.station, now)
+        .nextArrivalDuration(now)
         .inMinutes
         .toDouble();
 
@@ -103,7 +103,7 @@ class AStar {
     }
 
     do {
-      final (acc: _, f: _, g: gCurr, stop: curr) = openSet.removeFirst();
+      final (h: _, g: gCurr, stop: curr) = openSet.removeFirst();
 
       if (gCurr > gScore[curr]!) {
         continue;
@@ -122,8 +122,7 @@ class AStar {
         // al coste lo que tarda el próximo tren
         if (curr.station == next.station) {
           gNext += curr
-            .direction
-            .nextArrivalDuration(curr.station, now.add(Duration(minutes: gNext.round())))
+            .nextArrivalDuration(now.add(Duration(minutes: gNext.round())))
             .inMinutes
             .toDouble();
         }
