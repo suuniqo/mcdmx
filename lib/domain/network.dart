@@ -114,14 +114,14 @@ class Network {
     for (final h in [7, 17]) {
       DateTime now = DateTime.now().copyWith(hour: h, minute: 0, second: 0);
 
-      for (double m = 0.00; m <= 2.50 + 0.01; m += 0.25) {
+      for (double m = 0.25; m <= 2.50 + 0.01; m += 0.25) {
         for (double p = 0.00; p <= 2.50 + 0.01; p += 0.25) {
           for (double q = 0.00; q <= 2.50 + 0.01; q += 0.25) {
 
             var astar = AStar(this, (stop, g, dst) => Heuristic(this).transferAware(stop, g, dst, m, p, q));
 
-            int score = 0;
-            int branching = 0;
+            double score = 0;
+            double branching = 0;
 
             for (int i = 0; i < _stations.length; ++i) {
               for (int j = i + 1; j < _stations.length; ++j) {
@@ -131,7 +131,11 @@ class Network {
                 branching += branch;
               }
             }
-            print("heuristic(h: $h, m: ${m.toStringAsFixed(2)}, p: ${p.toStringAsFixed(2)}, q: ${q.toStringAsFixed(2)}) => score(time: $score, branching: $branching)");
+
+            score = (2 * score) / (_stations.length * (_stations.length - 1));
+            branching = (2 * branching) / (_stations.length * (_stations.length - 1));
+
+            print("heuristic(h: $h, m: ${m.toStringAsFixed(2)}, p: ${p.toStringAsFixed(2)}, q: ${q.toStringAsFixed(2)}) => score(time: ${score.toStringAsFixed(2)}, branching: ${branching.toStringAsFixed(2)})");
           }
         }
       }
