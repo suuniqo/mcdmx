@@ -63,17 +63,17 @@
         "coyoacan": {
           "nombre": "Coyoacan", 
           "accesibilidad": false,
-          "coordenadas": [19.361349877917576, -99.17084390674633]
+          "coordenadas": [19.36135393843553, -99.17085183798827]
         },
         "zapata": {
           "nombre": "Zapata", 
           "accesibilidad": true,
-          "coordenadas": [19.37065361398097, -99.1650678934068]
+          "coordenadas": [19.370676079537372, -99.16507462986499]
         },
         "division": {
           "nombre": "Division del Norte", 
           "accesibilidad": false,
-          "coordenadas": [19.379169879024314, -99.15948536441789]
+          "coordenadas": [19.37917111887684, -99.15948078089109]
         },
         "eugenia": {
           "nombre": "Eugenia", 
@@ -168,7 +168,7 @@
       "parque": {
           "nombre": "Parque de los Venados", 
           "accesibilidad": true,
-          "coordenadas": [19.37068834344399, -99.16511527715558]
+          "coordenadas": [19.370632220286524, -99.15879783579315]
       },
       "eje": {
           "nombre": "Eje Central", 
