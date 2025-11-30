@@ -44,7 +44,7 @@ class LineButton extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(Format.borderRadius),
             ),
-            backgroundColor: Colors.amber,
+            backgroundColor:theme.colorScheme.surfaceContainerLow,
           ),
           child: Padding(
             padding: const EdgeInsets.all(Format.marginCard),
@@ -101,7 +101,7 @@ class StationButton extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(Format.borderRadius),
             ),
-            backgroundColor: Colors.amber,
+            backgroundColor:theme.colorScheme.surfaceContainerLow,
           ),
           child: Padding(
             padding: const EdgeInsets.all(Format.marginCard),
@@ -115,6 +115,7 @@ class StationButton extends StatelessWidget {
                 ),
                 SizedBox(width: 12),
                 Text(station.name, style: styleName),
+                SizedBox(width: 12),
                 for (var line in lines)
                   SizedBox(
                     width: 30,
@@ -219,15 +220,20 @@ class StationsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final styleSubTitle = TextStyle(
-      fontSize: 15,
+      fontSize: 18,
+      color: theme.colorScheme.onSurface,
+    );
+    final styleTitle = TextStyle(
+      fontSize: 22,
       color: theme.colorScheme.onSurface,
     );
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(station.name, style: styleSubTitle),
+            Text(station.name, style: styleTitle,),
             SizedBox(width: 5),
             SizedBox(width: 30, height: 30, child: Image.asset(NetworkStyle.fromStation(station))),
             if (station.accesible) ...[
@@ -259,8 +265,8 @@ class StationsPage extends StatelessWidget {
                   padding: const EdgeInsets.all(Format.marginCard),
                   child: Column(
                     children: [
-                      if (lineaPage) ...[
-                        Bigcard(title: "Tiempo Real"),
+                      if (!lineaPage) ...[
+                        Bigcard(title: "Tiempo Real",style:styleSubTitle),
                         for (var line in lineas) ...[
                           SizedBox(height: 5),
                           Bgcard(
@@ -268,6 +274,7 @@ class StationsPage extends StatelessWidget {
                             line: line,
                             foward: true,
                             style: styleSubTitle,
+                            theme:theme
                           ),
                           SizedBox(height: 5),
                           Bgcard(
@@ -275,25 +282,28 @@ class StationsPage extends StatelessWidget {
                             line: line,
                             foward: false,
                             style: styleSubTitle,
+                            theme:theme
                           ),
                         ],
                       ],
-                      if (!lineaPage && linea != null && foward != null) ...[
-                        Bigcard(title: "Tiempo Real"),
+                      if (lineaPage && linea != null && foward != null) ...[
+                        Bigcard(title: "Tiempo Real",style:styleSubTitle),
                         SizedBox(height: 5),
                         Bgcard(
                           station: station,
                           line: linea!,
                           foward: foward!,
                           style: styleSubTitle,
+                          theme:theme,
                         ),
-                        Bigcard(title: "Otros Andenes de ${station.name}"),
+                        Bigcard(title: "Otros Andenes de ${station.name}",style:styleSubTitle),
                         SizedBox(height: 5),
                         Bgcard(
                           station: station,
                           line: linea!,
-                          foward: foward!,
+                          foward: !foward!,
                           style: styleSubTitle,
+                          theme:theme
                         ),
                         for (var line in lineas.where((l) => l != linea)) ...[
                           SizedBox(height: 5),
@@ -302,6 +312,7 @@ class StationsPage extends StatelessWidget {
                             line: line,
                             foward: true,
                             style: styleSubTitle,
+                            theme:theme,
                           ),
                           SizedBox(height: 5),
                           Bgcard(
@@ -309,6 +320,7 @@ class StationsPage extends StatelessWidget {
                             line: line,
                             foward: false,
                             style: styleSubTitle,
+                            theme:theme,
                           ),
                         ],
                       ],
