@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:mcdmx/state/network.dart';
+import 'package:mcdmx/widgets/item_list.dart';
 
 import 'package:provider/provider.dart';
 
@@ -82,7 +83,8 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                 Icons.directions_subway_filled_rounded,
                 'Paradas',
                 Center(
-                  child: ListView(
+                  child: ItemList(
+                    itemName:"No hay horarios disponibles",
                     children: [
                       for (var (i, station) in network.stations.indexed)
                         Padding(
@@ -107,7 +109,8 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                 Icons.timeline,
                 'Lineas',
                 Center(
-                  child: ListView(
+                  child: ItemList(
+                    itemName:"No hay horarios disponibles",
                     children: [
                       for (var (i, line) in network.lines.indexed)
                         Padding(
