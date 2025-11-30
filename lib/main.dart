@@ -16,18 +16,22 @@ import 'package:mcdmx/state/scheme.dart';
 import 'package:mcdmx/state/network.dart';
 
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final networkState = await NetworkState.create();
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((
     _,
   ) {
-    runApp(const MyApp());
+    runApp(MyApp(networkState));
   });
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final NetworkState _networkState;
+
+  const MyApp(this._networkState, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +40,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => SchemeState(context)
         ),
-        FutureProvider(
-          create: (_) => NetworkState.create(),
-          initialData: NetworkState.empty(),
-          lazy: false,
+        ChangeNotifierProvider(
+          create: (_) => _networkState,
         ),
       ],
       child: Consumer<SchemeState>(

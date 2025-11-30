@@ -31,13 +31,10 @@ class Network {
   // aunque luego se haya registrado que de media es menos
   static const double trainVelocity = 600.0; // metros por minuto
 
-  // No es accesible por defecto
-  static const bool accesibleModeDefault = false;
-
   // Mínimo tiempo que se tarda en hacer un transbordo andando
   int? _minTransferTime;
 
-  bool _isAccesibleMode = accesibleModeDefault;
+  bool _isAccesibleMode = false;
 
   Network(this._lines, this._stations, this._connections, this._stationStops) {
     for (final line in _lines) {
@@ -81,6 +78,23 @@ class Network {
     return null;
   }
 
+  // Si es posible, retorna la arista
+  // de la parada src que te lleva a una
+  // parada de la línea line
+  Line? lineBetweenStations(Station src, Station dst) {
+    final dstStops = _stationStops[dst]!;
+
+    for (final stop in _stationStops[src]!) {
+      for (final edge in _connections[stop]!) {
+        final opposite = edge.opposite(stop)!;
+        if (dstStops.contains(opposite)) {
+          return opposite.direction.line;
+        }
+      }
+    }
+    return null;
+  }
+
   int? minTransfers(Stop stop, Line line) {
     return _minTransfers[(stop: stop, line: line)];
   }
@@ -110,6 +124,16 @@ class Network {
     _isAccesibleMode = !_isAccesibleMode;
   }
 
+  (List<Station>, int) calculateRoute(Station src, Station dst) {
+    double heuristic(stop, g, station) {
+      return Heuristic(this).transferAwareTuned(stop, g, station, 1.31, 3.06);
+    }
+
+    final astar = AStar(this, heuristic);
+
+    return astar.calculateRoute(src, dst, DateTime.now())!;
+  }
+
   void benchmarkAStar() {
     for (final h in [7, 17]) {
       DateTime now = DateTime.now().copyWith(hour: h, minute: 0, second: 0);
@@ -118,14 +142,14 @@ class Network {
         for (double p = 0.00; p <= 2.50 + 0.01; p += 0.25) {
           for (double q = 0.00; q <= 2.50 + 0.01; q += 0.25) {
 
-            var astar = AStar(this, (stop, g, dst) => Heuristic(this).transferAware(stop, g, dst, m, p, q));
+            var astar = AStar(this, (stop, g, dst) => Heuristic(this).transferAwareTuned(stop, g, dst, m*p, m*q));
 
             double score = 0;
             double branching = 0;
 
             for (int i = 0; i < _stations.length; ++i) {
               for (int j = i + 1; j < _stations.length; ++j) {
-                var (_, dist, branch) = astar.calculateRoute(_stations[i], _stations[j], now)!;
+                var (_, dist, branch) = astar.calculateRouteBench(_stations[i], _stations[j], now)!;
 
                 score += dist;
                 branching += branch;

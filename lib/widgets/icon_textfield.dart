@@ -9,15 +9,27 @@ class IconTextfield extends StatefulWidget {
   final bool primary;
   final FocusNode? focusNode;
   final VoidCallback? onPressed;
+  final TextEditingController? controller;
+  final bool enabled;
+  final bool readOnly;
 
-  IconTextfield({required this.icon, required this.msg, required this.primary, this.focusNode, this.onPressed});
+  IconTextfield({
+    required this.icon,
+    required this.msg,
+    required this.primary,
+    this.focusNode,
+    this.onPressed,
+    this.controller,
+    this.enabled = true,
+    this.readOnly = false,
+  });
 
   @override
   State<IconTextfield> createState() => _IconTextfieldState();
 }
 
 class _IconTextfieldState extends State<IconTextfield> {
-  final TextEditingController controller = TextEditingController();
+  late final TextEditingController controller = widget.controller ?? TextEditingController();
 
   @override
   void initState() {
@@ -32,6 +44,8 @@ class _IconTextfieldState extends State<IconTextfield> {
     final scheme = context.watch<SchemeState>();
 
     return TextField(
+      enabled: widget.enabled,
+      readOnly: widget.readOnly,
       controller: controller,
       focusNode: widget.focusNode,
       keyboardAppearance: scheme.isDarkMode

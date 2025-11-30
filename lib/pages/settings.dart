@@ -1,7 +1,6 @@
 import 'package:mcdmx/state/network.dart';
 import 'package:mcdmx/style/theme_hue.dart';
 import 'package:mcdmx/widgets/icon_desc.dart';
-import 'package:mcdmx/widgets/icon_textfield.dart';
 import 'package:mcdmx/widgets/icon_title.dart';
 import 'package:mcdmx/widgets/titled_page.dart';
 import 'package:provider/provider.dart';
@@ -72,7 +71,7 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  Switch _accesibleModeSwitch(ThemeData theme, NetworkState networkState) {
+  Switch _accesibleModeSwitch(ThemeData theme, NetworkState network) {
     return Switch(
       trackOutlineWidth: WidgetStateProperty.resolveWith<double?>((_) {
         return Format.borderWidth;
@@ -82,8 +81,8 @@ class SettingsPage extends StatelessWidget {
       trackOutlineColor: WidgetStateProperty.resolveWith<Color?>((_) {
         return theme.colorScheme.primary;
       }),
-      value: networkState.isAccesibleMode,
-      onChanged: (_) => networkState.toggleAccesibleMode(),
+      value: network.isAccesibleMode,
+      onChanged: (_) => network.toggleAccesibleMode(),
     );
   }
 

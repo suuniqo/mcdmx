@@ -39,11 +39,21 @@ class Heuristic {
    * - En otro caso:
    *   T_min * N_min
    */
-  double transferAware(Stop curr, int gScore, Station dst, double m, double p, double q) {
+  double transferAware(Stop curr, int gScore, Station dst) {
     double euclideanScore = slt(curr, dst);
     double transferPenalty = _networkTransferPenalty(curr, gScore, dst);
 
-    return m * (p * euclideanScore + q * transferPenalty);
+    return euclideanScore + transferPenalty;
+  }
+
+  /*
+   * Como transferAware, pero permite mayor control de los parámetros
+   */
+  double transferAwareTuned(Stop curr, int gScore, Station dst, double p, double q) {
+    double euclideanScore = slt(curr, dst);
+    double transferPenalty = _networkTransferPenalty(curr, gScore, dst);
+
+    return p * euclideanScore + q * transferPenalty;
   }
 
   // Se calcula la penalización

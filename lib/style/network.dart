@@ -8,7 +8,7 @@ class NetworkStyle {
       case 1:
         return const Color.fromARGB(255, 245, 73, 146);
       case 3:
-        return const Color.fromARGB(255, 176, 153, 0);
+        return const Color.fromARGB(255, 172, 161, 39);
       case 7:
         return const Color.fromARGB(255, 255, 98, 2);
       case 9:

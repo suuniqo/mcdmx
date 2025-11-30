@@ -10,9 +10,6 @@ class NetworkState extends ChangeNotifier {
 
   NetworkState._(this._network);
 
-  NetworkState.empty()
-    : _network = Network.empty();
-
   static Future<NetworkState> create() async {
     final jsonString = await rootBundle.loadString('assets/data/data.json');
     final network = Network.fromJson(jsonString);
@@ -30,9 +27,18 @@ class NetworkState extends ChangeNotifier {
     notifyListeners();
   }
 
+  (List<Station>, int) calculateRoute(Station src, Station dst) {
+    return _network.calculateRoute(src, dst);
+  }
+
+  Line? lineBetweenStations(Station src, Station dst) {
+    return _network.lineBetweenStations(src, dst);
+  }
+
   void restore() {
     if (_network.isAccesibleMode) {
       _network.toggleAccesibleMode();
     }
+    notifyListeners();
   }
 }

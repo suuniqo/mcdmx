@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 
 import 'package:mcdmx/state/network.dart';
 
 import 'package:provider/provider.dart';
 
 import 'package:mcdmx/widgets/icon_textfield.dart';
-import 'package:mcdmx/widgets/map_cdmx.dart';
+import 'package:mcdmx/widgets/maps.dart';
 import 'package:mcdmx/widgets/tab_box.dart';
 
 import 'package:mcdmx/pages/info.dart';
@@ -19,6 +20,11 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
+  static const LatLng centeredCDMX = LatLng(
+    19.389547839456625,
+    -99.1722223513429,
+  );
+
   late AnimationController _animationController;
   late Animation<double> _animation;
 
@@ -140,7 +146,11 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     return Stack(
       children: [
         if (!_displayOverlay) 
-          MapCDMX(),
+          MapCDMX(
+            centeredCDMX,
+            // TODO: hacer algo aquí
+            (_) {},
+          ),
         if (_isSearchActive)
           AnimatedBuilder(
             animation: _animation,

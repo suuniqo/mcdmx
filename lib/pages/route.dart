@@ -53,7 +53,7 @@ class RoutePage extends StatelessWidget {
         children: [
           IconFAB(
             onPressed: () => Navigator.of(context, rootNavigator: true).push(
-              MaterialPageRoute(builder: (context) => MapPanel()),
+              MaterialPageRoute(builder: (context) => MapPanelPage()),
             ),
             msg: 'Buscar',
             icon: Icons.search_rounded,
