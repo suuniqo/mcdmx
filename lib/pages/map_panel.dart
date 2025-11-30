@@ -248,9 +248,12 @@ class _MapPanelPageState extends State<MapPanelPage> {
                               style: content.titleItem,
                             ),
                             Text(
-                              'A xx km de tu ubicación'
+                              match.lines.length == 1
+                                ? 'Línea ${match.lines.first.number}'
+                                : 'Líneas ${match.lines.map((line) => line.number.toString()).join(', ')}',
                             ),
-                            Divider(color: theme.colorScheme.surfaceTint, thickness: 2),
+                            if (match != matching.last)
+                              Divider(color: theme.colorScheme.surfaceTint, thickness: 2),
                           ]
                         ),
                       ),

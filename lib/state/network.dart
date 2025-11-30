@@ -31,8 +31,8 @@ class NetworkState extends ChangeNotifier {
     return _network.calculateRoute(src, dst);
   }
 
-  Line? lineBetweenStations(Station src, Station dst) {
-    return _network.lineBetweenStations(src, dst);
+  Direction? dirBetweenStations(Station src, Station dst) {
+    return _network.dirBetweenStations(src, dst);
   }
 
   void restore() {

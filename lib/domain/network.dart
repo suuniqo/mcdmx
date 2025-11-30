@@ -81,14 +81,14 @@ class Network {
   // Si es posible, retorna la arista
   // de la parada src que te lleva a una
   // parada de la línea line
-  Line? lineBetweenStations(Station src, Station dst) {
+  Direction? dirBetweenStations(Station src, Station dst) {
     final dstStops = _stationStops[dst]!;
 
     for (final stop in _stationStops[src]!) {
       for (final edge in _connections[stop]!) {
         final opposite = edge.opposite(stop)!;
         if (dstStops.contains(opposite)) {
-          return opposite.direction.line;
+          return opposite.direction;
         }
       }
     }

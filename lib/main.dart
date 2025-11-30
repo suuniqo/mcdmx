@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mcdmx/state/routes.dart';
 
 import 'package:provider/provider.dart';
 
@@ -39,6 +40,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (_) => SchemeState(context)
+        ),
+        ChangeNotifierProvider(
+          create: (_) => RoutesState(),
         ),
         ChangeNotifierProvider(
           create: (_) => _networkState,

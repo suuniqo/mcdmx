@@ -41,6 +41,7 @@ class SchemeState extends ChangeNotifier {
   void restore() {
     _fontMul = FontMul.base;
     _themeMode = ThemeMode.system;
+    _themeHue = ThemeHue.base;
 
     notifyListeners();
   }

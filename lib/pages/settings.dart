@@ -1,4 +1,5 @@
 import 'package:mcdmx/state/network.dart';
+import 'package:mcdmx/state/routes.dart';
 import 'package:mcdmx/style/theme_hue.dart';
 import 'package:mcdmx/widgets/icon_desc.dart';
 import 'package:mcdmx/widgets/icon_title.dart';
@@ -91,6 +92,7 @@ class SettingsPage extends StatelessWidget {
     ThemeData theme,
     SchemeState schemeState,
     NetworkState networkState,
+    RoutesState routesState,
     ContentStyle contentStyle,
   ) {
     return Padding(
@@ -137,6 +139,7 @@ class SettingsPage extends StatelessWidget {
                 if (confirmed == true) {
                   schemeState.restore();
                   networkState.restore();
+                  routesState.restore();
                 }
               },
               child: Row(
@@ -170,6 +173,7 @@ class SettingsPage extends StatelessWidget {
 
     final schemeState = context.watch<SchemeState>();
     final networkState = context.watch<NetworkState>();
+    final routesState = context.watch<RoutesState>();
 
     final settings = [
       SettingsSection(
@@ -271,7 +275,7 @@ class SettingsPage extends StatelessWidget {
       SettingsSection(
         children: [
           IconTitle(title: 'Almacenamiento', icon: Icons.folder_rounded),
-          _resetDataButton(context, theme, schemeState, networkState, contentStyle),
+          _resetDataButton(context, theme, schemeState, networkState, routesState, contentStyle),
           SizedBox(height: 8),
         ],
       ),

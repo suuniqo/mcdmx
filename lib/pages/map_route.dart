@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mcdmx/domain/line.dart';
 import 'package:mcdmx/domain/station.dart';
 import 'package:mcdmx/state/network.dart';
+import 'package:mcdmx/state/routes.dart';
+import 'package:mcdmx/style/network.dart';
 import 'package:provider/provider.dart';
 
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -20,8 +23,13 @@ class MapRoutePage extends StatefulWidget {
 }
 
 class _MapRoutePageState extends State<MapRoutePage> {
-  bool _isOpen = false;
-
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.read<RoutesState>().pushRecent((widget._src, widget._dst));
+    });
+  }
   Widget _buildDragHandle(BuildContext context) {
     final theme = Theme.of(context);
 
@@ -35,32 +43,39 @@ class _MapRoutePageState extends State<MapRoutePage> {
     );
   }
 
-  Widget _buildOpenTile(BuildContext context, List<Station> stations) {
+  Widget _buildOpenTile(BuildContext context, List<Station> stations, RoutesState routes, NetworkState network) {
     final theme = Theme.of(context);
     final contentStyle = ContentStyle.fromTheme(theme);
 
-    return Stack(
-      children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: IconButton(
-            onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
-            icon: Icon(
-              Icons.close_rounded,
-              color: theme.colorScheme.onSurface,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 8),
+                Text('Tu itinerario', style: contentStyle.titleSecondary),
+                Text('Estas viendo la ruta mas ${network.isAccesibleMode ? 'accesible' : 'rápida'}', style: contentStyle.titleItem.copyWith(fontWeight: FontWeight.normal)),
+              ],
             ),
           ),
-        ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Column(
-            children: [
-              SizedBox(height: 8),
-              Text('Estaciones del trayecto', style: contentStyle.titleTertiary),
-            ],
+          Align(
+            alignment: Alignment.centerRight,
+            child: IconButton(
+              onPressed: () => routes.toggleFav((widget._src, widget._dst)),
+              icon: Icon(
+                routes.isFav((widget._src, widget._dst))
+                  ? Icons.favorite_rounded
+                  : Icons.favorite_outline_rounded,
+                color: theme.colorScheme.primary,
+              ),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -77,8 +92,8 @@ class _MapRoutePageState extends State<MapRoutePage> {
           style: contentStyle.titleTertiary
         ),
         Text(
-          'Desliza para ver las estaciones de la ruta',
-          style: contentStyle.descItem,
+          'Desliza para ver las estaciones',
+          style: contentStyle.descItem
         ),
       ],
     );
@@ -113,11 +128,91 @@ class _MapRoutePageState extends State<MapRoutePage> {
     );
   }
 
+  String _generateRouteMessage(NetworkState network, List<Station> stations, Station curr, int idx) {
+    if (stations.length == 1) {
+      return 'Ya estás en tu destino';
+    }
+    if (idx == stations.length - 1) {
+      return 'Sal del tren y llegarás a tu destino';
+    }
+
+    Direction dirNext = network.dirBetweenStations(curr, stations[idx+1])!;
+
+    if (idx == 0) {
+      return 'Toma la línea ${dirNext.line.number} dirección ${dirNext.name.split('-').last}';
+    }
+
+    Direction dirPrev = network.dirBetweenStations(stations[idx-1], curr)!;
+
+    if (dirPrev != dirNext) {
+      return 'Toma la línea ${dirNext.line.number} dirección ${dirNext.name.split('-').last}';
+    } else {
+      return 'Continua en el tren';
+    }
+  }
+
+  Widget _buildRouteLayout(BuildContext context, List<Station> stations) {
+    final theme = Theme.of(context);
+    final content = ContentStyle.fromTheme(theme);
+
+    final network = context.read<NetworkState>();
+
+    return Expanded(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          for (final (i, station) in stations.indexed)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Format.marginPrimary),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    children: [
+                      Image.asset(
+                        NetworkStyle.fromStation(station),
+                        height: 40,
+                        width: 40,
+                      ),
+
+                      if (station != stations.last)
+                        Container(
+                          width: 3,
+                          height: 20,
+                          color: NetworkStyle.lineColor(network.dirBetweenStations(station, stations[i+1])!.line),
+                        )
+                    ],
+                  ),
+                  SizedBox(width: Format.marginPrimary,),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          station.name,
+                          style: content.titleItem,
+                        ),
+                        Text(_generateRouteMessage(network, stations, station, i)),
+                        if (station != stations.last)
+                          Divider(color: theme.colorScheme.surfaceTint, thickness: 2),
+                      ]
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     final network = context.watch<NetworkState>();
+    final routes = context.watch<RoutesState>();
 
     final (route, time) = network.calculateRoute(widget._src, widget._dst);
 
@@ -126,13 +221,7 @@ class _MapRoutePageState extends State<MapRoutePage> {
       body: LayoutBuilder(
         builder: (context, constraints) {
           return SlidingUpPanel(
-            defaultPanelState: _isOpen ? PanelState.OPEN : PanelState.CLOSED,
-            onPanelOpened: () {
-              setState(() => _isOpen = true);
-            },
-            onPanelClosed: () {
-              setState(() => _isOpen = false);
-            },
+            defaultPanelState: PanelState.OPEN,
             parallaxEnabled: true,
             parallaxOffset: 0.5,
             maxHeight: constraints.maxHeight * 0.94,
@@ -169,11 +258,12 @@ class _MapRoutePageState extends State<MapRoutePage> {
                         children: [
                           _buildDragHandle(context),
                           SizedBox(height: Format.marginPrimary),
-                          _buildOpenTile(context, route),
-                          SizedBox(height: Format.marginPrimary),
+                          _buildOpenTile(context, route, routes, network),
                         ],
                       ),
                     ),
+                    _buildRouteLayout(context, route),
+                    SizedBox(height: Format.marginPrimary),
                   ],
                 ),
               ),

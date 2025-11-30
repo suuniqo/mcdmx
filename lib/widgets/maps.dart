@@ -62,7 +62,7 @@ class MapRoute extends StatelessWidget {
               for (var i = 0; i + 1 < _route.length; ++i)
                 Polyline(
                   strokeWidth: 4,
-                  color: NetworkStyle.lineColor(network.lineBetweenStations(_route[i],_route[i+1])!),
+                  color: NetworkStyle.lineColor(network.dirBetweenStations(_route[i],_route[i+1])!.line),
                   points: [
                     _route[i].coords,
                     _route[i+1].coords,
