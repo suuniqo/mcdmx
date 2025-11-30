@@ -5,14 +5,14 @@ import 'station.dart';
 
 class Direction {
   //begin first peak
-  static const TimeOfDay begfpeak = TimeOfDay(hour: 6, minute: 0);
+  static const TimeOfDay begPeakFirst = TimeOfDay(hour: 6, minute: 0);
   //end first peak
-  static const TimeOfDay endfpeak = TimeOfDay(hour: 9, minute: 0);
+  static const TimeOfDay endPeakFirst = TimeOfDay(hour: 9, minute: 0);
   //begin second peak
-  static const TimeOfDay begspeak = TimeOfDay(hour: 18, minute: 0);
+  static const TimeOfDay begPeakSec = TimeOfDay(hour: 18, minute: 0);
   //end second peak
-  static const TimeOfDay endspeak = TimeOfDay(hour: 20, minute: 0);
-  
+  static const TimeOfDay endPeakSec = TimeOfDay(hour: 20, minute: 0);
+
   final String _name;
   final bool _forward;
   final Line _line;
@@ -65,21 +65,21 @@ class Direction {
     return currIdx < targetIdx;
   }
 
-  Duration nextArrivalDuration(Station station, DateTime time) {
-    TimeOfDay opening = _line.network.openingTime(time);
-    TimeOfDay closing = _line.network.closingTime;
 
-    final openingDate = time.copyWith(
-      hour: opening.hour,
-      minute: opening.minute,
-      second: 0,
-    );
+  Duration nextArrivalDuration(Station station, DateTime now) {
+    DateTime timeAsDate(TimeOfDay time, DateTime date) {
+      return date.copyWith(
+        hour: time.hour,
+        minute: time.minute,
+        second: 0,
+      );
+    }
 
-    final closingDate = time.copyWith(
-      hour: closing.hour,
-      minute: closing.minute,
-      second: 0,
-    );
+    TimeOfDay opening = _line.network!.openingTime(now);
+    TimeOfDay closing = _line.network!.closingTime;
+    
+    final openingDate = timeAsDate(opening, now);
+    final closingDate = timeAsDate(closing, now);
 
     final ambiguousIdx = _line._stationIndex[station];
 
@@ -93,57 +93,58 @@ class Direction {
 
     final offset = Duration(minutes: nthTimeOffset(idx));
 
-    if (time.isBefore(openingDate)) {
+    if (now.isBefore(openingDate)) {
       // hora de apertura + lo que tarda el primer tren - hora actual
-      return openingDate.add(offset).difference(time);
+      return openingDate.add(offset).difference(now);
     }
 
-    if (time.isAfter(closingDate)) {
+    if (closingDate.isAfter(openingDate) && now.isAfter(closingDate)) {
       // hora de apertura del día siguiente + lo que tarda el primer tren - hora actual
-      final nextDay = time.add(Duration(days: 1));
-      final nextOpening = _line.network.openingTime(nextDay);
+      final nextDay = now.add(Duration(days: 1));
+      final nextOpening = _line.network!.openingTime(nextDay);
 
       final nextOpeningDate = nextDay.copyWith(
         hour: nextOpening.hour,
         minute: nextOpening.minute,
       );
 
-      return nextOpeningDate.add(offset).difference(time);
+      return nextOpeningDate.add(offset).difference(now);
     }
 
-    final minutesSinceLastTrain = time
-        .difference(openingDate.add(offset))
-        .inMinutes;
-    
-    final begfpeakDate = time.copyWith(
-      hour: begfpeak.hour,
-      minute: begfpeak.minute,
-      second: 0,
-    );
-    final endfpeakDate = time.copyWith(
-      hour: endfpeak.hour,
-      minute: endfpeak.minute,
-      second: 0,
-    );
-    final begspeakDate = time.copyWith(
-      hour: begspeak.hour,
-      minute: begspeak.minute,
-      second: 0,
-    );
-    final endspeakDate = time.copyWith(
-      hour: endspeak.hour,
-      minute: endspeak.minute,
-      second: 0,
-    );
+    final beg = openingDate.add(offset);
 
-    if((time.isAfter(begfpeakDate) && time.isBefore(endfpeakDate)) || (time.isAfter(begspeakDate) && time.isBefore(endspeakDate))){
-        return Duration(
-        minutes: _line._trainFreq.$1 - minutesSinceLastTrain % _line._trainFreq.$1,
-        );
+    final begPeakFirstDate = timeAsDate(begPeakFirst, now).add(offset);
+    final endPeakFirstDate = timeAsDate(endPeakFirst, now).add(offset);
+
+    final begPeakSecDate = timeAsDate(begPeakSec, now).add(offset);
+    final endPeakSecDate = timeAsDate(endPeakSec, now).add(offset);
+
+    Duration nextArrivalRelative(DateTime beg, DateTime now, int freq) {
+      return Duration(minutes: freq - now.difference(beg).inMinutes % freq);
     }
-    return Duration(
-      minutes: _line._trainFreq.$2 - minutesSinceLastTrain % _line._trainFreq.$2,
-    );
+
+    if (now.isBefore(begPeakFirstDate)) {
+      return nextArrivalRelative(beg, now, line.trainFreq.flat);
+    }
+
+    if (now.isAfter(begPeakFirstDate) && now.isBefore(endPeakFirstDate)) {
+      return nextArrivalRelative(begPeakFirstDate, now, line.trainFreq.peak);
+    }
+
+    if (now.isAfter(endPeakFirstDate) && now.isBefore(begPeakSecDate)) {
+      return nextArrivalRelative(endPeakFirstDate, now, line.trainFreq.flat);
+    }
+
+    if (now.isAfter(begPeakSecDate) && now.isBefore(endPeakSecDate)) {
+      return nextArrivalRelative(begPeakSecDate, now, line.trainFreq.peak);
+    }
+
+    return nextArrivalRelative(endPeakSecDate, now, line.trainFreq.flat);
+  }
+
+  @override
+  String toString() {
+    return "Line(\n${_line._number},\n $_name, $stations\n)\n";
   }
 }
 
@@ -153,11 +154,11 @@ class Line {
   
   /* La he hecho publica en vez de hacer getter y setters que no cumpruban nada ya que es lo que hace Dart automicamante con las variable publicas de las clases
   Dart por que harias eso? */
-  late final Network network;
+  Network? _network;
 
   /* Cada cuantos minutos sale un tren de la primera estación.
   El primer numero es durante las horas pico y el segundo durante las horas valle o no pico */
-  final (int, int) _trainFreq; 
+  final ({int peak, int flat}) _trainFreq; 
 
   late final Map<Station, int> _stationIndex;
 
@@ -174,13 +175,13 @@ class Line {
     _stationIndex = _stations.asMap().map((idx, stop) => MapEntry(stop, idx));
 
     _forwardDir = Direction(
-      "${_stations[0].name}-${_stations[_stations.length - 1]}",
+      "${_stations[0].name}-${_stations[_stations.length - 1].name}",
       this,
       true,
     );
 
     _backwardDir = Direction(
-      "${_stations[_stations.length - 1].name}-${_stations[0]}",
+      "${_stations[_stations.length - 1].name}-${_stations[0].name}",
       this,
       false,
     );
@@ -192,15 +193,28 @@ class Line {
 
   int get number => _number;
   int get length => _stations.length;
-  (int, int) get trainFreq => _trainFreq;
+  Network? get network => _network;
+
+  ({int peak, int flat}) get trainFreq => _trainFreq;
 
   Direction get forwardDir => _forwardDir;
   Direction get backwardDir => _backwardDir;
 
-  Iterable<Station> get stations => _stations;
-  
-
   void addTimeOffset(int timeOffset){
       _timeOffsets.add(timeOffset);
+  }
+
+  void addNetwork(Network network) {
+    if (_network == null) {
+      _network = network;
+      return;
+    }
+
+    throw Exception("Se intento asignar un Netowork a una linea más de una vez");
+  }
+
+  @override
+  String toString() {
+    return "Line($_number, $_stations)";
   }
 }

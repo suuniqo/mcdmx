@@ -19,4 +19,9 @@ class Stop {
   Duration nextArrivalDuration(DateTime time) {
     return _direction.nextArrivalDuration(_station, time);
   }
+  
+  @override
+  String toString() {
+    return "Stop(${_station.name}, ${_direction.line.number}, ${_direction.name})";
+  }
 }

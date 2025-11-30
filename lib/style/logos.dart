@@ -32,7 +32,7 @@ class Logos {
           return 'assets/images/logoEtiopia2.png';
         case 'Eugenia':
           return 'assets/images/logoEugenia2.png';
-        case 'Hospital 20 Noviembre':
+        case 'Hospital 20 de Noviembre':
           return 'assets/images/logoHospital20noviembre2.png';
         case 'Hospital General':
          return 'assets/images/logoHospitalgeneral2.png';
@@ -46,9 +46,9 @@ class Logos {
           return 'assets/images/logoJuarez2.png';
         case 'Lazaro Cardenas':
           return 'assets/images/logoLazaroCardenas2.png';
-        case 'M. A. de Quevedo':
+        case 'M. A. De Quevedo':
           return 'assets/images/logomaquevedo2.png';
-        case 'Mixoac':
+        case 'Mixcoac':
          return 'assets/images/logoMixcoac2.png';
         case 'Niños Heroes':
          return 'assets/images/logoNiñoheroes2.png';

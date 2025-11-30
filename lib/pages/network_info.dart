@@ -137,7 +137,7 @@ class LineButton extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => Placeholder()),
+              MaterialPageRoute(builder: (context) => LinesPage(line: line, foward: foward)),
             );
           },
           style: TextButton.styleFrom(

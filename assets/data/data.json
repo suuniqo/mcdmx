@@ -10,8 +10,8 @@
           "accesibilidad": false,
           "coordenadas": [19.402063016473534, -99.18802780302624]
         },
-        "juanactlan": {
-          "nombre": "Juanactlan", 
+        "juanacatlan": {
+          "nombre": "Juanacatlan", 
           "accesibilidad": false,
           "coordenadas": [19.413130258531996, -99.18201809325365]
         },
@@ -187,7 +187,7 @@
         "recorrido": [
             {"estacion": "observatorio", "transbordos": []},
             {"estacion": "tacubaya", "transbordos": [7, 9]},
-            {"estacion": "juanactlan", "transbordos": []},
+            {"estacion": "juanacatlan", "transbordos": []},
             {"estacion": "chapultepec", "transbordos": []},
             {"estacion": "sevilla", "transbordos": []},
             {"estacion": "insurgentes", "transbordos": []},
@@ -275,12 +275,12 @@
       },
       {
           "estacion-1": "tacubaya",
-          "estacion-2": "juanactlan",
+          "estacion-2": "juanacatlan",
           "tiempo": 3,
           "id-linea": "1"
       },
       {
-          "estacion-1": "juanactlan",
+          "estacion-1": "juanacatlan",
           "estacion-2": "chapultepec",
           "tiempo": 3,
           "id-linea": "1"
@@ -525,5 +525,9 @@
             "tiempo": 8,
             "lineas": ["7", "9"]
         }
-  ]
+    ],
+
+    "minTiempoTransbordo": 2,
+
+    "maxTiempoTransbordo": 12
 }

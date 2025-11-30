@@ -66,53 +66,8 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/images/uff.jpg
-    # OR to include all images in the folder:
-    - assets/images/genz.webp
-    - assets/images/linea1.png
-    - assets/images/navidad.jpg
-    - assets/images/poster.jpg
-    - assets/images/linea1logo.png
-    - assets/images/linea3logo.png
-    - assets/images/linea7logo.png
-    - assets/images/linea9logo.png
-    - assets/images/linea12logo.png
-    - assets/images/logocdmx.png
-    - assets/images/logoAuditorio2.png
-    - assets/images/logoBalderas2.png
-    - assets/images/logoBarrancadelmuerto2.png
-    - assets/images/logoCentromedico2.png
-    - assets/images/logoChapultepec2.png
-    - assets/images/logoChilpancingo2.png
-    - assets/images/logoConstituyentes2.png
-    - assets/images/logoCopilco2.png
-    - assets/images/logoCoyoacan2.png
-    - assets/images/logoCuauhtemoc2.png
-    - assets/images/logoDivisiondelnorte2.png
-    - assets/images/logoEjeCentral2.png
-    - assets/images/logoEtiopia2.png
-    - assets/images/logoEugenia2.png
-    - assets/images/logoHospital20noviembre2.png
-    - assets/images/logoHospitalgeneral2.png
-    - assets/images/logoInsurgentes2.png
-    - assets/images/logoInsurgentesSur2.png
-    - assets/images/logoJuanacatlan2.png
-    - assets/images/logoJuarez2.png
-    - assets/images/logoLazaroCardenas2.png
-    - assets/images/logomaquevedo2.png
-    - assets/images/logoMixcoac2.png
-    - assets/images/logoNiñoheroes2.png
-    - assets/images/logoObservatorio2.png
-    - assets/images/logoParquedelosvenados2.png
-    - assets/images/logoPatriotismo2.png
-    - assets/images/logoPolanco2.png
-    - assets/images/logoSanAntonio2.png
-    - assets/images/logoSanpedrodelospinos2.png
-    - assets/images/logoSevilla2.png
-    - assets/images/logoTacubaya2.png
-    - assets/images/logoUniversidad2.png
-    - assets/images/logoViveros2.png
-    - assets/images/logoZapata2.png
+    - assets/data/
+    - assets/images/
 
 
 
