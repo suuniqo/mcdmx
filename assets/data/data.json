@@ -10,8 +10,8 @@
           "accesibilidad": false,
           "coordenadas": [19.402063016473534, -99.18802780302624]
         },
-        "juanactlan": {
-          "nombre": "Juanactlan", 
+        "juanacatlan": {
+          "nombre": "Juanacatlan", 
           "accesibilidad": false,
           "coordenadas": [19.413130258531996, -99.18201809325365]
         },
@@ -179,11 +179,15 @@
 
   "lineas": [
       {
-        "id": "1",
+        "id": 1,
+        "frecuencias":{
+            "pico": 3,
+            "valle": 6
+        },
         "recorrido": [
             {"estacion": "observatorio", "transbordos": []},
             {"estacion": "tacubaya", "transbordos": [7, 9]},
-            {"estacion": "juanactlan", "transbordos": []},
+            {"estacion": "juanacatlan", "transbordos": []},
             {"estacion": "chapultepec", "transbordos": []},
             {"estacion": "sevilla", "transbordos": []},
             {"estacion": "insurgentes", "transbordos": []},
@@ -192,7 +196,11 @@
         ]
       },
       {
-          "id": "3",
+          "id": 3,
+          "frecuencias":{
+              "pico": 3,
+              "valle": 6
+          },
           "recorrido": [
               {"estacion": "universidad", "transbordos": []},
               {"estacion": "copilco", "transbordos": []},
@@ -211,7 +219,11 @@
           ]
       },
       {
-      "id": "7",
+      "id": 7,
+          "frecuencias":{
+              "pico": 4,
+              "valle": 7
+          },
       "recorrido": [
         { "estacion": "barranca", "transbordos": [] },
         { "estacion": "mixcoac", "transbordos": [12] },
@@ -224,7 +236,11 @@
       ]
     },
     {
-      "id": "9",
+      "id": 9,
+      "frecuencias":{
+          "pico": 4,
+          "valle": 7
+      },
       "recorrido": [
         { "estacion": "tacubaya", "transbordos": [1, 7] },
         { "estacion": "patriotismo", "transbordos": [] },
@@ -234,7 +250,11 @@
       ]
     },
     {
-      "id": "12",
+      "id": 12,
+      "frecuencias":{
+          "pico": 4,
+          "valle": 7
+      },
       "recorrido": [
         { "estacion": "mixcoac", "transbordos": [7] },
         { "estacion": "insurgentessur", "transbordos": [] },
@@ -255,12 +275,12 @@
       },
       {
           "estacion-1": "tacubaya",
-          "estacion-2": "juanactlan",
+          "estacion-2": "juanacatlan",
           "tiempo": 3,
           "id-linea": "1"
       },
       {
-          "estacion-1": "juanactlan",
+          "estacion-1": "juanacatlan",
           "estacion-2": "chapultepec",
           "tiempo": 3,
           "id-linea": "1"
@@ -467,5 +487,47 @@
           "tiempo": 2,
           "id-linea": "3"
       }
-  ]
+    ],
+
+    "transbordos": [
+        {
+            "estacion": "balderas",
+            "tiempo": 3,
+            "lineas": ["1", "3"]
+        },
+        {
+            "estacion": "centro",
+            "tiempo": 4,
+            "lineas": ["3", "9"]
+        },
+        {
+            "estacion": "zapata",
+            "tiempo": 4,
+            "lineas": ["3", "12"]
+        },
+        {
+            "estacion": "mixcoac",
+            "tiempo": 5,
+            "lineas": ["7", "12"]
+        },
+        {
+            "estacion": "tacubaya",
+            "tiempo": 4,
+            "lineas": ["1", "9"]
+        },
+        {
+            "estacion": "tacubaya",
+            "tiempo": 8,
+            "lineas": ["1", "7"]
+        },
+        {
+            "estacion": "tacubaya",
+            "tiempo": 8,
+            "lineas": ["7", "9"]
+        }
+    ],
+
+    "minTiempoTransbordo": 2,
+
+    "maxTiempoTransbordo": 12
 }

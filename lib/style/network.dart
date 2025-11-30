@@ -1,7 +1,25 @@
+import 'package:flutter/material.dart';
 import 'package:mcdmx/domain/line.dart';
 import 'package:mcdmx/domain/station.dart';
 
-class Logos {
+class NetworkStyle {
+  static Color lineColor(Line line) {
+    switch (line.number) {
+      case 1:
+        return const Color.fromARGB(255, 245, 73, 146);
+      case 3:
+        return const Color.fromARGB(255, 176, 153, 0);
+      case 7:
+        return const Color.fromARGB(255, 255, 98, 2);
+      case 9:
+        return const Color.fromARGB(255, 80, 43, 42);
+      case 12:
+        return const Color.fromARGB(255, 192, 155, 82);
+      default:
+        return Colors.grey; // fallback
+    }
+  }
+
   static String fromStation(Station station) {
       switch (station.name){
         case 'Auditorio':
@@ -32,7 +50,7 @@ class Logos {
           return 'assets/images/logoEtiopia2.png';
         case 'Eugenia':
           return 'assets/images/logoEugenia2.png';
-        case 'Hospital 20 Noviembre':
+        case 'Hospital 20 de Noviembre':
           return 'assets/images/logoHospital20noviembre2.png';
         case 'Hospital General':
          return 'assets/images/logoHospitalgeneral2.png';
@@ -46,9 +64,9 @@ class Logos {
           return 'assets/images/logoJuarez2.png';
         case 'Lazaro Cardenas':
           return 'assets/images/logoLazaroCardenas2.png';
-        case 'M. A. de Quevedo':
+        case 'M. A. De Quevedo':
           return 'assets/images/logomaquevedo2.png';
-        case 'Mixoac':
+        case 'Mixcoac':
          return 'assets/images/logoMixcoac2.png';
         case 'Niños Heroes':
          return 'assets/images/logoNiñoheroes2.png';

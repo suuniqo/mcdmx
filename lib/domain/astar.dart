@@ -3,14 +3,12 @@ import 'package:mcdmx/domain/stop.dart';
 
 import 'station.dart';
 import 'network.dart';
-import 'heuristic.dart';
 
 class AStar {
   final Network _network;
-  final Heuristic _heuristic;
+  final double Function(Stop stop, int g, Station dst) _heuristic;
 
-  AStar(this._network)
-    : _heuristic = Heuristic(_network);
+  AStar(this._network, this._heuristic);
 
   // Algoritmo para comparar dos entradas en el openSet
   // Se comparan los siguientes valores, con prioridad de mayor a menor:
@@ -23,7 +21,7 @@ class AStar {
   // 3. Según la función h, que es muy efectiva en caso
   //    de empates en la función f
   //
-  PriorityQueue<({double h, double g, Stop stop})>
+  PriorityQueue<({double h, int g, Stop stop})>
   _makeOpenSet() {
     return PriorityQueue((self, other) {
       final (h: hScoreA, g: gScoreA, stop: stopA) = self;
@@ -50,10 +48,10 @@ class AStar {
     });
   }
 
-  ({double h, double g, Stop stop})
-  _makeOpenSetEntry(Stop stop, Station stationDst, double gStop) {
+  ({double h, int g, Stop stop})
+  _makeOpenSetEntry(Stop stop, Station stationDst, int gStop) {
       return (
-        h: _heuristic.transferAware(stop, gStop, stationDst),
+        h: _heuristic(stop, gStop, stationDst),
         g: gStop,
         stop: stop,
       );
@@ -80,19 +78,18 @@ class AStar {
     return path.reversed.toList();
   }
 
-  List<Station>? calculateRoute(Station stationSrc, Station stationDst) {
-    // Momento en el que se calcula la ruta
-    final now = DateTime.now();
-
+  (List<Station>, int, int)? calculateRoute(Station stationSrc, Station stationDst, DateTime now) {
     // Encontré una Priority Queue
     final PriorityQueue<({
       double h,
-      double g,
+      int g,
       Stop stop
     })> openSet = _makeOpenSet();
 
     // Se almaneza g(Stop) por cada Stop visitado
-    final Map<Stop, double> gScore = {};
+    final Map<Stop, int> gScore = {};
+
+    final Set<Stop> visited = {};
 
     // En vez de usar el closedList, es más eficiente usar un mapa de antecesores
     final Map<Stop, Stop?> prev = {};
@@ -103,39 +100,42 @@ class AStar {
 
       // En la primera parada del trayecto el tiempo será
       // el tiempo de espera al siguiente metro
-      gScore[stop] = stop
+      final firstArrival = stop
         .nextArrivalDuration(now)
-        .inMinutes
-        .toDouble();
+        .inMinutes;
 
-      final entry = _makeOpenSetEntry(stop, stationDst, 0.0);
+      gScore[stop] = firstArrival;
+
+      final entry = _makeOpenSetEntry(stop, stationDst, firstArrival);
 
       openSet.add(entry);
     }
 
     do {
       final (h: _, g: gCurr, stop: curr) = openSet.removeFirst();
+      visited.add(curr);
 
       if (gCurr > gScore[curr]!) {
         continue;
       }
 
       if (curr.station == stationDst) {
-        return _rebuildPath(prev, curr);
+        return (_rebuildPath(prev, curr), gCurr, visited.length);
       }
 
       for (final edge in _network.connections[curr]!) {
         final next = edge.opposite(curr)!;
 
+        // tiempo a la parada anterior más tránsito a la siguiente
+        // (este tránsito es en metro o andando si es un transbordo)
         var gNext = gCurr + edge.cost;
 
         // Si es un transbordo hay que sumar
         // al coste lo que tarda el próximo tren
         if (curr.station == next.station) {
           gNext += curr
-            .nextArrivalDuration(now.add(Duration(minutes: gNext.round())))
-            .inMinutes
-            .toDouble();
+            .nextArrivalDuration(now.add(Duration(minutes: gNext)))
+            .inMinutes;
         }
 
         if (!gScore.containsKey(next) || gNext < gScore[next]!) {

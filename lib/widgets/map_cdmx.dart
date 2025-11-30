@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:mcdmx/style/logos.dart';
+import 'package:mcdmx/style/network.dart';
 
 import 'package:provider/provider.dart';
 
@@ -34,25 +34,27 @@ class MapCDMX extends StatelessWidget {
                   : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
               userAgentPackageName: 'com.example.mcdmx',
             ),
-            MarkerLayer(
-              markers: [
-                for (final station in network.stations)
-                  Marker(
-                    point: LatLng(station.coordinates.$1, station.coordinates.$2),
-                    child: Image.asset(Logos.fromStation(station)),
-                  )
-              ]
-            ),
             PolylineLayer(
               polylines: [
                 for (final line in network.lines)
                   Polyline(
+                    strokeWidth: 5,
+                    color: NetworkStyle.lineColor(line),
                     points: [
-                      for (final station in line.stations)
-                        LatLng(station.coordinates.$1, station.coordinates.$2)
+                      for (final station in line.forwardDir.stations)
+                        station.coords
                     ]
                   ),
               ],
+            ),
+            MarkerLayer(
+              markers: [
+                for (final station in network.stations)
+                  Marker(
+                    point: station.coords,
+                    child: Image.asset(NetworkStyle.fromStation(station)),
+                  )
+              ]
             ),
           ],
         ),

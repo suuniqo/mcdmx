@@ -8,7 +8,7 @@ import 'package:mcdmx/widgets/bgcard.dart';
 import 'package:mcdmx/widgets/bigcard.dart';
 
 import 'package:mcdmx/style/format.dart';
-import 'package:mcdmx/style/logos.dart';
+import 'package:mcdmx/style/network.dart';
 
 
 class LineButton extends StatelessWidget {
@@ -36,7 +36,7 @@ class LineButton extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => Placeholder()),
+              MaterialPageRoute(builder: (context) => LinesPage(line: line, foward: foward)),
             );
           },
           style: TextButton.styleFrom(
@@ -51,7 +51,7 @@ class LineButton extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(width: 30, height: 30, child: Image.asset(Logos.fromLine(line))),
+                SizedBox(width: 30, height: 30, child: Image.asset(NetworkStyle.fromLine(line))),
                 SizedBox(width: 12),
                 if (foward) Text(line.forwardDir.name, style: styleName),
                 if (!foward) Text(line.backwardDir.name, style: styleName),
@@ -111,7 +111,7 @@ class StationButton extends StatelessWidget {
                 SizedBox(
                   width: 30,
                   height: 30,
-                  child: Image.asset(Logos.fromStation(station)),
+                  child: Image.asset(NetworkStyle.fromStation(station)),
                 ),
                 SizedBox(width: 12),
                 Text(station.name, style: styleName),
@@ -119,7 +119,7 @@ class StationButton extends StatelessWidget {
                   SizedBox(
                     width: 30,
                     height: 30,
-                    child: Image.asset(Logos.fromLine(line)),
+                    child: Image.asset(NetworkStyle.fromLine(line)),
                   ),
               ],
             ),
@@ -150,7 +150,7 @@ class LinesPage extends StatelessWidget {
           children: [
             if (foward) Text(line.forwardDir.name),
             if (!foward) Text(line.backwardDir.name),
-            SizedBox(width: 30, height: 30, child: Image.asset(Logos.fromLine(line))),
+            SizedBox(width: 30, height: 30, child: Image.asset(NetworkStyle.fromLine(line))),
           ],
         ),
         titleTextStyle: TextStyle(
@@ -229,7 +229,7 @@ class StationsPage extends StatelessWidget {
           children: [
             Text(station.name, style: styleSubTitle),
             SizedBox(width: 5),
-            SizedBox(width: 30, height: 30, child: Image.asset(Logos.fromStation(station))),
+            SizedBox(width: 30, height: 30, child: Image.asset(NetworkStyle.fromStation(station))),
             if (station.accesible) ...[
               SizedBox(width: 5),
               SizedBox(width: 30, height: 30, child: Icon(Icons.accessible_rounded)),

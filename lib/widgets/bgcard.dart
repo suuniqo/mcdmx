@@ -3,7 +3,7 @@ import 'package:mcdmx/style/format.dart';
 
 import 'package:mcdmx/domain/line.dart';
 import 'package:mcdmx/domain/station.dart';
-import 'package:mcdmx/style/logos.dart';
+import 'package:mcdmx/style/network.dart';
 
 class Bgcard extends StatelessWidget {
   final Station station;
@@ -43,12 +43,12 @@ class Bgcard extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(station.name, style: style),
+                Text(direction.name, style: style),
                 SizedBox(width: 12),
                 SizedBox(
                   width: 40,
                   height: 40,
-                  child: Image.asset(Logos.fromStation(station)),
+                  child: Image.asset(NetworkStyle.fromStation(station)),
                 ),
               ],
             ),
@@ -61,12 +61,12 @@ class Bgcard extends StatelessWidget {
                 ),
                 SizedBox(width: 12),
                 Text(
-                  "${nextArrival + line.trainFreq} min",
+                  "$nextArrival min",
                   style: style,
                 ),
                 SizedBox(width: 12),
                 Text(
-                  "${nextArrival + 2*line.trainFreq} min",
+                  "$nextArrival min",
                   style: style,
                 ),
               ],

@@ -33,8 +33,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => SchemeState(context)),
-        ChangeNotifierProvider(create: (_) => NetworkState()),
+        ChangeNotifierProvider(
+          create: (_) => SchemeState(context)
+        ),
+        FutureProvider(
+          create: (_) => NetworkState.create(),
+          initialData: NetworkState.empty(),
+          lazy: false,
+        ),
       ],
       child: Consumer<SchemeState>(
         builder: (context, schemeState, _) {

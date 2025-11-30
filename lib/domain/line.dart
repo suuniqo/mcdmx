@@ -4,6 +4,15 @@ import 'network.dart';
 import 'station.dart';
 
 class Direction {
+  //begin first peak
+  static const TimeOfDay begPeakFirst = TimeOfDay(hour: 6, minute: 0);
+  //end first peak
+  static const TimeOfDay endPeakFirst = TimeOfDay(hour: 9, minute: 0);
+  //begin second peak
+  static const TimeOfDay begPeakSec = TimeOfDay(hour: 18, minute: 0);
+  //end second peak
+  static const TimeOfDay endPeakSec = TimeOfDay(hour: 20, minute: 0);
+
   final String _name;
   final bool _forward;
   final Line _line;
@@ -69,21 +78,20 @@ class Direction {
 
   // Retorna lo que tarda en llegar el siguiente tren
   // a la estación station a la hora time
-  Duration nextArrivalDuration(Station station, DateTime time) {
-    TimeOfDay opening = _line._network.openingTime(time);
-    TimeOfDay closing = _line._network.closingTime;
+  Duration nextArrivalDuration(Station station, DateTime now) {
+    DateTime timeAsDate(TimeOfDay time, DateTime date) {
+      return date.copyWith(
+        hour: time.hour,
+        minute: time.minute,
+        second: 0,
+      );
+    }
 
-    final openingDate = time.copyWith(
-      hour: opening.hour,
-      minute: opening.minute,
-      second: 0,
-    );
-
-    final closingDate = time.copyWith(
-      hour: closing.hour,
-      minute: closing.minute,
-      second: 0,
-    );
+    TimeOfDay opening = _line.network!.openingTime(now);
+    TimeOfDay closing = _line.network!.closingTime;
+    
+    final openingDate = timeAsDate(opening, now);
+    final closingDate = timeAsDate(closing, now);
 
     final ambiguousIdx = _line._stationIndex[station];
 
@@ -97,39 +105,72 @@ class Direction {
 
     final offset = Duration(minutes: nthTimeOffset(idx));
 
-    if (time.isBefore(openingDate)) {
+    if (now.isBefore(openingDate)) {
       // hora de apertura + lo que tarda el primer tren - hora actual
-      return openingDate.add(offset).difference(time);
+      return openingDate.add(offset).difference(now);
     }
 
-    if (time.isAfter(closingDate)) {
+    if (closingDate.isAfter(openingDate) && now.isAfter(closingDate)) {
       // hora de apertura del día siguiente + lo que tarda el primer tren - hora actual
-      final nextDay = time.add(Duration(days: 1));
-      final nextOpening = _line._network.openingTime(nextDay);
+      final nextDay = now.add(Duration(days: 1));
+      final nextOpening = _line.network!.openingTime(nextDay);
 
       final nextOpeningDate = nextDay.copyWith(
         hour: nextOpening.hour,
         minute: nextOpening.minute,
       );
 
-      return nextOpeningDate.add(offset).difference(time);
+      return nextOpeningDate.add(offset).difference(now);
     }
 
-    final minutesSinceLastTrain = time
-        .difference(openingDate.add(offset))
-        .inMinutes;
+    final beg = openingDate.add(offset);
 
-    return Duration(
-      minutes: _line._trainFreq - minutesSinceLastTrain % _line._trainFreq,
-    );
+    final begPeakFirstDate = timeAsDate(begPeakFirst, now).add(offset);
+    final endPeakFirstDate = timeAsDate(endPeakFirst, now).add(offset);
+
+    final begPeakSecDate = timeAsDate(begPeakSec, now).add(offset);
+    final endPeakSecDate = timeAsDate(endPeakSec, now).add(offset);
+
+    Duration nextArrivalRelative(DateTime beg, DateTime now, int freq) {
+      return Duration(minutes: freq - now.difference(beg).inMinutes % freq);
+    }
+
+    if (now.isBefore(begPeakFirstDate)) {
+      return nextArrivalRelative(beg, now, line.trainFreq.flat);
+    }
+
+    if (now.isAfter(begPeakFirstDate) && now.isBefore(endPeakFirstDate)) {
+      return nextArrivalRelative(begPeakFirstDate, now, line.trainFreq.peak);
+    }
+
+    if (now.isAfter(endPeakFirstDate) && now.isBefore(begPeakSecDate)) {
+      return nextArrivalRelative(endPeakFirstDate, now, line.trainFreq.flat);
+    }
+
+    if (now.isAfter(begPeakSecDate) && now.isBefore(endPeakSecDate)) {
+      return nextArrivalRelative(begPeakSecDate, now, line.trainFreq.peak);
+    }
+
+    return nextArrivalRelative(endPeakSecDate, now, line.trainFreq.flat);
+  }
+
+  @override
+  String toString() {
+    return "Line(\n${_line._number},\n $_name, $stations\n)\n";
   }
 }
 
 class Line {
   final int _number;
   final List<Station> _stations;
-  final Network _network;
-  final int _trainFreq; // Cada cuantos minutos sale un tren de la primera estación
+  
+  /* La he hecho publica en vez de hacer getter y setters que no cumpruban nada ya que es lo que hace Dart automicamante con las variable publicas de las clases
+  Dart por que harias eso? */
+  Network? _network;
+
+  /* Cada cuantos minutos sale un tren de la primera estación.
+  El primer numero es durante las horas pico y el segundo durante las horas valle o no pico */
+  final ({int peak, int flat}) _trainFreq; 
 
   late final Map<Station, int> _stationIndex;
 
@@ -139,22 +180,20 @@ class Line {
   late final Direction _backwardDir;
 
   Line(
-    this._network,
     this._number,
     this._stations,
     this._trainFreq,
-    this._timeOffsets,
-  ) {
+  ) : _timeOffsets = [] {
     _stationIndex = _stations.asMap().map((idx, stop) => MapEntry(stop, idx));
 
     _forwardDir = Direction(
-      "${_stations[0].name}-${_stations[_stations.length - 1]}",
+      "${_stations[0].name}-${_stations[_stations.length - 1].name}",
       this,
       true,
     );
 
     _backwardDir = Direction(
-      "${_stations[_stations.length - 1].name}-${_stations[0]}",
+      "${_stations[_stations.length - 1].name}-${_stations[0].name}",
       this,
       false,
     );
@@ -168,11 +207,28 @@ class Line {
 
   int get number => _number;
   int get length => _stations.length;
-  int get trainFreq => _trainFreq;
+  Network? get network => _network;
+
+  ({int peak, int flat}) get trainFreq => _trainFreq;
 
   Direction get forwardDir => _forwardDir;
   Direction get backwardDir => _backwardDir;
-  Network get netwrok => _network;
 
-  Iterable<Station> get stations => _stations;
+  void addTimeOffset(int timeOffset){
+      _timeOffsets.add(timeOffset);
+  }
+
+  void addNetwork(Network network) {
+    if (_network == null) {
+      _network = network;
+      return;
+    }
+
+    throw Exception("Se intento asignar un Netowork a una linea más de una vez");
+  }
+
+  @override
+  String toString() {
+    return "Line($_number, $_stations)";
+  }
 }
