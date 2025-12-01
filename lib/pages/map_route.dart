@@ -253,7 +253,7 @@ class _MapRoutePageState extends State<MapRoutePage> {
                     ),
                     _buildRouteLayout(context, route),
                     Padding(
-              padding: const EdgeInsets.only(left: 12.0, right: 20.0, top: 8.0),
+              padding: const EdgeInsets.only(left: 12.0, right: 20.0, top: 8.0, bottom: 8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

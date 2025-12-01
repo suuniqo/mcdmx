@@ -3,6 +3,7 @@ import 'package:mcdmx/pages/map_panel.dart';
 import 'package:mcdmx/pages/map_route.dart';
 import 'package:mcdmx/state/routes.dart';
 import 'package:mcdmx/style/format.dart';
+import 'package:mcdmx/style/network.dart';
 import 'package:mcdmx/widgets/icon_fab.dart';
 import 'package:mcdmx/widgets/item_list.dart';
 import 'package:mcdmx/widgets/tab_box.dart';
@@ -29,18 +30,18 @@ class RoutePage extends StatelessWidget {
                   padding: const EdgeInsets.all(Format.marginPrimary),
                   child: ItemList(itemName: 'favoritos', children: [
                     for (final fav in routes.favs)
-                      InkWell(
-                        onTap: () => Navigator.of(context, rootNavigator: true).push(
-                          MaterialPageRoute(builder: (context) => MapRoutePage(fav.$1, fav.$2)),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.only(bottom: fav == routes.favs.last ? 0 : Format.marginSecondary),
-                          child: SizedBox(
-                            width: double.infinity,
-                            height: 60,
-                            child: Card(
-                              elevation: 0,
-                              margin: EdgeInsets.zero,
+                      Padding(
+                        padding: EdgeInsets.only(bottom: fav == routes.favs.last ? 0 : Format.marginSecondary),
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: 60,
+                          child: Card(
+                            elevation: 0,
+                            margin: EdgeInsets.zero,
+                            child: InkWell(
+                              onTap: () => Navigator.of(context, rootNavigator: true).push(
+                                MaterialPageRoute(builder: (context) => MapRoutePage(fav.$1, fav.$2)),
+                              ),
                               child: Padding(
                                 padding: const EdgeInsets.only(left: 2*Format.marginSecondary, right: Format.marginSecondary),
                                 child: Stack(
@@ -51,8 +52,22 @@ class RoutePage extends StatelessWidget {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
+                                          Image.asset(
+                                            NetworkStyle.fromStation(fav.$1),
+                                            height: 22,
+                                            width: 22,
+                                          ),
+                                          SizedBox(width: 4,),
                                           Text(fav.$1.name.split(' ')[0]),
+                                          SizedBox(width: 4,),
                                           Icon(Icons.arrow_right_rounded),
+                                          SizedBox(width: 4,),
+                                          Image.asset(
+                                            NetworkStyle.fromStation(fav.$2),
+                                            height: 22,
+                                            width: 22,
+                                          ),
+                                          SizedBox(width: 4,),
                                           Text(fav.$2.name.split(' ')[0]),
                                         ],
                                       ),
@@ -83,21 +98,22 @@ class RoutePage extends StatelessWidget {
                   padding: const EdgeInsets.all(Format.marginPrimary),
                   child: ItemList(itemName: 'recientes', children: [
                     for (final recent in routes.recents)
-                      InkWell(
-                        onTap: () => Navigator.of(context, rootNavigator: true).push(
-                          MaterialPageRoute(builder: (context) => MapRoutePage(recent.$1, recent.$2)),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.only(bottom: recent == routes.recents.last ? 0 : Format.marginSecondary),
-                          child: SizedBox(
-                            width: double.infinity,
-                            height: 60,
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadiusGeometry.circular(Format.borderRadius)
+                      Padding(
+                        padding: EdgeInsets.only(bottom: recent == routes.recents.last ? 0 : Format.marginSecondary),
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: 60,
+                          child: Card(
+                            clipBehavior: Clip.antiAlias,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadiusGeometry.circular(Format.borderRadius)
+                            ),
+                            elevation: 0,
+                            margin: EdgeInsets.zero,
+                            child: InkWell(
+                              onTap: () => Navigator.of(context, rootNavigator: true).push(
+                                MaterialPageRoute(builder: (context) => MapRoutePage(recent.$1, recent.$2)),
                               ),
-                              elevation: 0,
-                              margin: EdgeInsets.zero,
                               child: Padding(
                                 padding: const EdgeInsets.only(left: 2*Format.marginSecondary, right: Format.marginSecondary),
                                 child: Stack(
@@ -108,8 +124,22 @@ class RoutePage extends StatelessWidget {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
+                                          Image.asset(
+                                            NetworkStyle.fromStation(recent.$1),
+                                            height: 22,
+                                            width: 22,
+                                          ),
+                                          SizedBox(width: 4,),
                                           Text(recent.$1.name.split(' ')[0]),
+                                          SizedBox(width: 4,),
                                           Icon(Icons.arrow_right_rounded),
+                                          SizedBox(width: 4,),
+                                          Image.asset(
+                                            NetworkStyle.fromStation(recent.$2),
+                                            height: 22,
+                                            width: 22,
+                                          ),
+                                          SizedBox(width: 4,),
                                           Text(recent.$2.name.split(' ')[0]),
                                         ],
                                       ),

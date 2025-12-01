@@ -157,69 +157,67 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
 
     return Padding(
       padding: const EdgeInsets.all(Format.marginPrimary),
-      child: Expanded(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            for (final match in matching)
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => StationsPage(station: match))),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Image.asset(
-                        NetworkStyle.fromStation(match),
-                        height: 40,
-                        width: 40,
-                      ),
-                      SizedBox(width: Format.marginPrimary,),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  match.name,
-                                  style: content.titleItem,
-                                ),
-                                Spacer(),
-                                Row(
-                                  children: [
-                                    for (final line in match.lines)
-                                      Padding(
-                                        padding: const EdgeInsets.only(right: 4.0),
-                                        child: Image.asset(
-                                          NetworkStyle.fromLine(line),
-                                          height: 16,
-                                          width: 16,
-                                        ),
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          for (final match in matching)
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => StationsPage(station: match))),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Image.asset(
+                      NetworkStyle.fromStation(match),
+                      height: 40,
+                      width: 40,
+                    ),
+                    SizedBox(width: Format.marginPrimary,),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                match.name,
+                                style: content.titleItem,
+                              ),
+                              Spacer(),
+                              Row(
+                                children: [
+                                  for (final line in match.lines)
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 4.0),
+                                      child: Image.asset(
+                                        NetworkStyle.fromLine(line),
+                                        height: 16,
+                                        width: 16,
                                       ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Icon(match.accesible ? Icons.accessible_rounded : Icons.not_accessible_rounded, size: 15),
-                                SizedBox(width: 4,),
-                                Text(match.accesible ? 'Accesible' : 'No accesible'),
-                              ],
-                            ),
-                            if (match != matching.last)
-                              Divider(color: theme.colorScheme.surfaceTint, thickness: 2),
-                          ]
-                        ),
+                                    ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Icon(match.accesible ? Icons.accessible_rounded : Icons.not_accessible_rounded, size: 15),
+                              SizedBox(width: 4,),
+                              Text(match.accesible ? 'Accesible' : 'No accesible'),
+                            ],
+                          ),
+                          if (match != matching.last)
+                            Divider(color: theme.colorScheme.surfaceTint, thickness: 2),
+                        ]
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-          ],
-        ),
+            ),
+        ],
       ),
     );
   }
