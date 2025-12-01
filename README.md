@@ -18,11 +18,6 @@ Sin embargo, se recomienda ejecutarla en un teléfono móvil, ya que ha sido dis
 
 ---
 
-### Windows
-TODO
-
----
-
 ### macOS
 1. Descarga el zip de la app directamente de `releases/mcdmex-macOS.zip`
 2. Descromprime el fichero y ábrelo para ejecutarlo.
