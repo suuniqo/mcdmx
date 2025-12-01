@@ -11,7 +11,7 @@ class Bgcard extends StatelessWidget {
   final TextStyle? style;
   final Line line;
   final bool foward;
-  final theme;
+  final ThemeData theme;
 
   Bgcard({
     required this.station,
@@ -28,8 +28,7 @@ class Bgcard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Direction direction = line.forwardDir;
-    DateTime now = DateTime.now();    // segundo
-
+    DateTime now = direction.line.network!.nowRemote();    // segundo
 
     if (!foward) {
       direction = line.backwardDir;

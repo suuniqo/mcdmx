@@ -15,10 +15,12 @@ import 'package:mcdmx/style/color_theme.dart';
 
 import 'package:mcdmx/state/scheme.dart';
 import 'package:mcdmx/state/network.dart';
+import 'package:timezone/data/latest_10y.dart';
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  initializeTimeZones();
 
   final networkState = await NetworkState.create();
 
@@ -57,7 +59,7 @@ class MyApp extends StatelessWidget {
               context,
             ).copyWith(textScaler: TextScaler.linear(schemeState.fontMul)),
             child: MaterialApp(
-              title: 'mcdmx',
+              title: 'mcdmex',
               theme: colorTheme.light,
               darkTheme: colorTheme.dark,
               themeMode: schemeState.themeMode,
@@ -116,7 +118,12 @@ class _FrameState extends State<Frame> {
 
   @override
   Widget build(BuildContext context) {
-    //var appState = context.watch<MyAppState>();
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        systemNavigationBarColor: Theme.of(context).colorScheme.surfaceContainer,
+        systemNavigationBarDividerColor: Colors.transparent,
+      )
+    );
 
     return Scaffold(
       body: PageView(

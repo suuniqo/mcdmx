@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mcdmx/domain/station.dart';
 import 'package:mcdmx/pages/map_panel.dart';
 import 'package:mcdmx/pages/map_route.dart';
 import 'package:mcdmx/state/routes.dart';
@@ -11,6 +12,80 @@ import 'package:mcdmx/widgets/titled_page.dart';
 import 'package:provider/provider.dart';
 
 class RoutePage extends StatelessWidget {
+  Widget _buildSavedRoute(BuildContext context, (Station, Station) route, RoutesState routes, IconData icon, VoidCallback onPressed) {
+    return SizedBox(
+      width: double.infinity,
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadiusGeometry.circular(Format.borderRadius),
+        ),
+        elevation: 0,
+        margin: EdgeInsets.zero,
+        child: InkWell(
+          onTap: () => Navigator.of(context, rootNavigator: true).push(
+            MaterialPageRoute(builder: (context) => MapRoutePage(route.$1, route.$2)),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(Format.marginPrimary),
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Image.asset(
+                            NetworkStyle.fromStation(route.$1),
+                            height: 22,
+                            width: 22,
+                          ),
+                          SizedBox(width: 4,),
+                          Text(route.$1.name),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(width: 9,),
+                          Container(
+                            width: 3,
+                            height: 10,
+                            color: NetworkStyle.lineColor(route.$1.lines.first),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Image.asset(
+                            NetworkStyle.fromStation(route.$2),
+                            height: 22,
+                            width: 22,
+                          ),
+                          SizedBox(width: 4,),
+                          Text(route.$2.name),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: onPressed,
+                    icon: Icon(icon),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
   Widget _quickAccessTabs(BuildContext context, RoutesState routes) {
     final theme = Theme.of(context);
 
@@ -32,60 +107,7 @@ class RoutePage extends StatelessWidget {
                     for (final fav in routes.favs)
                       Padding(
                         padding: EdgeInsets.only(bottom: fav == routes.favs.last ? 0 : Format.marginSecondary),
-                        child: SizedBox(
-                          width: double.infinity,
-                          height: 60,
-                          child: Card(
-                            elevation: 0,
-                            margin: EdgeInsets.zero,
-                            child: InkWell(
-                              onTap: () => Navigator.of(context, rootNavigator: true).push(
-                                MaterialPageRoute(builder: (context) => MapRoutePage(fav.$1, fav.$2)),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 2*Format.marginSecondary, right: Format.marginSecondary),
-                                child: Stack(
-                                  children: [
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Image.asset(
-                                            NetworkStyle.fromStation(fav.$1),
-                                            height: 22,
-                                            width: 22,
-                                          ),
-                                          SizedBox(width: 4,),
-                                          Text(fav.$1.name.split(' ')[0]),
-                                          SizedBox(width: 4,),
-                                          Icon(Icons.arrow_right_rounded),
-                                          SizedBox(width: 4,),
-                                          Image.asset(
-                                            NetworkStyle.fromStation(fav.$2),
-                                            height: 22,
-                                            width: 22,
-                                          ),
-                                          SizedBox(width: 4,),
-                                          Text(fav.$2.name.split(' ')[0]),
-                                        ],
-                                      ),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: IconButton(
-                                        padding: EdgeInsets.zero,
-                                        onPressed: () => routes.toggleFav(fav),
-                                        icon: Icon(Icons.delete_outline_rounded),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                        child: _buildSavedRoute(context, fav, routes, Icons.close_rounded, () => routes.toggleFav(fav)),
                       ),
                     ]
                   ),
@@ -100,64 +122,7 @@ class RoutePage extends StatelessWidget {
                     for (final recent in routes.recents)
                       Padding(
                         padding: EdgeInsets.only(bottom: recent == routes.recents.last ? 0 : Format.marginSecondary),
-                        child: SizedBox(
-                          width: double.infinity,
-                          height: 60,
-                          child: Card(
-                            clipBehavior: Clip.antiAlias,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadiusGeometry.circular(Format.borderRadius)
-                            ),
-                            elevation: 0,
-                            margin: EdgeInsets.zero,
-                            child: InkWell(
-                              onTap: () => Navigator.of(context, rootNavigator: true).push(
-                                MaterialPageRoute(builder: (context) => MapRoutePage(recent.$1, recent.$2)),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 2*Format.marginSecondary, right: Format.marginSecondary),
-                                child: Stack(
-                                  children: [
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Image.asset(
-                                            NetworkStyle.fromStation(recent.$1),
-                                            height: 22,
-                                            width: 22,
-                                          ),
-                                          SizedBox(width: 4,),
-                                          Text(recent.$1.name.split(' ')[0]),
-                                          SizedBox(width: 4,),
-                                          Icon(Icons.arrow_right_rounded),
-                                          SizedBox(width: 4,),
-                                          Image.asset(
-                                            NetworkStyle.fromStation(recent.$2),
-                                            height: 22,
-                                            width: 22,
-                                          ),
-                                          SizedBox(width: 4,),
-                                          Text(recent.$2.name.split(' ')[0]),
-                                        ],
-                                      ),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: IconButton(
-                                        padding: EdgeInsets.zero,
-                                        onPressed: () => routes.removeRecent(recent),
-                                        icon: Icon(Icons.delete_outline_rounded),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                        child: _buildSavedRoute(context, recent, routes, Icons.close_rounded, () => routes.removeRecent(recent))
                       )
                     ]
                   ),

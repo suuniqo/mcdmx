@@ -3,6 +3,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:timezone/timezone.dart';
+
 import 'package:mcdmx/domain/astar.dart';
 import 'package:mcdmx/domain/dijkstra_transfers.dart';
 import 'package:mcdmx/domain/heuristic.dart';
@@ -20,6 +22,9 @@ class Network {
   final Map<Stop, Set<Edge>> _connections;
   final Map<Station, Set<Stop>> _stationStops;
   final Map<({Stop stop, Line line}), int> _minTransfers = {};
+
+  // Zona horaria
+  static const String _remoteTZ = "America/Mexico_City";
 
   // Horarios de apertura oficiales
   static const TimeOfDay _openingTimeReg = TimeOfDay(hour: 5, minute: 0);
@@ -64,6 +69,10 @@ class Network {
     }
 
     return _openingTimeReg;
+  }
+
+  DateTime nowRemote() {
+    return TZDateTime.now(getLocation(_remoteTZ));
   }
 
   // Si es posible, retorna la arista
@@ -131,12 +140,14 @@ class Network {
 
     final astar = AStar(this, heuristic);
 
-    return astar.calculateRoute(src, dst, DateTime.now())!;
+    print("time is ${nowRemote()}");
+
+    return astar.calculateRoute(src, dst, nowRemote())!;
   }
 
   void benchmarkAStar() {
     for (final h in [7, 17]) {
-      DateTime now = DateTime.now().copyWith(hour: h, minute: 0, second: 0);
+      DateTime now = nowRemote().copyWith(hour: h, minute: 0, second: 0);
 
       for (double m = 0.25; m <= 2.50 + 0.01; m += 0.25) {
         for (double p = 0.00; p <= 2.50 + 0.01; p += 0.25) {

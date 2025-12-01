@@ -98,12 +98,7 @@ class LinesPage extends StatelessWidget {
               ),
               SizedBox(width: 14,),
               Text(
-                dir.name.split('-')[0].split(' ')[0],
-                style: content.titleTertiary,
-              ),
-              Icon(Icons.arrow_right_rounded),
-              Text(
-                dir.name.split('-')[1].split(' ')[0],
+                dir.name.split('-')[1],
                 style: content.titleTertiary,
               )
             ],
@@ -234,6 +229,17 @@ class StationsPage extends StatelessWidget {
 
   const StationsPage({required this.station});
 
+  String _reducedName(String name) {
+    if (name.length < 18) {
+      return name;
+    }
+    if (name.split(' ')[0] == 'San') {
+      return name.split(' ').take(2).join(' ');
+    }
+
+    return name.split(' ')[0];
+  }
+
   Widget _buildTimeLines(BuildContext context) {
     final theme = Theme.of(context);
     final content = ContentStyle.fromTheme(theme);
@@ -261,7 +267,7 @@ class StationsPage extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          station.name.split(' ')[0],
+                          _reducedName(station.name),
                           style: content.titleTertiary,
                         ),
                         Spacer(),
@@ -324,12 +330,7 @@ class StationsPage extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Text(
-                                      dir.name.split('-')[0].split(' ')[0],
-                                      style: content.titleItem,
-                                    ),
-                                    Icon(Icons.arrow_right_rounded, size: 16,),
-                                    Text(
-                                      dir.name.split('-')[1].split(' ')[0],
+                                      dir.name.split('-')[1],
                                       style: content.titleItem,
                                     ),
                                   ],
@@ -353,7 +354,7 @@ class StationsPage extends StatelessWidget {
   }
 
   Widget _buildNextArrivals(Direction dir) {
-    final now = DateTime.now();
+    final now = dir.line.network!.nowRemote();
 
     final firstDuration = dir.nextArrivalDuration(station, now);
     final firstDate = now.add(firstDuration);

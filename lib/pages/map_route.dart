@@ -281,7 +281,7 @@ class _MapRoutePageState extends State<MapRoutePage> {
                             : Icons.favorite_outline_rounded,
                           ),
                           SizedBox(width: 8,),
-                          Text('Añadir a favoritos', style: TextStyle(
+                          Text('Guardar en favoritos', style: TextStyle(
                             color: theme.colorScheme.onSurface,
                             fontSize: 16,
                           )),
@@ -297,9 +297,10 @@ class _MapRoutePageState extends State<MapRoutePage> {
           style: TextStyle(
               color: theme.colorScheme.onSurface,
               fontWeight: FontWeight.w500,
-              fontSize: 18,
+              fontSize: 21,
           ),
         ),
+        SizedBox(width: 8,)
                 ]
               ),
             ),
