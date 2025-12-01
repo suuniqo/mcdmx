@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'package:mcdmx/state/network.dart';
-import 'package:mcdmx/widgets/item_list.dart';
+import 'package:mcdmx/style/content.dart';
+import 'package:mcdmx/style/network.dart';
 
 import 'package:provider/provider.dart';
 
@@ -25,6 +26,8 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     19.389547839456625,
     -99.1722223513429,
   );
+
+  final TextEditingController _textController = TextEditingController();
 
   late AnimationController _animationController;
   late Animation<double> _animation;
@@ -57,8 +60,10 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
 
     _animation = CurvedAnimation(parent: _animationController, curve: Curves.easeInOut);
 
+    _textController.addListener(() => setState(() {}));
+
     _animationController.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
+      if (status == AnimationStatus.completed && !_displayOverlay) {
         _focusNode.requestFocus();
         setState(() => _displayOverlay = true);
       }
@@ -67,15 +72,159 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
+    _textController.dispose();
     _animationController.dispose();
     _focusNode.dispose();
     super.dispose();
   }
 
-  Widget _quickAccessTabs(BuildContext context, ThemeData theme) {
-    // Datos de ejemplo
+  Widget _buildSearchLines() {
+    final theme = Theme.of(context);
+    final content = ContentStyle.fromTheme(theme);
+
     final network = context.watch<NetworkState>();
 
+    final matching = network.lines.expand((line) => [line.forwardDir, line.backwardDir]).where(
+      (direction) {
+        final names = direction.name.split('-');
+        final prefix = _textController.text.toLowerCase().trim();
+
+        return names[0].toLowerCase().startsWith(prefix) || names[1].toLowerCase().startsWith(prefix);
+      }
+    );
+
+    return Padding(
+      padding: const EdgeInsets.all(Format.marginPrimary),
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          for (final match in matching)
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LinesPage(dir: match))),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: Image.asset(
+                        NetworkStyle.fromLine(match.line),
+                        height: 34,
+                        width: 34,
+                      ),
+                    ),
+                    SizedBox(width: Format.marginPrimary,),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                match.name.split('-')[1],
+                                style: content.titleItem,
+                              ),
+                            ],
+                          ),
+                          Text('Desde ${match.name.split('-')[0]}'),
+                          if (match != matching.last)
+                            Divider(color: theme.colorScheme.surfaceTint, thickness: 2),
+                        ]
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSearchStations() {
+    final theme = Theme.of(context);
+    final content = ContentStyle.fromTheme(theme);
+
+    final network = context.watch<NetworkState>();
+
+    final matching = network.stations.where(
+      (station) => station.name
+        .toLowerCase()
+        .startsWith(_textController.text.toLowerCase().trim())
+    );
+
+    return Padding(
+      padding: const EdgeInsets.all(Format.marginPrimary),
+      child: Expanded(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            for (final match in matching)
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => StationsPage(station: match))),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Image.asset(
+                        NetworkStyle.fromStation(match),
+                        height: 40,
+                        width: 40,
+                      ),
+                      SizedBox(width: Format.marginPrimary,),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  match.name,
+                                  style: content.titleItem,
+                                ),
+                                Spacer(),
+                                Row(
+                                  children: [
+                                    for (final line in match.lines)
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: 4.0),
+                                        child: Image.asset(
+                                          NetworkStyle.fromLine(line),
+                                          height: 16,
+                                          width: 16,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Icon(match.accesible ? Icons.accessible_rounded : Icons.not_accessible_rounded, size: 15),
+                                SizedBox(width: 4,),
+                                Text(match.accesible ? 'Accesible' : 'No accesible'),
+                              ],
+                            ),
+                            if (match != matching.last)
+                              Divider(color: theme.colorScheme.surfaceTint, thickness: 2),
+                          ]
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _quickAccessTabs(BuildContext context, ThemeData theme) {
     return Expanded(
       child: SizedBox(
         width: double.infinity,
@@ -87,51 +236,15 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
             tabsData: [
               (
                 Icons.directions_subway_filled_rounded,
-                'Paradas',
+                'Estaciones',
                 Center(
-                  child: ItemList(
-                    itemName:"No hay horarios disponibles",
-                    children: [
-                      for (var (i, station) in network.stations.indexed)
-                        Padding(
-                          padding: EdgeInsets.only(
-                            top: i == 0 ? 0 : Format.marginPrimary,
-                          ),
-                          child: StationButton(
-                            dst: StationsPage(
-                              station: station,
-                              lineas: station.lines,
-                              lineaPage: false,
-                            ),
-                            station: station,
-                            lines: station.lines,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
+                  child: _buildSearchStations(),
+              )),
               (
                 Icons.timeline,
                 'Lineas',
                 Center(
-                  child: ItemList(
-                    itemName:"No hay horarios disponibles",
-                    children: [
-                      for (var (i, line) in network.lines.indexed)
-                        Padding(
-                          padding: EdgeInsets.only(
-                            top: i == 0 ? 0 : Format.marginPrimary,
-                          ),
-                          child: Column(
-                            children: [
-                              LineButton(line: line, foward: true),
-                              LineButton(line: line, foward: false),
-                            ],
-                          ),
-                        ),
-                    ],
-                  ),
+                  child: _buildSearchLines()
                 ),
               ),
             ],
@@ -151,8 +264,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
         if (!_displayOverlay) 
           MapCDMX(
             centeredCDMX,
-            // TODO: hacer algo aquí
-            (_) {},
+            (station) => Navigator.push(context, MaterialPageRoute(builder: (context) => StationsPage(station: station))),
           ),
         if (_isSearchActive)
           AnimatedBuilder(
@@ -182,10 +294,11 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                     child: AbsorbPointer(
                       absorbing: !_isSearchActive,
                       child: IconTextfield(
-                        msg: 'Busca líneas o paradas',
+                        msg: 'Busca líneas o estaciones',
                         icon: _isSearchActive ? Icons.arrow_back_rounded : Icons.search_rounded,
                         primary: true,
                         focusNode: _focusNode,
+                        controller: _textController,
                         onPressed: _onSearchClose,
                       ),
                     ),

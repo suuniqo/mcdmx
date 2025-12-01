@@ -3,66 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:mcdmx/domain/line.dart';
 
 import 'package:mcdmx/domain/station.dart';
-
-import 'package:mcdmx/widgets/bgcard.dart';
-import 'package:mcdmx/widgets/bigcard.dart';
+import 'package:mcdmx/style/content.dart';
 
 import 'package:mcdmx/style/format.dart';
 import 'package:mcdmx/style/network.dart';
 
-
-class LineButton extends StatelessWidget {
-  final Line line;
-  final bool foward;
-
-  const LineButton({super.key, required this.line, required this.foward});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    final styleName = TextStyle(
-      fontSize: 20,
-      fontWeight: FontWeight.bold,
-      color: theme.colorScheme.onSurface,
-    );
-
-    return Card(
-      elevation: 0,
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.all(2.0),
-        child: TextButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => LinesPage(line: line, foward: foward)),
-            );
-          },
-          style: TextButton.styleFrom(
-            padding: EdgeInsets.zero,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(Format.borderRadius),
-            ),
-            backgroundColor:theme.colorScheme.surfaceContainerLow,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(Format.marginCard),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(width: 30, height: 30, child: Image.asset(NetworkStyle.fromLine(line))),
-                SizedBox(width: 12),
-                if (foward) Text(line.forwardDir.name, style: styleName),
-                if (!foward) Text(line.backwardDir.name, style: styleName),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class StationButton extends StatelessWidget {
   final Station station;
@@ -132,28 +77,128 @@ class StationButton extends StatelessWidget {
 }
 
 class LinesPage extends StatelessWidget {
-  final Line line;
-  final bool foward;
+  final Direction dir;
 
-  const LinesPage({required this.line, required this.foward});
+  const LinesPage({required this.dir});
+
+  Widget _buildDirStations(BuildContext context) {
+    final theme = Theme.of(context);
+    final content = ContentStyle.fromTheme(theme);
+
+    return Padding(
+      padding: const EdgeInsets.all(Format.marginPrimary),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Image.asset(
+                NetworkStyle.fromLine(dir.line),
+                height: 37,
+                width: 37,
+              ),
+              SizedBox(width: 14,),
+              Text(
+                dir.name.split('-')[0].split(' ')[0],
+                style: content.titleTertiary,
+              ),
+              Icon(Icons.arrow_right_rounded),
+              Text(
+                dir.name.split('-')[1].split(' ')[0],
+                style: content.titleTertiary,
+              )
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            child: Divider(color: theme.colorScheme.surfaceTint, thickness: 2),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  for (final station in dir.stations)
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => StationsPage(station: station))),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Column(
+                              children: [
+                                Image.asset(
+                                  NetworkStyle.fromStation(station),
+                                  height: 40,
+                                  width: 40,
+                                ),
+                                if (station != dir.stations.last)
+                                  Container(
+                                    width: 3,
+                                    height: 20,
+                                    color: NetworkStyle.lineColor(dir.line),
+                                  )
+                              ],
+                            ),
+                            SizedBox(width: Format.marginPrimary,),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        station.name,
+                                        style: content.titleItem,
+                                      ),
+                                      Spacer(),
+                                      Row(
+                                        children: [
+                                          for (final line in station.lines)
+                                            Padding(
+                                              padding: const EdgeInsets.only(right: 4.0),
+                                              child: Image.asset(
+                                                NetworkStyle.fromLine(line),
+                                                height: 16,
+                                                width: 16,
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Icon(station.accesible ? Icons.accessible_rounded : Icons.not_accessible_rounded, size: 15),
+                                      SizedBox(width: 4,),
+                                      Text(station.accesible ? 'Accesible' : 'No accesible'),
+                                    ],
+                                  ),
+                                  if (station != dir.stations.last)
+                                    Divider(color: theme.colorScheme.surfaceTint, thickness: 2),
+                                ]
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    Iterable<Station> paradas = line.forwardDir.stations;
-    if (!foward) {
-      paradas = line.backwardDir.stations;
-    }
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Row(
-          children: [
-            if (foward) Text(line.forwardDir.name),
-            if (!foward) Text(line.backwardDir.name),
-            SizedBox(width: 30, height: 30, child: Image.asset(NetworkStyle.fromLine(line))),
-          ],
-        ),
+        title: Text('Línea'),
         titleTextStyle: TextStyle(
           fontWeight: FontWeight.bold,
           color: theme.colorScheme.onSurface,
@@ -169,29 +214,12 @@ class LinesPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(Format.borderRadius),
             ),
             clipBehavior: Clip.antiAlias,
-            child: SingleChildScrollView(
-              child: Card(
-                elevation: 0,
-                margin: EdgeInsets.zero,
-                child: Padding(
-                  padding: const EdgeInsets.all(Format.marginCard),
-                  child: Column(
-                    children: [
-                      for (var stop in paradas)
-                        StationButton(
-                          dst: StationsPage(
-                            station: stop,
-                            lineas: stop.lines,
-                            lineaPage: true,
-                            linea: line,
-                            foward: foward,
-                          ),
-                          station: stop,
-                          lines: stop.lines,
-                        ),
-                    ],
-                  ),
-                ),
+            child: Card(
+              elevation: 0,
+              margin: EdgeInsets.zero,
+              child: Padding(
+                padding: const EdgeInsets.all(Format.marginCard),
+                child: _buildDirStations(context),
               ),
             ),
           ),
@@ -203,45 +231,171 @@ class LinesPage extends StatelessWidget {
 
 class StationsPage extends StatelessWidget {
   final Station station;
-  final Iterable<Line> lineas;
-  final bool lineaPage;
-  final Line? linea;
-  final bool? foward;
 
-  const StationsPage({
-    required this.station,
-    required this.lineas,
-    required this.lineaPage,
-    this.linea,
-    this.foward,
-  });
+  const StationsPage({required this.station});
+
+  Widget _buildTimeLines(BuildContext context) {
+    final theme = Theme.of(context);
+    final content = ContentStyle.fromTheme(theme);
+
+    final dirs = station.lines.expand((line) => [line.forwardDir, line.backwardDir]);
+
+    return Padding(
+      padding: const EdgeInsets.all(Format.marginPrimary),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Image.asset(
+                NetworkStyle.fromStation(station),
+                height: 47,
+                width: 47,
+              ),
+              SizedBox(width: Format.marginPrimary,),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          station.name.split(' ')[0],
+                          style: content.titleTertiary,
+                        ),
+                        Spacer(),
+                        Row(
+                          children: [
+                            for (final line in station.lines)
+                              Padding(
+                                padding: const EdgeInsets.only(right: 4.0),
+                                child: Image.asset(
+                                  NetworkStyle.fromLine(line),
+                                  height: 18,
+                                  width: 18,
+                                ),
+                              ),
+                          ],
+                        )
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Icon(station.accesible ? Icons.accessible_rounded : Icons.not_accessible_rounded, size: 15),
+                        SizedBox(width: 4,),
+                        Text(station.accesible ? 'Accesible' : 'No accesible'),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            child: Divider(color: theme.colorScheme.surfaceTint, thickness: 2),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  for (final dir in dirs)
+                    Material(
+                      color: Colors.transparent,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: Image.asset(
+                              NetworkStyle.fromLine(dir.line),
+                              height: 34,
+                              width: 34,
+                            ),
+                          ),
+                          SizedBox(width: Format.marginPrimary,),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      dir.name.split('-')[0].split(' ')[0],
+                                      style: content.titleItem,
+                                    ),
+                                    Icon(Icons.arrow_right_rounded, size: 16,),
+                                    Text(
+                                      dir.name.split('-')[1].split(' ')[0],
+                                      style: content.titleItem,
+                                    ),
+                                  ],
+                                ),
+                                _buildNextArrivals(dir),
+                                if (dir != dirs.last)
+                                  Divider(color: theme.colorScheme.surfaceTint, thickness: 2),
+                              ]
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNextArrivals(Direction dir) {
+    final now = DateTime.now();
+
+    final firstDuration = dir.nextArrivalDuration(station, now);
+    final firstDate = now.add(firstDuration);
+
+    final secondDuration = dir.nextArrivalDuration(station, firstDate);
+    final secondDate = firstDate.add(secondDuration);
+
+    final thirdDuration = dir.nextArrivalDuration(station, secondDate);
+    final thirdDate = secondDate.add(thirdDuration);
+
+    final first = firstDuration;
+    final second = secondDate.difference(now);
+    final third = thirdDate.difference(now);
+
+    return Row(
+      children: [
+        Text(
+          '${first.inHours > 0 ? '${first.inHours} h' : ''} '
+          '${first.inMinutes > 0 ? '${first.inMinutes % 60} min' : ''}', 
+        ),
+        SizedBox(width: 16,),
+        Text(
+          '${second.inHours > 0 ? '${second.inHours} h' : ''} '
+          '${second.inMinutes > 0 ? '${second.inMinutes % 60} min' : ''}', 
+        ),
+        SizedBox(width: 16,),
+        Text(
+          '${third.inHours > 0 ? '${third.inHours} h' : ''} '
+          '${third.inMinutes > 0 ? '${third.inMinutes % 60} min' : ''}', 
+        ),
+      ],
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final styleSubTitle = TextStyle(
-      fontSize: 18,
-      color: theme.colorScheme.onSurface,
-    );
-    final styleTitle = TextStyle(
-      fontSize: 22,
-      color: theme.colorScheme.onSurface,
-    );
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(station.name, style: styleTitle,),
-            SizedBox(width: 5),
-            SizedBox(width: 30, height: 30, child: Image.asset(NetworkStyle.fromStation(station))),
-            if (station.accesible) ...[
-              SizedBox(width: 5),
-              SizedBox(width: 30, height: 30, child: Icon(Icons.accessible_rounded)),
-            ],
-          ],
-        ),
+        title: Text('Tiempo real'),
         titleTextStyle: TextStyle(
           fontWeight: FontWeight.bold,
           color: theme.colorScheme.onSurface,
@@ -257,76 +411,12 @@ class StationsPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(Format.borderRadius),
             ),
             clipBehavior: Clip.antiAlias,
-            child: SingleChildScrollView(
-              child: Card(
-                elevation: 0,
-                margin: EdgeInsets.zero,
-                child: Padding(
-                  padding: const EdgeInsets.all(Format.marginCard),
-                  child: Column(
-                    children: [
-                      if (!lineaPage) ...[
-                        Bigcard(title: "Tiempo Real",style:styleSubTitle),
-                        for (var line in lineas) ...[
-                          SizedBox(height: 5),
-                          Bgcard(
-                            station: station,
-                            line: line,
-                            foward: true,
-                            style: styleSubTitle,
-                            theme:theme
-                          ),
-                          SizedBox(height: 5),
-                          Bgcard(
-                            station: station,
-                            line: line,
-                            foward: false,
-                            style: styleSubTitle,
-                            theme:theme
-                          ),
-                        ],
-                      ],
-                      if (lineaPage && linea != null && foward != null) ...[
-                        Bigcard(title: "Tiempo Real",style:styleSubTitle),
-                        SizedBox(height: 5),
-                        Bgcard(
-                          station: station,
-                          line: linea!,
-                          foward: foward!,
-                          style: styleSubTitle,
-                          theme:theme,
-                        ),
-                        Bigcard(title: "Otros Andenes de ${station.name}",style:styleSubTitle),
-                        SizedBox(height: 5),
-                        Bgcard(
-                          station: station,
-                          line: linea!,
-                          foward: !foward!,
-                          style: styleSubTitle,
-                          theme:theme
-                        ),
-                        for (var line in lineas.where((l) => l != linea)) ...[
-                          SizedBox(height: 5),
-                          Bgcard(
-                            station: station,
-                            line: line,
-                            foward: true,
-                            style: styleSubTitle,
-                            theme:theme,
-                          ),
-                          SizedBox(height: 5),
-                          Bgcard(
-                            station: station,
-                            line: line,
-                            foward: false,
-                            style: styleSubTitle,
-                            theme:theme,
-                          ),
-                        ],
-                      ],
-                    ],
-                  ),
-                ),
+            child: Card(
+              elevation: 0,
+              margin: EdgeInsets.zero,
+              child: Padding(
+                padding: const EdgeInsets.all(Format.marginCard),
+                child: _buildTimeLines(context),
               ),
             ),
           ),

@@ -57,21 +57,9 @@ class _MapRoutePageState extends State<MapRoutePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 8),
-                Text('Tu itinerario', style: contentStyle.titleSecondary),
+                Text('Cómo llegar', style: contentStyle.titleSecondary),
                 Text('Estas viendo la ruta mas ${network.isAccesibleMode ? 'accesible' : 'rápida'}', style: contentStyle.titleItem.copyWith(fontWeight: FontWeight.normal)),
               ],
-            ),
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: IconButton(
-              onPressed: () => routes.toggleFav((widget._src, widget._dst)),
-              icon: Icon(
-                routes.isFav((widget._src, widget._dst))
-                  ? Icons.favorite_rounded
-                  : Icons.favorite_outline_rounded,
-                color: theme.colorScheme.primary,
-              ),
             ),
           ),
         ],
@@ -88,7 +76,7 @@ class _MapRoutePageState extends State<MapRoutePage> {
       children: [
         SizedBox(height: 1.5 * Format.marginPrimary),
         Text(
-          'LLegarás en ${duration.inHours > 0 ? '${duration.inHours} h' : ''} ${duration.inMinutes > 0 ? '${duration.inMinutes} min' : ''}', 
+          'Llegada en ${duration.inHours > 0 ? '${duration.inHours} h' : ''} ${duration.inMinutes > 0 ? '${duration.inMinutes % 60} min' : ''}', 
           style: contentStyle.titleTertiary
         ),
         Text(
@@ -215,16 +203,17 @@ class _MapRoutePageState extends State<MapRoutePage> {
     final routes = context.watch<RoutesState>();
 
     final (route, time) = network.calculateRoute(widget._src, widget._dst);
+    final duration = Duration(minutes: time);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: LayoutBuilder(
         builder: (context, constraints) {
           return SlidingUpPanel(
-            defaultPanelState: PanelState.OPEN,
+            defaultPanelState: PanelState.CLOSED,
             parallaxEnabled: true,
             parallaxOffset: 0.5,
-            maxHeight: constraints.maxHeight * 0.94,
+            maxHeight: constraints.maxHeight * 0.75,
             minHeight: 150,
             boxShadow: Format.shadow,
             color: theme.colorScheme.surfaceContainerLow,
@@ -263,7 +252,57 @@ class _MapRoutePageState extends State<MapRoutePage> {
                       ),
                     ),
                     _buildRouteLayout(context, route),
-                    SizedBox(height: Format.marginPrimary),
+                    Padding(
+              padding: const EdgeInsets.only(left: 12.0, right: 20.0, top: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                      side: BorderSide(
+                        color: theme.colorScheme.surfaceTint,
+                        width: Format.borderWidth,
+                      ),
+                      iconSize: 24,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(Format.borderRadius),
+                      ),
+                      alignment: Alignment.centerLeft,
+                      padding: EdgeInsets.symmetric(horizontal: 8),
+                    ),
+                    onPressed: () => routes.toggleFav((widget._src, widget._dst)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: Row(
+                        children: [
+                          Icon(routes.isFav((widget._src, widget._dst))
+                            ? Icons.favorite_rounded
+                            : Icons.favorite_outline_rounded,
+                          ),
+                          SizedBox(width: 8,),
+                          Text('Añadir a favoritos', style: TextStyle(
+                            color: theme.colorScheme.onSurface,
+                            fontSize: 16,
+                          )),
+                          SizedBox(width: 6,),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Spacer(),
+        Text(
+          '${duration.inHours > 0 ? '${duration.inHours} h' : ''} '
+          '${duration.inMinutes > 0 ? '${duration.inMinutes % 60} min' : ''}', 
+          style: TextStyle(
+              color: theme.colorScheme.onSurface,
+              fontWeight: FontWeight.w500,
+              fontSize: 18,
+          ),
+        ),
+                ]
+              ),
+            ),
                   ],
                 ),
               ),
@@ -271,8 +310,9 @@ class _MapRoutePageState extends State<MapRoutePage> {
             body: Stack(
               children: [
                 MapRoute(route),
-                _buildCloseX(context)]
-              ),
+                _buildCloseX(context),
+              ],
+            ),
             borderRadius: BorderRadius.circular(Format.borderRadius),
           );
         },

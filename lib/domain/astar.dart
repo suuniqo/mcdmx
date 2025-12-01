@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:mcdmx/domain/edge.dart';
 import 'package:mcdmx/domain/stop.dart';
 
 import 'station.dart';
@@ -21,14 +22,14 @@ class AStar {
   // 3. Según la función h, que es muy efectiva en caso
   //    de empates en la función f
   //
-  PriorityQueue<({double h, int g, Stop stop})>
+  PriorityQueue<({int acc, double h, int g, Stop stop})>
   _makeOpenSet() {
     return PriorityQueue((self, other) {
-      final (h: hScoreA, g: gScoreA, stop: stopA) = self;
-      final (h: hScoreB, g: gScoreB, stop: stopB) = other;
+      final (acc: accA, h: hScoreA, g: gScoreA, stop: stopA) = self;
+      final (acc: accB, h: hScoreB, g: gScoreB, stop: stopB) = other;
 
       if (_network.isAccesibleMode) {
-        final cmpPrev = _accScore(stopA).compareTo(_accScore(stopB));
+        final cmpPrev = accA.compareTo(accB);
 
         if (cmpPrev != 0) {
           return cmpPrev;
@@ -48,17 +49,27 @@ class AStar {
     });
   }
 
-  ({double h, int g, Stop stop})
-  _makeOpenSetEntry(Stop stop, Station stationDst, int gStop) {
+  ({int acc, double h, int g, Stop stop})
+  _makeOpenSetEntry(int accStop, Stop stop, Station stationDst, int gStop) {
       return (
+        acc: accStop,
         h: _heuristic(stop, gStop, stationDst),
         g: gStop,
         stop: stop,
       );
   }
 
-  int _accScore(Stop stop) {
-    return stop.station.accesible ? 0 : 1;
+  int _accScore(Edge edge) {
+    if (!_network.isAccesibleMode) {
+      return 0;
+    }
+    if (edge.first.station != edge.second.station) {
+      return 0;
+    }
+    if (edge.first.station.accesible) {
+      return 0;
+    }
+    return 1;
   }
 
   List<Station> _rebuildPath(Map<Stop, Stop?> prev, Stop last) {
@@ -81,6 +92,7 @@ class AStar {
   (List<Station>, int)? calculateRoute(Station stationSrc, Station stationDst, DateTime now) {
     // Encontré una Priority Queue
     final PriorityQueue<({
+      int acc,
       double h,
       int g,
       Stop stop
@@ -104,13 +116,13 @@ class AStar {
 
       gScore[stop] = firstArrival;
 
-      final entry = _makeOpenSetEntry(stop, stationDst, firstArrival);
+      final entry = _makeOpenSetEntry(0, stop, stationDst, firstArrival);
 
       openSet.add(entry);
     }
 
     do {
-      final (h: _, g: gCurr, stop: curr) = openSet.removeFirst();
+      final (acc: _, h: _, g: gCurr, stop: curr) = openSet.removeFirst();
 
       if (gCurr > gScore[curr]!) {
         continue;
@@ -139,7 +151,9 @@ class AStar {
           prev[next] = curr;
           gScore[next] = gNext;
 
-          final entry = _makeOpenSetEntry(next, stationDst, gNext);
+          int accNext = _accScore(edge);
+
+          final entry = _makeOpenSetEntry(accNext, next, stationDst, gNext);
 
           openSet.add(entry);
         }
@@ -154,6 +168,7 @@ class AStar {
   (List<Station>, int, int)? calculateRouteBench(Station stationSrc, Station stationDst, DateTime now) {
     // Encontré una Priority Queue
     final PriorityQueue<({
+      int acc,
       double h,
       int g,
       Stop stop
@@ -179,13 +194,13 @@ class AStar {
 
       gScore[stop] = firstArrival;
 
-      final entry = _makeOpenSetEntry(stop, stationDst, firstArrival);
+      final entry = _makeOpenSetEntry(0, stop, stationDst, firstArrival);
 
       openSet.add(entry);
     }
 
     do {
-      final (h: _, g: gCurr, stop: curr) = openSet.removeFirst();
+      final (acc: _, h: _, g: gCurr, stop: curr) = openSet.removeFirst();
       visited.add(curr);
 
       if (gCurr > gScore[curr]!) {
@@ -215,7 +230,9 @@ class AStar {
           prev[next] = curr;
           gScore[next] = gNext;
 
-          final entry = _makeOpenSetEntry(next, stationDst, gNext);
+          int accNext = _accScore(edge);
+
+          final entry = _makeOpenSetEntry(accNext, next, stationDst, gNext);
 
           openSet.add(entry);
         }

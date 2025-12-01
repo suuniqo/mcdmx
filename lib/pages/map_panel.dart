@@ -8,11 +8,9 @@ import 'package:mcdmx/style/format.dart';
 import 'package:mcdmx/style/network.dart';
 import 'package:mcdmx/widgets/icon_fab.dart';
 import 'package:mcdmx/widgets/icon_textfield.dart';
-import 'package:provider/provider.dart';
-
-import 'package:sliding_up_panel/sliding_up_panel.dart';
-
 import 'package:mcdmx/widgets/maps.dart';
+import 'package:provider/provider.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class MapPanelPage extends StatefulWidget {
   @override
@@ -189,7 +187,7 @@ class _MapPanelPageState extends State<MapPanelPage> {
     );
   }
 
-  Widget _buildRecommendationList(BuildContext context) {
+  Widget _buildSearchStations(BuildContext context) {
     final theme = Theme.of(context);
     final content = ContentStyle.fromTheme(theme);
 
@@ -207,7 +205,7 @@ class _MapPanelPageState extends State<MapPanelPage> {
 
     return Expanded(
       child: ListView(
-        padding: EdgeInsets.zero,
+        padding: EdgeInsets.all(Format.marginPrimary),
         children: [
           for (final match in matching)
             Material(
@@ -223,42 +221,55 @@ class _MapPanelPageState extends State<MapPanelPage> {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => MapRoutePage(_origin!, _dest!)));
                   }
                 },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Format.marginPrimary),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Image.asset(
+                      NetworkStyle.fromStation(match),
+                      height: 40,
+                      width: 40,
+                    ),
+                    SizedBox(width: Format.marginPrimary,),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Image.asset(
-                            NetworkStyle.fromStation(match),
-                            height: 40,
-                            width: 40,
+                          Row(
+                            children: [
+                              Text(
+                                match.name,
+                                style: content.titleItem,
+                              ),
+                              Spacer(),
+                              Row(
+                                children: [
+                                  for (final line in match.lines)
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 4.0),
+                                      child: Image.asset(
+                                        NetworkStyle.fromLine(line),
+                                        height: 16,
+                                        width: 16,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ],
                           ),
-                        ],
+                          Row(
+                            children: [
+                              Icon(match.accesible ? Icons.accessible_rounded : Icons.not_accessible_rounded, size: 15),
+                              SizedBox(width: 4,),
+                              Text(match.accesible ? 'Accesible' : 'No accesible'),
+                            ],
+                          ),
+                          if (match != matching.last)
+                            Divider(color: theme.colorScheme.surfaceTint, thickness: 2),
+                        ]
                       ),
-                      SizedBox(width: Format.marginPrimary,),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              match.name,
-                              style: content.titleItem,
-                            ),
-                            Text(
-                              match.lines.length == 1
-                                ? 'Línea ${match.lines.first.number}'
-                                : 'Líneas ${match.lines.map((line) => line.number.toString()).join(', ')}',
-                            ),
-                            if (match != matching.last)
-                              Divider(color: theme.colorScheme.surfaceTint, thickness: 2),
-                          ]
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -369,11 +380,10 @@ class _MapPanelPageState extends State<MapPanelPage> {
                             enabled: _origin != null,
                             readOnly: _dest != null,
                           ),
-                          SizedBox(height: Format.marginPrimary),
                         ],
                       ),
                     ),
-                    _buildRecommendationList(context),
+                    _buildSearchStations(context),
                   ],
                 ),
               ),

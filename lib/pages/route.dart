@@ -51,9 +51,9 @@ class RoutePage extends StatelessWidget {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          Text(fav.$1.name),
+                                          Text(fav.$1.name.split(' ')[0]),
                                           Icon(Icons.arrow_right_rounded),
-                                          Text(fav.$2.name),
+                                          Text(fav.$2.name.split(' ')[0]),
                                         ],
                                       ),
                                     ),
@@ -108,9 +108,9 @@ class RoutePage extends StatelessWidget {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          Text(recent.$1.name),
+                                          Text(recent.$1.name.split(' ')[0]),
                                           Icon(Icons.arrow_right_rounded),
-                                          Text(recent.$2.name),
+                                          Text(recent.$2.name.split(' ')[0]),
                                         ],
                                       ),
                                     ),
