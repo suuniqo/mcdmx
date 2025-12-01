@@ -32,7 +32,7 @@ TODO
 
 ---
 
-## Uso desde código
+### Flutter
 1. Clona el repositorio.
 2. Instala flutter. [Puedes encontrar una aquí.](https://docs.flutter.dev/install/manual)
 3. Abre la raiz del repositorio y ejecuta `flutter run -d`
