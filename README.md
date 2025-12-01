@@ -1,59 +1,41 @@
-# mcdmx
+# mcdmex
 
-Aplicación para Android, Windows, macOS y web.
+## Introducción
+`mcdmex` es una aplicación accesible y completamente personalizable, diseñada para brindar la mejor experiencia al usar el metro de Ciudad de México.
 
-Proyecto del grupo 8.
+Permite consultar horarios de trenes en tiempo real y planear rutas óptimas entre estaciones, ya sea buscando la opción más rápida o la más accesible.
 
----
+Cuenta también con un panel de noticias para informar sobre obras, cambios y otras notificaciones importantes.
+
 
 ## Descarga e instalación
+Gracias al uso de flutter, la aplicación se puede correr en casi cualquier plataforma.
+Sin embargo, se recomienda ejecutarla en un teléfono móvil, ya que ha sido diseñada específicamente para eso.
+
 ### Android
-1. Ir al directorio **[Releases](#)** de este repositorio.
-2. Descargarse el fichero app-release.apk.
-3. Tranferir al móvil.
-4. Abrir y confirmar instalación.
-
-O si quieres utilizar un emulador de un android:
-
-1. Asegurate que tienes instalado **Android Studio** para poder arrancar la aplicación.  
-   Puedes descargarlo aquí: [Android Studio](https://developer.android.com/studio)  
-2. Ir al directorio **[Releases](#)** de este repositorio.  
-3. Descargar el archivo: `app-release.apk`.  
-4. Tranferir al móvil o utilizar android studio para emular un móvil.
-5. Abrir y confirmar instalación.
+1. Descarga el apk directamente de `releases/mcdmex-android.apk`
+2. Envíalo a cualquier dispositivo Android y ábrelo para ejecutarlo.
 
 ---
 
 ### Windows
-1. Ir al **[Releases](#)**.  
-2. Descargar `app-windows.zip` o `app-windows.exe`.  
-3. Si descargaste `.zip`, descomprimelo.  
-4. Ejecuta `app.exe`.
+TODO
 
 ---
 
 ### macOS
-1. Descargar el fichero app-macos.zip del directorio **[Releases](#)** Releases.  
-2. Descomprimirlo. 
-3. Abrir la aplicación. 
-4. Si macOS se queja de que el desarrollador es desconocido:  
+1. Descarga el zip de la app directamente de `releases/mcdmex-macOS.zip`
+2. Descromprime el fichero y ábrelo para ejecutarlo.
+3. Si macOS se queja de que el desarrollador es desconocido:  
    - Ir a **System Settings → Privacy & Security**  
    - Aceptar la aplicación con "Allow apps from…".
 
 ---
 
-### Web
-1. Hacer una copia del repositorio en local.
-2. Instalarse flutter. [Una guía para instalar flutter](https://docs.flutter.dev/install/manual)
-3. Una vez instalado flutter, en el directorio donde se encuentra el repositorio poner el siguiente comando:
-flutter run -d chrome
-
----
-
 ## Uso desde código
-1. Hacer una copia del repositorio en local.
-2. Instalarse flutter. 
-[Una guía para instalar flutter](https://docs.flutter.dev/install/manual)
-3. Una vez instalado flutter, en el directorio donde se encuentra el repositorio poner el siguiente comando:
-flutter run
+1. Clona el repositorio.
+2. Instala flutter. [Puedes encontrar una aquí.](https://docs.flutter.dev/install/manual)
+3. Abre la raiz del repositorio y ejecuta `flutter run -d`
 
+> [!NOTE]
+> Los usuarios de macOS podrán además emular la aplicación en iPhone corriendo `flutter run` con la app *Simulator* abierta. Previamente será necesario tener instalados *XCode* y algún dispositivo *iOS* en *Simulator*.
