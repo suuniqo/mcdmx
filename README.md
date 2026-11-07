@@ -23,8 +23,8 @@ It lets you check train arrival times and plan optimal routes between stations, 
 Thanks to Flutter, the app runs on almost any platform.
 
 <p align="center">
-    <img src=".github/assets/port-android.png" height="300" alt="Android">
-    <img src=".github/assets/port-macos.png" height="300" alt="macOS">
+    <img src=".github/assets/port-android.png" height="400" alt="Android">
+    <img src=".github/assets/port-macos.png" height="450" alt="macOS">
 </p>
 
 ## Features
@@ -107,6 +107,7 @@ The app is fully customizable:
 - **Storage:** clear all saved data (favorites, recents and settings) with one tap.
 
 <p align="center">
+    <img src=".github/assets/settings-light.png" width="32%" alt="Settings, light theme">
     <img src=".github/assets/settings-dark.png" width="32%" alt="Settings, dark theme">
 </p>
 
