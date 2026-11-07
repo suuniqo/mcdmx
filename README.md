@@ -46,7 +46,6 @@ The home screen is where you can start a trip. Search for a destination, or simp
 
 <p align="center">
     <img src=".github/assets/home-light.png" width="32%" alt="Home, light theme">
-    <img src=".github/assets/home-dark.png" width="32%" alt="Home, dark theme">
     <img src=".github/assets/home-favorites.png" width="32%" alt="Saved favorite routes">
 </p>
 
