@@ -12,7 +12,6 @@ A modern, accessible and fully customizable app for subway navigation in Mexico 
 - [Introduction](#introduction)
 - [Features](#features)
 - [App tour](#app-tour)
-- [Routing algorithm](#the-routing-algorithm)
 - [Download and installation](#download-and-installation)
 
 ## Introduction
@@ -24,13 +23,8 @@ It lets you check train arrival times and plan optimal routes between stations, 
 Thanks to Flutter, the app runs on almost any platform.
 
 <p align="center">
-    <img src=".github/assets/port-iphone.png" height="300" alt="iOS">
     <img src=".github/assets/port-android.png" height="300" alt="Android">
-    <img src=".github/assets/port-tablet.png" height="300" alt="Tablet">
-</p>
-<p align="center">
-    <img src=".github/assets/port-macos.png" width="48%" alt="macOS">
-    <img src=".github/assets/port-web.png" width="48%" alt="Web">
+    <img src=".github/assets/port-macos.png" height="300" alt="macOS">
 </p>
 
 ## Features
@@ -48,7 +42,7 @@ Thanks to Flutter, the app runs on almost any platform.
 
 ### Home and favorites
 
-The home screen is where every trip starts. Search for a destination, or jump straight back into a route you have saved in **Favorites** or used recently in **Recents**.
+The home screen is where you can start a trip. Search for a destination, or simply select a route saved in **Favorites** or used recently in **Recents**.
 
 <p align="center">
     <img src=".github/assets/home-light.png" width="32%" alt="Home, light theme">
@@ -58,7 +52,7 @@ The home screen is where every trip starts. Search for a destination, or jump st
 
 ### Route planning
 
-Open the map and tap the route panel to pick your origin and destination, either by searching for a station or selecting it directly on the map. The panel can be collapsed to leave the map visible or expanded to follow the directions: which line to take, in which direction, where to transfer, and where to get off. The estimated total travel time is always shown, and any route can be saved to your favorites.
+You can plan a route either by searching for a station or selecting it directly on the map. The estimated travel time is always shown, and any route can be saved to your favorites.
 
 <p align="center">
     <img src=".github/assets/panel-closed.png" width="24%" alt="Route panel, collapsed">
@@ -69,7 +63,7 @@ Open the map and tap the route panel to pick your origin and destination, either
 
 ### Accessible mode
 
-With accessible mode enabled, routing prioritizes accessible stations and connections over raw speed, so you get the route that works best for you, even if it takes longer. Stations are marked as accessible or not throughout the app.
+With accessible mode on, routing prioritizes accessible stations (those with elevators and ramps). Stations are also marked as accessible or not throughout the app.
 
 <p align="center">
     <img src=".github/assets/route-fast.png" width="32%" alt="Fastest route">
@@ -78,7 +72,7 @@ With accessible mode enabled, routing prioritizes accessible stations and connec
 
 ### Search lines and stations
 
-Browse and search the whole network from the map. The search screen has two tabs: **Stations** (with the lines that serve each one and whether it is accessible) and **Lines** (with each direction of travel).
+Browse and search the whole network from the map. The search screen has two tabs which show the different **Stations** and **Lines** respectively.
 
 <p align="center">
     <img src=".github/assets/search-map.png" width="32%" alt="Map with search bar">
@@ -88,7 +82,7 @@ Browse and search the whole network from the map. The search screen has two tabs
 
 ### Line and station information
 
-Select a line to see all its stations in order, with their accessibility status and transfers. Select a station to see the **time until the next trains** for each line and direction that serves it.
+Select a line to see all its stations in order, with their accessibility status and transfers. Select a station to see the estimated time left for the next three trains.
 
 <p align="center">
     <img src=".github/assets/info-line.png" width="32%" alt="Line information">
@@ -104,9 +98,9 @@ A dedicated section keeps you informed about works, reopenings and other relevan
     <img src=".github/assets/news-selected.png" width="32%" alt="Opened news article">
 </p>
 
-### Settings and personalization
+### Settings and customization
 
-Make the app yours:
+The app is fully customizable:
 
 - **Appearance:** light or dark mode, text size and color tone.
 - **Accessibility:** toggle accessible mode on or off. When on, routes prioritize accessibility; when off, they prioritize speed.
@@ -115,66 +109,6 @@ Make the app yours:
 <p align="center">
     <img src=".github/assets/settings-dark.png" width="32%" alt="Settings, dark theme">
 </p>
-
-## Routing algorithm
-
-Routes are computed with an **A\*** search over a graph of the network, using a custom heuristic designed to keep the search small without sacrificing route quality.
-
-### Model
-
-- **Station:** a physical station, with name, coordinates and accessibility.
-- **Stop:** a station *in a given direction of a given line*. These are the **nodes** of the graph.
-- **Edge:** a connection between two stops. It is either a ride between consecutive stations or a transfer on foot within the same station, and carries its travel time as cost.
-- Origin and destination are **stations**, so the search starts from *all* stops of the origin station and finishes at *any* stop of the destination station.
-
-### Cost function
-
-The cost of reaching a neighboring stop adds up:
-
-1. **Transit time:** time on the train between stops.
-2. **Transfer time:** time walking between platforms when changing lines.
-3. **Waiting time:** the time until the next train arrives, calculated for the exact moment you would be there. It depends on the time of day (opening hours, peak and off-peak frequencies).
-
-### Heuristic
-
-```
-h = p · SLT + q · TP
-```
-
-| Term | Meaning |
-|------|---------|
-| **SLT** (*straight-line time*) | `‖vᵢ, v*‖₂ / V_max`: straight-line distance from the current stop to the destination, divided by the maximum train speed. It is the best case if a train ran straight to the destination. |
-| **TP** (*transfer penalty*) | `N_min(vᵢ, v*) · T_min`: the minimum number of transfers needed to get from the current stop to the destination, multiplied by the minimum transfer time. |
-| **p, q** | Weights tuned empirically with a benchmark: `p = 1.31`, `q = 3.06`. |
-
-Combining distance with a transfer penalty gives the search much better information than distance alone: it knows that going to a destination on another line costs time even if the station looks close on the map.
-
-**Benchmark** (average travel time, average branching factor; the first is held fixed and the second is minimized):
-
-| Heuristic | Avg. time | Avg. branching |
-|-----------|-----------|----------------|
-| Basic Euclidean (`SLT`) | 24.86 | 23.30 |
-| Penalized Euclidean (`SLT + TP`) | 24.86 | 17.89 |
-| Tuned (`p·SLT + q·TP`) | 24.86 | **10.33** |
-
-The tuned heuristic reduces the average branching factor by more than half compared to the basic one, with the same average travel time.
-
-> [!NOTE]
-> Since `p` and `q` are greater than 1, the tuned heuristic is no longer guaranteed to be admissible (a strict lower bound), so A\* can no longer formally guarantee optimal routes. In the benchmark the average travel time was unchanged.
-
-### Tie-breaking and search modes
-
-Open set entries are ordered as a priority queue of tuples `(acc, g, h, stop)`:
-
-1. **Accessible mode only:** compare the accessibility score first.
-2. Then compare `f = g + h`; the lowest wins.
-3. On a tie, prefer the lowest `h`, i.e., the stop that looks closest to the destination.
-4. If it is still a tie, choose randomly.
-
-| Mode | Result |
-|------|--------|
-| **Standard** | The fastest route. |
-| **Accessible** | The most accessible route. |
 
 ## Download and installation
 
