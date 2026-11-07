@@ -4,14 +4,12 @@ import 'network.dart';
 import 'station.dart';
 
 class Direction {
-  //begin first peak
-  static const TimeOfDay begPeakFirst = TimeOfDay(hour: 6, minute: 0);
-  //end first peak
-  static const TimeOfDay endPeakFirst = TimeOfDay(hour: 9, minute: 0);
-  //begin second peak
-  static const TimeOfDay begPeakSec = TimeOfDay(hour: 18, minute: 0);
-  //end second peak
-  static const TimeOfDay endPeakSec = TimeOfDay(hour: 20, minute: 0);
+
+  // peak times
+  static const TimeOfDay _begPeakFirst = TimeOfDay(hour:  6, minute: 0);
+  static const TimeOfDay _endPeakFirst = TimeOfDay(hour:  9, minute: 0);
+  static const TimeOfDay _begPeakSec   = TimeOfDay(hour: 18, minute: 0);
+  static const TimeOfDay _endPeakSec   = TimeOfDay(hour: 20, minute: 0);
 
   final String _name;
   final bool _forward;
@@ -125,11 +123,11 @@ class Direction {
 
     final beg = openingDate.add(offset);
 
-    final begPeakFirstDate = timeAsDate(begPeakFirst, now).add(offset);
-    final endPeakFirstDate = timeAsDate(endPeakFirst, now).add(offset);
+    final begPeakFirstDate = timeAsDate(_begPeakFirst, now).add(offset);
+    final endPeakFirstDate = timeAsDate(_endPeakFirst, now).add(offset);
 
-    final begPeakSecDate = timeAsDate(begPeakSec, now).add(offset);
-    final endPeakSecDate = timeAsDate(endPeakSec, now).add(offset);
+    final begPeakSecDate = timeAsDate(_begPeakSec, now).add(offset);
+    final endPeakSecDate = timeAsDate(_endPeakSec, now).add(offset);
 
     Duration nextArrivalRelative(DateTime beg, DateTime now, int freq) {
       return Duration(minutes: freq - now.difference(beg).inMinutes % freq);

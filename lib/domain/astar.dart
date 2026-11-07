@@ -22,6 +22,7 @@ class AStar {
   // 3. Según la función h, que es muy efectiva en caso
   //    de empates en la función f
   //
+
   PriorityQueue<({int acc, double h, int g, Stop stop})>
   _makeOpenSet() {
     return PriorityQueue((self, other) {
