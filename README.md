@@ -23,7 +23,7 @@ It lets you check train arrival times and plan optimal routes between stations, 
 Thanks to Flutter, the app runs on almost any platform.
 
 <p align="center">
-    <img src=".github/assets/port-android.png" height="400" alt="Android">
+    <img src=".github/assets/port-android.png" height="450" alt="Android">
     <img src=".github/assets/port-macos.png" height="450" alt="macOS">
 </p>
 
