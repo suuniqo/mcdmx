@@ -102,8 +102,8 @@ A dedicated section keeps you informed about works, reopenings and other relevan
 The app is fully customizable:
 
 - **Appearance:** light or dark mode, text size and color tone.
-- **Accessibility:** toggle accessible mode on or off. When on, routes prioritize accessibility; when off, they prioritize speed.
-- **Storage:** clear all saved data (favorites, recents and settings) with one tap.
+- **Accessibility:** toggle accessible mode on or off.
+- **Storage:** clear all saved data (favorites, recents and settings).
 
 <p align="center">
     <img src=".github/assets/settings-light.png" width="32%" alt="Settings, light theme">
